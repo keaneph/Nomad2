@@ -171,16 +171,16 @@
                         CornerRadius="20" 
                         Background="#282A3D"
                         Margin="0,0,10,0">
-                            <TextBlock Text="RR" 
+                            <TextBlock Text="K" 
                               Foreground="White"
                               HorizontalAlignment="Center"
                               VerticalAlignment="Center"/>
                         </Border>
                         <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="Ronald R." 
+                            <TextBlock Text="Keane" 
                               Foreground="White" 
                               FontSize="14"/>
-                            <TextBlock Text="Broker" 
+                            <TextBlock Text="Test" 
                               Foreground="#6D7088" 
                               FontSize="12"/>
                         </StackPanel>
