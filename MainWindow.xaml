@@ -5,58 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Nomad2"
         mc:Ignorable="d"
-        Title="MainWindow" Height="900" Width="1440"
+        Title="MainWindow" Height="900" MinHeight="720" MinWidth="1280" Width="1440"
         Background="#060918">
 
     <Window.Resources>
-        
-        <!--Menu Item STYLE-->
-        <Style x:Key="MenuItemStyle" TargetType="RadioButton">
-            <Setter Property="Height" Value="45"/>
-            <Setter Property="Margin" Value="0,2"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="FontFamily" Value="Resources/Fonts/Rubik/#Rubik Semibold"/>
-            <Setter Property="Foreground" Value="#6D7088"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="RadioButton">
-                        <Grid Background="{TemplateBinding Background}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="50"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
 
-                            <ContentPresenter Grid.Column="0" 
-                                    Content="{TemplateBinding Tag}"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"/>
-
-                            <TextBlock Grid.Column="1" 
-                             Text="{TemplateBinding Content}" 
-                             VerticalAlignment="Center"
-                             Foreground="{TemplateBinding Foreground}"
-                             Margin="10,0,0,0"/>
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#2D2D2D"/>
-                </Trigger>
-                <Trigger Property="IsChecked" Value="True">
-                    <Setter Property="Background" Value="#2D2D2D"/>
-                    <Setter Property="Foreground" Value="White"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-        
         <!-- Searchbox STYLE-->
         <Style x:Key="SearchBoxStyle" TargetType="TextBox">
-            <Setter Property="Height" Value="36"/>
-            <Setter Property="Margin" Value="15,15,15,20"/>
+            <Setter Property="Height" Value="34"/>
+            <Setter Property="Margin" Value="20"/>
             <Setter Property="Background" Value="#0F1022"/>
             <Setter Property="FontFamily" Value="Resources/Fonts/Rubik/#Rubik Semibold"/>
             <Setter Property="Foreground" Value="#6D7088"/>
@@ -111,13 +68,145 @@
             <Setter Property="Foreground" Value="#6D7088"/>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="FontFamily" Value="Resources/Fonts/Rubik/#Rubik Semibold"/>
-            <Setter Property="Margin" Value="15,0,0,10"/>
+            <Setter Property="Margin" Value="12,0,0,8"/>
+        </Style>
+
+        <!--Menu Item STYLE-->
+        <Style x:Key="MenuItemStyle" TargetType="RadioButton">
+            <Setter Property="Height" Value="40"/>
+            <!-- Reduced height -->
+            <Setter Property="Margin" Value="0,2"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="FontFamily" Value="Resources/Fonts/Rubik/#Rubik Semibold"/>
+            <Setter Property="FontSize" Value="12"/>
+            <!-- Adjusted font size -->
+            <Setter Property="Foreground" Value="#6D7088"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Grid>
+                            <!-- Left indicator bar -->
+                            <Border x:Name="LeftIndicator"
+                                    Width="7"
+                                    Height="22"
+                                    HorizontalAlignment="Left"
+                                    Background="Transparent"
+                                    VerticalAlignment="Center"
+                                    BorderBrush="Transparent"
+                                    BorderThickness="0,1.5,1.5,1.5"
+                                    CornerRadius="0,5,5,0"
+                                    Margin="-10,0,0,0"/>
+
+                            <!-- Main background -->
+                            <Border x:Name="MainBackground"
+                            Background="{TemplateBinding Background}"
+                            Height="37" 
+                            CornerRadius="6"
+                            BorderBrush="Transparent"
+                            BorderThickness="2,1.5,2,2"
+                            Margin="8,0,20,-5">
+                                
+                                <!-- Adjusted margins -->
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="32"/>
+                                        <!-- Reduced icon column width -->
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <ContentPresenter Grid.Column="0" 
+                                                        Content="{TemplateBinding Tag}"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"/>
+
+                                    <TextBlock Grid.Column="1" 
+                                             Text="{TemplateBinding Content}" 
+                                             VerticalAlignment="Center"
+                                             Foreground="{TemplateBinding Foreground}"
+                                             Margin="4,0,0,0"/>
+                                    <!-- Reduced text margin -->
+                                </Grid>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" TargetName="MainBackground" Value="#1A1C2E"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Background" TargetName="MainBackground">
+                                    <Setter.Value>
+                                        <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
+                                            <GradientStop Color="#4B2393" Offset="0.1"/>
+                                            <GradientStop Color="#190F33" Offset="1"/>
+                                        </RadialGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Background" TargetName="LeftIndicator">
+                                    <Setter.Value>
+                                        <RadialGradientBrush GradientOrigin="0.5,1" Center="0,0.3" RadiusX="2" RadiusY="1">
+                                            <GradientStop Color="#4B2393" Offset="0.4"/>
+                                            <GradientStop Color="#190F33" Offset="0.7"/>
+                                        </RadialGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                                
+                                <!--
+                                <Setter Property="Background" TargetName="LeftIndicator">
+    <Setter.Value>
+        <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.6" RadiusY="0.9">
+            <GradientStop Color="#4B2393" Offset="0.5"/>
+            <GradientStop Color="#190F33" Offset="1"/>
+        </RadialGradientBrush>
+    </Setter.Value>
+</Setter>-->
+
+
+                                <!--Not sure whether to add this border or not-->
+                                <Setter Property="BorderBrush" TargetName="MainBackground">
+                                    <Setter.Value>
+                                        <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.7" RadiusY="0.9">
+                                            <GradientStop Color="#4B2393" Offset="0.5"/>
+                                            <GradientStop Color="#2B2942" Offset="1"/>
+                                        </RadialGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+
+                                <Setter Property="BorderBrush" TargetName="LeftIndicator" Value="#7553B2">
+                                </Setter>
+
+                                <!--
+                                <Setter Property="BorderBrush" TargetName="LeftIndicator">
+                                    <Setter.Value>
+                                        <RadialGradientBrush GradientOrigin="0.5,0.5" Center="0.5,1" RadiusX="0.6" RadiusY="0.9">
+                                            <GradientStop Color="#4B2393" Offset="0.5"/>
+                                            <GradientStop Color="#190F33" Offset="1"/>
+                                        </RadialGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                                -->
+
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                                <Setter Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="#5B21B6" 
+                                                            BlurRadius="20" 
+                                                            ShadowDepth="0" 
+                                                            Opacity="0.3"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </Window.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="60"/>
+            <RowDefinition Height="70"/>
             <!-- Header height -->
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -128,13 +217,13 @@
 
 
         <!-- Header -->
-        <Grid Grid.ColumnSpan="2" Height="60" VerticalAlignment="Top">
-            <Border Background="#0F1022" 
+        <Grid Grid.ColumnSpan="2" Height="70" VerticalAlignment="Top">
+            <Border Background="#060918" 
             BorderBrush="#282A3D"
             BorderThickness="0,0,0,1">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="250"/>
+                        <ColumnDefinition Width="220"/>
                         <!-- Same width as NavigationMenu -->
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
@@ -144,10 +233,10 @@
                     <Grid Grid.Column="0">
                         <TextBlock Text="NOMAD" 
                           Foreground="White" 
-                          FontSize="20" 
-                          FontWeight="SemiBold"
+                          FontFamily="Resources/Fonts/Rubik/#Rubik Bold"
+                          FontSize="30" 
                           VerticalAlignment="Center"
-                          Margin="20,0,0,0"/>
+                          HorizontalAlignment="Center"/>
                     </Grid>
 
                     <!-- Page Title Section -->
@@ -157,9 +246,11 @@
                         <TextBlock Text="Dashboard" 
                            Foreground="White" 
                            FontSize="18" 
+                           FontFamily="Resources/Fonts/Rubik/#Rubik"
                            FontWeight="SemiBold"/>
                         <TextBlock Text="Dashboard and insights" 
                            Foreground="#6D7088" 
+                           FontFamily="Resources/Fonts/Rubik/#Rubik"
                            FontSize="12"/>
                     </StackPanel>
 
@@ -190,9 +281,9 @@
                 </Grid>
             </Border>
         </Grid>
-        
+
         <!-- Navigation Menu -->
-        <Grid x:Name="NavigationMenu" Width="250" Grid.Row="1">
+        <Grid x:Name="NavigationMenu" Width="220" Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
@@ -202,7 +293,7 @@
 
             <Border BorderBrush="#282A3D" BorderThickness="0,0,1,0" Grid.Row="1">
                 <StackPanel Grid.Row="1">
-            
+
 
                     <!-- Search Box -->
                     <TextBox Style="{StaticResource SearchBoxStyle}" TextChanged="TextBox_TextChanged"/>
