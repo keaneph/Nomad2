@@ -8,4 +8,39 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Resources\Fonts\Rubik\Rubik-Bold.ttf" />
+    <None Remove="Resources\Fonts\Rubik\Rubik-ExtraBold.ttf" />
+    <None Remove="Resources\Fonts\Rubik\Rubik-Italic.ttf" />
+    <None Remove="Resources\Fonts\Rubik\Rubik-Light.ttf" />
+    <None Remove="Resources\Fonts\Rubik\Rubik-Medium.ttf" />
+    <None Remove="Resources\Fonts\Rubik\Rubik-Regular.ttf" />
+    <None Remove="Resources\Fonts\Rubik\Rubik-SemiBold.ttf" />
+    <None Remove="Resources\Fonts\Satoshi\Satoshi-Black.ttf" />
+    <None Remove="Resources\Fonts\Satoshi\Satoshi-Bold.ttf" />
+    <None Remove="Resources\Fonts\Satoshi\Satoshi-Light.ttf" />
+    <None Remove="Resources\Fonts\Satoshi\Satoshi-Medium.ttf" />
+    <None Remove="Resources\Fonts\Satoshi\Satoshi-Regular.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Fonts\Rubik\Rubik-Bold.ttf" />
+    <Resource Include="Resources\Fonts\Rubik\Rubik-ExtraBold.ttf" />
+    <Resource Include="Resources\Fonts\Rubik\Rubik-Italic.ttf" />
+    <Resource Include="Resources\Fonts\Rubik\Rubik-Light.ttf" />
+    <Resource Include="Resources\Fonts\Rubik\Rubik-Medium.ttf" />
+    <Resource Include="Resources\Fonts\Rubik\Rubik-Regular.ttf" />
+    <Resource Include="Resources\Fonts\Rubik\Rubik-SemiBold.ttf" />
+    <Resource Include="Resources\Fonts\Satoshi\Satoshi-Black.ttf" />
+    <Resource Include="Resources\Fonts\Satoshi\Satoshi-Bold.ttf" />
+    <Resource Include="Resources\Fonts\Satoshi\Satoshi-Light.ttf" />
+    <Resource Include="Resources\Fonts\Satoshi\Satoshi-Medium.ttf" />
+    <Resource Include="Resources\Fonts\Satoshi\Satoshi-Regular.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Resources\Images\" />
+    <Folder Include="Resources\Styles\" />
+  </ItemGroup>
+
 </Project>
