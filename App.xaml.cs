@@ -1,14 +1,22 @@
-﻿using System.Configuration;
-using System.Data;
+﻿// App.xaml.cs
+using Nomad2.Services;
+using Nomad2.ViewModels;
 using System.Windows;
 
 namespace Nomad2
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
-    }
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
 
+            INavigationService navigationService = new NavigationService();
+            MainWindow = new MainWindow
+            {
+                DataContext = new MainViewModel(navigationService)
+            };
+            MainWindow.Show();
+        }
+    }
 }

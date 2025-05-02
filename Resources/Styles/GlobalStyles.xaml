@@ -1,0 +1,202 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+
+    <!-- Define FontFamily resources -->
+    <FontFamily x:Key="RubikRegular">/Nomad2;component/Resources/Fonts/Rubik/#Rubik</FontFamily>
+    <FontFamily x:Key="RubikSemibold">/Nomad2;component/Resources/Fonts/Rubik/#Rubik Semibold</FontFamily>
+    <FontFamily x:Key="RubikBold">/Nomad2;component/Resources/Fonts/Rubik/#Rubik Bold</FontFamily>
+
+    <!-- Searchbox STYLE-->
+    <Style x:Key="SearchBoxStyle" TargetType="TextBox">
+        <Setter Property="Height" Value="34"/>
+        <Setter Property="Margin" Value="20"/>
+        <Setter Property="Background" Value="#0F1022"/>
+        <Setter Property="FontFamily" Value="{StaticResource RubikSemibold}"/>
+        <Setter Property="Foreground" Value="#6D7088"/>
+        <Setter Property="BorderThickness" Value="1.5"/>
+        <Setter Property="BorderBrush" Value="#282A3D"/>
+        <Setter Property="Padding" Value="30,8,8,8"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TextBox">
+                    <Border Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                CornerRadius="6">
+                        <Grid>
+                            <Path Data="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z"
+                      Stroke="#6D7088"
+                      StrokeThickness="1.5"
+                      Width="20"
+                      Height="20"
+                      Margin="8,0,0,0"
+                      HorizontalAlignment="Left"/>
+                            <ScrollViewer x:Name="PART_ContentHost" 
+                            Margin="{TemplateBinding Padding}"
+                            VerticalAlignment="Center"/>
+                            <TextBlock Text="Search"
+                         Margin="35,0,0,0"
+                         VerticalAlignment="Center"
+                         IsHitTestVisible="False">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TextBox}}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Text, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=TextBox}}" Value="{x:Null}">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Menu header STYLE-->
+    <Style x:Key="MenuHeaderStyle" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="#6D7088"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontFamily" Value="{StaticResource RubikSemibold}"/>
+        <Setter Property="Margin" Value="12,0,0,8"/>
+    </Style>
+
+    <!--Menu Item STYLE-->
+    <Style x:Key="MenuItemStyle" TargetType="RadioButton">
+        <Setter Property="Height" Value="40"/>
+        <!-- Reduced height -->
+        <Setter Property="Margin" Value="0,2"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="FontFamily" Value="{StaticResource RubikSemibold}"/>
+        <Setter Property="FontSize" Value="12"/>
+        <!-- Adjusted font size -->
+        <Setter Property="Foreground" Value="#6D7088"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RadioButton">
+                    <Grid>
+                        <!-- Left indicator bar -->
+                        <Border x:Name="LeftIndicator"
+                            Width="7"
+                            Height="22"
+                            HorizontalAlignment="Left"
+                            Background="Transparent"
+                            VerticalAlignment="Center"
+                            BorderBrush="Transparent"
+                            BorderThickness="0,1.5,1.5,1.5"
+                            CornerRadius="0,5,5,0"
+                            Margin="-10,0,0,0"/>
+
+                        <!-- Main background -->
+                        <Border x:Name="MainBackground"
+                    Background="{TemplateBinding Background}"
+                    Height="37" 
+                    CornerRadius="6"
+                    BorderBrush="Transparent"
+                    BorderThickness="2,1.5,2,2"
+                    Margin="8,0,20,-5">
+
+                            <!-- Adjusted margins -->
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="32"/>
+                                    <!-- Reduced icon column width -->
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <ContentPresenter Grid.Column="0" 
+                                                Content="{TemplateBinding Tag}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"/>
+
+                                <TextBlock Grid.Column="1" 
+                                     Text="{TemplateBinding Content}" 
+                                     VerticalAlignment="Center"
+                                     Foreground="{TemplateBinding Foreground}"
+                                     Margin="4,0,0,0"/>
+                                <!-- Reduced text margin -->
+                            </Grid>
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="MainBackground" Value="#1A1C2E"/>
+                            <Setter Property="Foreground" Value="#FFFFFF"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter Property="Background" TargetName="MainBackground">
+                                <Setter.Value>
+                                    <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
+                                        <GradientStop Color="#4B2393" Offset="0.1"/>
+                                        <GradientStop Color="#190F33" Offset="1"/>
+                                    </RadialGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Background" TargetName="LeftIndicator">
+                                <Setter.Value>
+                                    <RadialGradientBrush GradientOrigin="0.5,1" Center="0,0.3" RadiusX="2" RadiusY="1">
+                                        <GradientStop Color="#4B2393" Offset="0.4"/>
+                                        <GradientStop Color="#190F33" Offset="0.7"/>
+                                    </RadialGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+
+                            <!--
+                        <Setter Property="Background" TargetName="LeftIndicator">
+                            <Setter.Value>
+                                <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.6" RadiusY="0.9">
+                                    <GradientStop Color="#4B2393" Offset="0.5"/>
+                                    <GradientStop Color="#190F33" Offset="1"/>
+                                </RadialGradientBrush>
+                            </Setter.Value>
+                        </Setter>-->
+
+
+                            <!--Not sure whether to add this border or not-->
+                            <Setter Property="BorderBrush" TargetName="MainBackground">
+                                <Setter.Value>
+                                    <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.7" RadiusY="0.9">
+                                        <GradientStop Color="#4B2393" Offset="0.5"/>
+                                        <GradientStop Color="#2B2942" Offset="1"/>
+                                    </RadialGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+
+                            <Setter Property="BorderBrush" TargetName="LeftIndicator" Value="#7553B2">
+                            </Setter>
+
+                            <!--
+                        <Setter Property="BorderBrush" TargetName="LeftIndicator">
+                            <Setter.Value>
+                                <RadialGradientBrush GradientOrigin="0.5,0.5" Center="0.5,1" RadiusX="0.6" RadiusY="0.9">
+                                    <GradientStop Color="#4B2393" Offset="0.5"/>
+                                    <GradientStop Color="#190F33" Offset="1"/>
+                                </RadialGradientBrush>
+                            </Setter.Value>
+                        </Setter>
+                        -->
+
+                            <Setter Property="Foreground" Value="#FFFFFF"/>
+                            <Setter Property="Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect Color="#5B21B6" 
+                                                    BlurRadius="20" 
+                                                    ShadowDepth="0" 
+                                                    Opacity="0.3"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
