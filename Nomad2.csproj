@@ -24,13 +24,27 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\Fonts\Rubik\Rubik-Bold.ttf" />
-    <Resource Include="Resources\Fonts\Rubik\Rubik-ExtraBold.ttf" />
-    <Resource Include="Resources\Fonts\Rubik\Rubik-Italic.ttf" />
-    <Resource Include="Resources\Fonts\Rubik\Rubik-Light.ttf" />
-    <Resource Include="Resources\Fonts\Rubik\Rubik-Medium.ttf" />
-    <Resource Include="Resources\Fonts\Rubik\Rubik-Regular.ttf" />
-    <Resource Include="Resources\Fonts\Rubik\Rubik-SemiBold.ttf" />
+    <Resource Include="Resources\Fonts\Rubik\Rubik-Bold.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Rubik\Rubik-ExtraBold.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Rubik\Rubik-Italic.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Rubik\Rubik-Light.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Rubik\Rubik-Medium.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Rubik\Rubik-Regular.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Fonts\Rubik\Rubik-SemiBold.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\Fonts\Satoshi\Satoshi-Black.ttf" />
     <Resource Include="Resources\Fonts\Satoshi\Satoshi-Bold.ttf" />
     <Resource Include="Resources\Fonts\Satoshi\Satoshi-Light.ttf" />
