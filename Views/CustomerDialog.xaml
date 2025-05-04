@@ -1,0 +1,121 @@
+﻿<Window x:Class="Nomad2.Views.CustomerDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="{Binding DialogTitle}"
+        Height="600" 
+        Width="500"
+        WindowStartupLocation="CenterOwner"
+        Background="{StaticResource PrimaryBackgroundBrush}"
+        ResizeMode="NoResize">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Text="{Binding DialogTitle}"
+                   Foreground="White"
+                   FontSize="24"
+                   FontFamily="{StaticResource RubikSemibold}"
+                   Margin="0,0,0,20"/>
+
+        <!-- Form Fields -->
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <!-- Customer ID -->
+                <TextBlock Text="Customer ID"
+                           Style="{StaticResource FormLabelStyle}"/>
+                <TextBox Text="{Binding Customer.CustomerId}"
+                         Style="{StaticResource FormTextBoxStyle}"
+                         IsReadOnly="True"/>
+
+                <!-- Name -->
+                <TextBlock Text="Name *"
+                           Style="{StaticResource FormLabelStyle}"/>
+                <TextBox Text="{Binding Customer.Name, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource FormTextBoxStyle}"/>
+
+                <!-- Phone Number -->
+                <TextBlock Text="Phone Number *"
+                           Style="{StaticResource FormLabelStyle}"/>
+                <TextBox Text="{Binding Customer.PhoneNumber, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource FormTextBoxStyle}"/>
+
+                <!-- Address -->
+                <TextBlock Text="Address *"
+                           Style="{StaticResource FormLabelStyle}"/>
+                <TextBox Text="{Binding Customer.Address, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource FormTextBoxStyle}"
+                         Height="60"
+                         TextWrapping="Wrap"
+                         AcceptsReturn="True"/>
+
+                <!-- Government ID Picture -->
+                <TextBlock Text="Government ID Picture *"
+                           Style="{StaticResource FormLabelStyle}"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Text="{Binding Customer.GovernmentIdPicture, UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource FormTextBoxStyle}"
+                             IsReadOnly="True"/>
+                    <Button Grid.Column="1"
+                            Content="Browse"
+                            Command="{Binding BrowseCommand}"
+                            Style="{StaticResource SecondaryButtonStyle}"
+                            Width="80"
+                            Margin="10,0,0,0"/>
+                </Grid>
+
+                <!-- Customer Status -->
+                <TextBlock Text="Status *"
+                           Style="{StaticResource FormLabelStyle}"/>
+                <ComboBox ItemsSource="{Binding StatusOptions}"
+                          SelectedItem="{Binding Customer.CustomerStatus}"
+                          Style="{StaticResource FormComboBoxStyle}"/>
+
+                <!-- Registration Date -->
+                <TextBlock Text="Registration Date *"
+                           Style="{StaticResource FormLabelStyle}"/>
+                <DatePicker SelectedDate="{Binding Customer.RegistrationDate}"
+                           Style="{StaticResource FormDatePickerStyle}"/>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Buttons -->
+        <Grid Grid.Row="2" 
+              Margin="0,20,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="{Binding ErrorMessage}"
+                       Foreground="Red"
+                       VerticalAlignment="Center"/>
+
+            <Button Grid.Column="1"
+                    Content="Cancel"
+                    Command="{Binding CancelCommand}"
+                    Style="{StaticResource SecondaryButtonStyle}"
+                    Width="100"
+                    Margin="0,0,10,0"/>
+
+            <Button Grid.Column="2"
+                    Content="Save"
+                    Command="{Binding SaveCommand}"
+                    Style="{StaticResource PrimaryButtonStyle}"
+                    Width="100"/>
+        </Grid>
+    </Grid>
+</Window>

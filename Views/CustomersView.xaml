@@ -4,12 +4,139 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:Nomad2.Views"
-             mc:Ignorable="d">
-    <Grid Background="#0F1022">
-        <TextBlock Text="Customers View"
-                  Foreground="White"
-                  FontSize="24"
-                  HorizontalAlignment="Center"
-                  VerticalAlignment="Center"/>
+             mc:Ignorable="d"
+             Background="{StaticResource PrimaryBackgroundBrush}">
+
+    <Grid Margin="20,0,20,20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Top Controls -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Sort Combo Box -->
+            <ComboBox Grid.Column="0"
+                      Style="{StaticResource BaseComboboxStyle}"
+                      ItemsSource="{Binding SortOptions}"
+                      SelectedItem="{Binding SelectedSortOption}"/>
+
+            <!-- Add Customer Button -->
+            <Button Grid.Column="2"
+                    Command="{Binding AddCustomerCommand}"
+                    Style="{StaticResource PrimaryButtonStyle}">
+                <Button.Tag>
+                    <Viewbox Width="16" 
+                             Height="16">
+                        <Grid>
+                            <Path Data="{StaticResource AddCustomersIcon}"
+                                  Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                  Style="{StaticResource PathStyle}"/>
+                        </Grid>
+                    </Viewbox>
+                </Button.Tag>
+                Add Customer
+            </Button>
+        </Grid>
+
+        <!-- Customers DataGrid -->
+        <DataGrid Grid.Row="1"
+                  ItemsSource="{Binding Customers}"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  IsReadOnly="True"
+                  Background="Transparent"
+                  BorderThickness="1"
+                  BorderBrush="{StaticResource BorderBrush}"
+                  RowBackground="#1C1C28"
+                  AlternatingRowBackground="#252525"
+                  GridLinesVisibility="All">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" 
+                                  Binding="{Binding CustomerId}"
+                                  Width="100"/>
+                <DataGridTextColumn Header="Name" 
+                                  Binding="{Binding Name}"
+                                  Width="200"/>
+                <DataGridTextColumn Header="Phone Number" 
+                                  Binding="{Binding PhoneNumber}"
+                                  Width="150"/>
+                <DataGridTextColumn Header="Address" 
+                                  Binding="{Binding Address}"
+                                  Width="200"/>
+                <DataGridTextColumn Header="Status" 
+                                  Binding="{Binding CustomerStatus}"
+                                  Width="100"/>
+                <DataGridTextColumn Header="Registration Date" 
+                                  Binding="{Binding RegistrationDate, StringFormat={}{0:MM/dd/yyyy}}"
+                                  Width="150"/>
+
+                <DataGridTemplateColumn Header="Actions" Width="120">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="Edit"
+                                        Command="{Binding DataContext.EditCustomerCommand, 
+                                                  RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                        CommandParameter="{Binding}"
+                                        Margin="5,0"
+                                        Width="50"/>
+                                <Button Content="Delete"
+                                        Command="{Binding DataContext.DeleteCustomerCommand,
+                                                  RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                        CommandParameter="{Binding}"
+                                        Width="50"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Bottom Controls -->
+        <Grid Grid.Row="2" Margin="0,20,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Clear Button -->
+            <Button Grid.Column="0"
+                    Content="Clear"
+                    Command="{Binding ClearCommand}"
+                    Style="{StaticResource SecondaryButtonStyle}"
+                    Width="100"/>
+
+            <!-- Pagination -->
+            <StackPanel Grid.Column="1" 
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Center">
+                <Button Content="Previous"
+                        Command="{Binding PreviousPageCommand}"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        Width="100"
+                        Margin="0,0,10,0"/>
+                <TextBlock Text="{Binding CurrentPageDisplay}"
+                           Foreground="White"
+                           VerticalAlignment="Center"
+                           Margin="10,0"/>
+                <Button Content="Next"
+                        Command="{Binding NextPageCommand}"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        Width="100"
+                        Margin="10,0,0,0"/>
+            </StackPanel>
+        </Grid>
+
     </Grid>
 </UserControl>

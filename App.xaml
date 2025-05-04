@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Nomad2"
              xmlns:viewmodels="clr-namespace:Nomad2.ViewModels"
+             xmlns:converters="clr-namespace:Nomad2.Converters"
              xmlns:views="clr-namespace:Nomad2.Views">
     <Application.Resources>
         <ResourceDictionary>
@@ -41,6 +42,9 @@
             <DataTemplate DataType="{x:Type viewmodels:HelpViewModel}">
                 <views:HelpView/>
             </DataTemplate>
+
+            <BooleanToVisibilityConverter xmlns="clr-namespace:System.Windows.Controls;assembly=PresentationFramework" 
+                             x:Key="BooleanToVisibilityConverter"/>
 
         </ResourceDictionary>
     </Application.Resources>

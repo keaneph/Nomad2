@@ -16,8 +16,11 @@ namespace Nomad2.ViewModels
         {
             _navigationService = navigationService;
             _navigationService.CurrentViewChanged += OnCurrentViewChanged;
-            NavigateCommand = new RelayCommand<string>(Navigate);
-            Navigate("Dashboard"); // Set default view
+
+            // Changed to use RelayCommand<string> explicitly
+            NavigateCommand = new RelayCommand<string>(Execute_Navigate);
+
+            Execute_Navigate("Dashboard"); // Set default view
         }
 
         public string Username
@@ -62,9 +65,12 @@ namespace Nomad2.ViewModels
 
         public ICommand NavigateCommand { get; }
 
-        private void Navigate(string destination)
+        private void Execute_Navigate(string destination)
         {
-            _navigationService.NavigateTo(destination);
+            if (destination != null)
+            {
+                _navigationService.NavigateTo(destination);
+            }
         }
 
         public void Dispose()

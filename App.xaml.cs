@@ -11,6 +11,10 @@ namespace Nomad2
         {
             base.OnStartup(e);
 
+            // Initialize database
+            var dbHelper = new DatabaseHelper();
+            dbHelper.InitializeDatabase();
+
             INavigationService navigationService = new NavigationService();
             MainWindow = new MainWindow
             {

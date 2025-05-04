@@ -8,13 +8,12 @@
         xmlns:views="clr-namespace:Nomad2.Views"
         xmlns:converters="clr-namespace:Nomad2.Converters"
         mc:Ignorable="d"
-        Title="MainWindow" Height="900" MinHeight="900" MaxHeight="900" Width="1440"  MinWidth="1440" MaxWidth="1440"
+        Title="MainWindow" Height="900" MinHeight="900" MaxHeight="900" Width="1440" MinWidth="1440" MaxWidth="1440"
         Background="{StaticResource PrimaryBackgroundBrush}">
 
-    <!--  MinHeight="720" MinWidth="1280"-->
+        <!--  MinHeight="720" MinWidth="1280"-->
 
     <Window.Resources>
-        
         <!--Converter-->
         <converters:ViewModelToBooleanConverter x:Key="ViewModelToBooleanConverter"/>
     </Window.Resources>
@@ -30,7 +29,7 @@
         </Grid.ColumnDefinitions>
 
         <!-- Header -->
-        <Grid Grid.ColumnSpan="2" Height="70" VerticalAlignment="Top">
+        <Grid Grid.ColumnSpan="2">
             <Border Background="{StaticResource PrimaryBackgroundBrush}" 
                     BorderBrush="{StaticResource BorderBrush}"
                     BorderThickness="0,0,0,1">
@@ -38,17 +37,17 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="220"/>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="220"/>
                     </Grid.ColumnDefinitions>
 
                     <!-- Logo and Title Section -->
                     <Grid Grid.Column="0">
                         <TextBlock Text="NOMAD" 
-                                   Foreground="White" 
+                                   Foreground="{StaticResource TextPrimaryBrush}" 
                                    FontFamily="{StaticResource RubikBold}"
-                                   FontSize="30" 
+                                   FontSize="40" 
                                    VerticalAlignment="Center"
-                                  HorizontalAlignment="Center"/>
+                                   HorizontalAlignment="Center"/>
                     </Grid>
 
                     <!-- Page Title Section -->
@@ -56,12 +55,13 @@
                                 VerticalAlignment="Center"
                                 Margin="20,0,0,0">
                         <TextBlock Text="{Binding CurrentView.Title}" 
-                                   Foreground="White" 
-                                   FontSize="18" 
+                                   Foreground="{StaticResource TextPrimaryBrush}" 
+                                   FontSize="24" 
+                                   Margin="0,0,0,3"
                                    FontFamily="{StaticResource RubikSemibold}"/>
                         <TextBlock Text="{Binding CurrentView.Description}" 
                                    Foreground="{StaticResource TextSecondaryBrush}" 
-                                   FontFamily="{StaticResource Rubik}"
+                                   FontFamily="{StaticResource RubikSemibold}"
                                    FontSize="12"/>
                     </StackPanel>
 
@@ -76,13 +76,13 @@
                                 Background="{StaticResource BorderBrush}"
                                 Margin="0,0,10,0">
                             <TextBlock Text="{Binding Username[0]}" 
-                                       Foreground="White"
+                                       Foreground="{StaticResource TextPrimaryBrush}"
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"/>
                         </Border>
                         <StackPanel VerticalAlignment="Center">
                             <TextBlock Text="{Binding Username}" 
-                                       Foreground="White" 
+                                       Foreground="{StaticResource TextPrimaryBrush}" 
                                        FontSize="14"/>
                             <TextBlock Text="{Binding UserRole}" 
                                        Foreground="{StaticResource TextSecondaryBrush}" 
@@ -121,10 +121,7 @@
                                  GroupName="MenuItems"
                                  Command="{Binding NavigateCommand}"
                                  CommandParameter="Dashboard"
-                                 IsChecked="{Binding CurrentView, Converter={StaticResource ViewModelToBooleanConverter}, ConverterParameter={x:Type viewmodels:DashboardViewModel}, Mode=OneWay}"
-                                 Margin="10,0,0,0">
-                        
-                        <!-- Your existing RadioButton content --> 
+                                 IsChecked="{Binding CurrentView, Converter={StaticResource ViewModelToBooleanConverter}, ConverterParameter={x:Type viewmodels:DashboardViewModel}, Mode=OneWay}">
                         <RadioButton.Tag>
                             <Viewbox Width="16" 
                                      Height="16">
@@ -134,7 +131,7 @@
                                     <Path Data="{StaticResource DashboardIcon2}"
                                           Stroke="{Binding RelativeSource={RelativeSource AncestorType=RadioButton}, Path=Foreground}"
                                           Style="{StaticResource PathStyle}"/>
-                                    <Path Data="{StaticResource DashboardIcon3}"
+                                     <Path Data="{StaticResource DashboardIcon3}"
                                           Stroke="{Binding RelativeSource={RelativeSource AncestorType=RadioButton}, Path=Foreground}"/>
                                     <Path Data="{StaticResource DashboardIcon4}"
                                           Stroke="{Binding RelativeSource={RelativeSource AncestorType=RadioButton}, Path=Foreground}"
@@ -150,8 +147,7 @@
                                  GroupName="MenuItems"
                                  Command="{Binding NavigateCommand}"
                                  CommandParameter="Customers"
-                                 IsChecked="{Binding CurrentView, Converter={StaticResource ViewModelToBooleanConverter}, ConverterParameter={x:Type viewmodels:CustomersViewModel}, Mode=OneWay}"
-                                 Margin="10,0,0,0">
+                                 IsChecked="{Binding CurrentView, Converter={StaticResource ViewModelToBooleanConverter}, ConverterParameter={x:Type viewmodels:CustomersViewModel}, Mode=OneWay}">
                         <RadioButton.Tag>
                             <Viewbox Width="16" 
                                      Height="16">
@@ -170,8 +166,7 @@
                                  GroupName="MenuItems"
                                  Command="{Binding NavigateCommand}"
                                  CommandParameter="Bikes"
-                                 IsChecked="{Binding CurrentView, Converter={StaticResource ViewModelToBooleanConverter}, ConverterParameter={x:Type viewmodels:BikesViewModel}, Mode=OneWay}"
-                                 Margin="10,0,0,0">
+                                 IsChecked="{Binding CurrentView, Converter={StaticResource ViewModelToBooleanConverter}, ConverterParameter={x:Type viewmodels:BikesViewModel}, Mode=OneWay}">
                         <RadioButton.Tag>
                             <Viewbox Width="16" 
                                      Height="16">
@@ -190,8 +185,7 @@
                                  GroupName="MenuItems"
                                  Command="{Binding NavigateCommand}"
                                  CommandParameter="Rentals"
-                                 IsChecked="{Binding CurrentView, Converter={StaticResource ViewModelToBooleanConverter}, ConverterParameter={x:Type viewmodels:RentalsViewModel}, Mode=OneWay}"
-                                 Margin="10,0,0,0">
+                                 IsChecked="{Binding CurrentView, Converter={StaticResource ViewModelToBooleanConverter}, ConverterParameter={x:Type viewmodels:RentalsViewModel}, Mode=OneWay}">
                         <RadioButton.Tag>
                             <Viewbox Width="16" 
                                      Height="16">
@@ -210,8 +204,7 @@
                                  GroupName="MenuItems"
                                  Command="{Binding NavigateCommand}"
                                  CommandParameter="Payments"
-                                 IsChecked="{Binding CurrentView, Converter={StaticResource ViewModelToBooleanConverter}, ConverterParameter={x:Type viewmodels:PaymentsViewModel}, Mode=OneWay}"
-                                 Margin="10,0,0,0">
+                                 IsChecked="{Binding CurrentView, Converter={StaticResource ViewModelToBooleanConverter}, ConverterParameter={x:Type viewmodels:PaymentsViewModel}, Mode=OneWay}">
                         <RadioButton.Tag>
                             <Viewbox Width="16" 
                                      Height="16">
@@ -230,8 +223,7 @@
                                  GroupName="MenuItems"
                                  Command="{Binding NavigateCommand}"
                                  CommandParameter="Returns"
-                                 IsChecked="{Binding CurrentView, Converter={StaticResource ViewModelToBooleanConverter}, ConverterParameter={x:Type viewmodels:ReturnsViewModel}, Mode=OneWay}"
-                                 Margin="10,0,0,0">
+                                 IsChecked="{Binding CurrentView, Converter={StaticResource ViewModelToBooleanConverter}, ConverterParameter={x:Type viewmodels:ReturnsViewModel}, Mode=OneWay}">
                         <RadioButton.Tag>
                             <Viewbox Width="16" 
                                      Height="16">
