@@ -75,7 +75,7 @@ namespace Nomad2.Services
                     // Create Customer table
                     string createCustomerTable = @"
                         CREATE TABLE IF NOT EXISTS customer (
-                            customer_id VARCHAR(9) PRIMARY KEY,
+                            customer_id VARCHAR(9) PRIMARY KEY NOT NULL,
                             name VARCHAR(100) NOT NULL,
                             phone_number VARCHAR(30) NOT NULL,
                             address VARCHAR(200) NOT NULL,
@@ -87,17 +87,17 @@ namespace Nomad2.Services
                     // Create Bike table
                     string createBikeTable = @"
                         CREATE TABLE IF NOT EXISTS bike (
-                            bike_id VARCHAR(9) PRIMARY KEY,
+                            bike_id VARCHAR(9) PRIMARY KEY NOT NULL,
                             bike_model VARCHAR(100) NOT NULL,
                             bike_type VARCHAR(50) NOT NULL,
-                            daily_rate DECIMAL(10,2) NOT NULL,
+                            daily_rate INTEGER(9) NOT NULL,
                             bike_status VARCHAR(30) NOT NULL
                         )";
 
                     // Create Rental table
                     string createRentalTable = @"
                         CREATE TABLE IF NOT EXISTS rentals (
-                            rental_id VARCHAR(9) PRIMARY KEY,
+                            rental_id VARCHAR(9) PRIMARY KEY NOT NULL,
                             customer_id VARCHAR(9) NOT NULL,
                             bike_id VARCHAR(9) NOT NULL,
                             rental_status VARCHAR(30) NOT NULL,
@@ -109,11 +109,11 @@ namespace Nomad2.Services
                     // Create Payment table
                     string createPaymentTable = @"
                         CREATE TABLE IF NOT EXISTS payments (
-                            payment_id VARCHAR(9) PRIMARY KEY,
+                            payment_id VARCHAR(9) PRIMARY KEY NOT NULL,
                             customer_id VARCHAR(9) NOT NULL,
                             bike_id VARCHAR(9) NOT NULL,
-                            amount_to_pay DECIMAL(10,2) NOT NULL,
-                            amount_paid DECIMAL(10,2) NOT NULL,
+                            amount_to_pay INT(9) NOT NULL,
+                            amount_paid INT(9) NOT NULL,
                             payment_date DATE NOT NULL,
                             payment_status VARCHAR(30) NOT NULL,
                             FOREIGN KEY (customer_id) REFERENCES customer(customer_id),
@@ -123,7 +123,7 @@ namespace Nomad2.Services
                     // Create Return table
                     string createReturnTable = @"
                         CREATE TABLE IF NOT EXISTS returns (
-                            return_id VARCHAR(9) PRIMARY KEY,
+                            return_id VARCHAR(9) PRIMARY KEY NOT NULL,
                             customer_id VARCHAR(9) NOT NULL,
                             bike_id VARCHAR(9) NOT NULL,
                             return_date DATE NOT NULL,

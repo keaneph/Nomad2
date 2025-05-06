@@ -46,55 +46,60 @@
             </Button>
         </Grid>
 
-        <!-- Customers DataGrid -->
         <DataGrid Grid.Row="1"
+                  Style="{StaticResource DataGridStyle}"
+                  ColumnHeaderStyle="{StaticResource DataGridColumnHeaderStyle}"                 
+                  CellStyle="{StaticResource DataGridCellStyle}"
+                  RowStyle="{StaticResource DataGridRowStyle}"
+                  SelectionUnit="FullRow"
                   ItemsSource="{Binding Customers}"
                   AutoGenerateColumns="False"
+                  Padding="10,0,10,0"
                   CanUserAddRows="False"
                   CanUserDeleteRows="False"
                   IsReadOnly="True"
-                  Background="Transparent"
-                  BorderThickness="1"
-                  BorderBrush="{StaticResource BorderBrush}"
-                  RowBackground="#1C1C28"
-                  AlternatingRowBackground="#252525"
-                  GridLinesVisibility="All">
-
+                  RowHeaderWidth="0">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" 
-                                  Binding="{Binding CustomerId}"
-                                  Width="100"/>
+                <DataGridTextColumn Header="Government ID" 
+                          Binding="{Binding GovernmentIdPicture}"
+                          Width="120"/>
+                <DataGridTextColumn Header="Customer ID" 
+                          Binding="{Binding CustomerId}"
+                          Width="120"/>
                 <DataGridTextColumn Header="Name" 
-                                  Binding="{Binding Name}"
-                                  Width="200"/>
+                          Binding="{Binding Name}"
+                          Width="200"/>
                 <DataGridTextColumn Header="Phone Number" 
-                                  Binding="{Binding PhoneNumber}"
-                                  Width="150"/>
+                          Binding="{Binding PhoneNumber}"
+                          Width="120"/>
                 <DataGridTextColumn Header="Address" 
-                                  Binding="{Binding Address}"
-                                  Width="200"/>
+                          Binding="{Binding Address}"
+                          Width="240"/>
                 <DataGridTextColumn Header="Status" 
-                                  Binding="{Binding CustomerStatus}"
-                                  Width="100"/>
+                          Binding="{Binding CustomerStatus}"
+                          Width="80"/>
                 <DataGridTextColumn Header="Registration Date" 
-                                  Binding="{Binding RegistrationDate, StringFormat={}{0:MM/dd/yyyy}}"
-                                  Width="150"/>
-
+                          Binding="{Binding RegistrationDate, StringFormat={}{0:MM/dd/yyyy}}"
+                          Width="140"/>
                 <DataGridTemplateColumn Header="Actions" Width="120">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
                                 <Button Content="Edit"
-                                        Command="{Binding DataContext.EditCustomerCommand, 
-                                                  RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                        CommandParameter="{Binding}"
-                                        Margin="5,0"
-                                        Width="50"/>
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                Command="{Binding DataContext.EditCustomerCommand, 
+                                          RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                CommandParameter="{Binding}"
+                                Margin="5,0"
+                                Width="50"
+                                Height="30"/>
                                 <Button Content="Delete"
-                                        Command="{Binding DataContext.DeleteCustomerCommand,
-                                                  RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                        CommandParameter="{Binding}"
-                                        Width="50"/>
+                                Style="{StaticResource SecondaryButtonStyle}"
+                                Command="{Binding DataContext.DeleteCustomerCommand,
+                                          RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                CommandParameter="{Binding}"
+                                Width="50"
+                                Height="30"/>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

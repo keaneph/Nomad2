@@ -10,7 +10,9 @@ namespace Nomad2.Services
     public class CustomerService : ICustomerService
     {
         private readonly DatabaseHelper _db;
-        private readonly int _pageSize = 10;
+        private readonly int _pageSize = 12;
+
+        public int PageSize => _pageSize;
 
         public CustomerService()
         {

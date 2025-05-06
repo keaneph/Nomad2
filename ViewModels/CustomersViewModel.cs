@@ -228,7 +228,7 @@ namespace Nomad2.ViewModels
                     Customers.Add(customer);
                 }
 
-                _totalPages = (int)Math.Ceiling(totalCount / 10.0);
+                _totalPages = (int)Math.Ceiling(totalCount / (double)_customerService.PageSize);
                 OnPropertyChanged(nameof(CurrentPageDisplay));
             }
             catch (Exception ex)

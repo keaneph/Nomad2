@@ -6,6 +6,7 @@ namespace Nomad2.Services
 {
     public interface ICustomerService
     {
+        int PageSize { get; }
         Task<(List<Customer> customers, int totalCount)> GetCustomersAsync(int page, string searchTerm, string sortBy);
         Task<Customer> GetCustomerByIdAsync(string id);
         Task<bool> AddCustomerAsync(Customer customer);
