@@ -461,7 +461,6 @@
         <Setter Property="Height" Value="39"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="BorderThickness" Value="2,1.5,2,2"/>
-        <Setter Property="Width" Value="140"/>
         <!--192 width-->
         <Setter Property="FontFamily" Value="{StaticResource RubikSemibold}"/>
         <Setter Property="Foreground" Value="#E0E1EE"/>
@@ -731,16 +730,16 @@
         <Setter Property="Background">
             <Setter.Value>
                 <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-                    <GradientStop Color="#75B99B" Offset="0.1"/>
-                    <GradientStop Color="#2C1A1E" Offset="1"/>
+                    <GradientStop Color="#2EC78A" Offset="0.1"/>
+                    <GradientStop Color="#103D2E" Offset="1"/>
                 </RadialGradientBrush>
             </Setter.Value>
         </Setter>
         <Setter Property="BorderBrush">
             <Setter.Value>
                 <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.7" RadiusY="0.9">
-                    <GradientStop Color="#843153" Offset="0.5"/>
-                    <GradientStop Color="#3A2228" Offset="1"/>
+                    <GradientStop Color="#23A976" Offset="0.5"/>
+                    <GradientStop Color="#103D2E" Offset="1"/>
                 </RadialGradientBrush>
             </Setter.Value>
         </Setter>

@@ -128,7 +128,7 @@
                         </Grid>
                     </Viewbox>
                 </Button.Tag>
-                Clear Table
+                Clear Customer
             </Button>
 
             <!-- Pagination -->
