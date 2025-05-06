@@ -112,34 +112,62 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
             <!-- Clear Button -->
             <Button Grid.Column="0"
-                    Content="Clear"
-                    Command="{Binding ClearCommand}"
-                    Style="{StaticResource SecondaryButtonStyle}"
-                    Width="100"/>
+                    Command="{Binding AddCustomerCommand}"
+                    Style="{StaticResource SecondaryButtonStyle}">
+                <Button.Tag>
+                    <Viewbox Width="16" 
+                             Height="16">
+                        <Grid>
+                            <Path Data="{StaticResource ClearIcon}"
+                                  Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                  Style="{StaticResource PathStyle}"/>
+                        </Grid>
+                    </Viewbox>
+                </Button.Tag>
+                Clear Table
+            </Button>
 
             <!-- Pagination -->
             <StackPanel Grid.Column="1" 
                         Orientation="Horizontal"
-                        HorizontalAlignment="Center">
-                <Button Content="Previous"
+                        HorizontalAlignment="Center"
+                        Margin="-120,0,0,0">
+                <Button
                         Command="{Binding PreviousPageCommand}"
-                        Style="{StaticResource SecondaryButtonStyle}"
-                        Width="100"
-                        Margin="0,0,10,0"/>
+                        Style="{StaticResource TertiaryButtonStyle}">
+                    <Button.Tag>
+                        <Viewbox Width="16" 
+                                 Height="16">
+                            <Grid>
+                                <Path Data="{StaticResource ArrowLeftIcon}"
+                                              Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                              Style="{StaticResource PathStyle}"/>
+                            </Grid>
+                        </Viewbox>
+                    </Button.Tag>
+                </Button>
                 <TextBlock Text="{Binding CurrentPageDisplay}"
-                           Foreground="White"
+                           FontFamily="{StaticResource RubikSemibold}"
+                           Foreground="#E0E1EE"
                            VerticalAlignment="Center"
-                           Margin="10,0"/>
-                <Button Content="Next"
-                        Command="{Binding NextPageCommand}"
-                        Style="{StaticResource SecondaryButtonStyle}"
-                        Width="100"
-                        Margin="10,0,0,0"/>
+                           Margin="20,0"/>
+                <Button Command="{Binding NextPageCommand}"
+                        Style="{StaticResource TertiaryButtonStyle}">
+                    <Button.Tag>
+                        <Viewbox Width="16" 
+                                 Height="16">
+                            <Grid>
+                                <Path Data="{StaticResource ArrowRightIcon}"
+                                              Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                              Style="{StaticResource PathStyle}"/>
+                            </Grid>
+                        </Viewbox>
+                    </Button.Tag>
+                </Button>
             </StackPanel>
         </Grid>
 

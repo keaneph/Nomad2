@@ -34,18 +34,21 @@
                            Style="{StaticResource FormLabelStyle}"/>
                 <TextBox Text="{Binding Customer.CustomerId}"
                          Style="{StaticResource FormTextBoxStyle}"
+                         Margin="0,0,20,0"
                          IsReadOnly="True"/>
 
                 <!-- Name -->
                 <TextBlock Text="Name *"
                            Style="{StaticResource FormLabelStyle}"/>
                 <TextBox Text="{Binding Customer.Name, UpdateSourceTrigger=PropertyChanged}"
+                         Margin="0,0,20,0"
                          Style="{StaticResource FormTextBoxStyle}"/>
 
                 <!-- Phone Number -->
                 <TextBlock Text="Phone Number *"
                            Style="{StaticResource FormLabelStyle}"/>
                 <TextBox Text="{Binding Customer.PhoneNumber, UpdateSourceTrigger=PropertyChanged}"
+                         Margin="0,0,20,0"
                          Style="{StaticResource FormTextBoxStyle}"/>
 
                 <!-- Address -->
@@ -54,6 +57,7 @@
                 <TextBox Text="{Binding Customer.Address, UpdateSourceTrigger=PropertyChanged}"
                          Style="{StaticResource FormTextBoxStyle}"
                          Height="60"
+                         Margin="0,0,20,0"
                          TextWrapping="Wrap"
                          AcceptsReturn="True"/>
 
@@ -73,7 +77,7 @@
                             Command="{Binding BrowseCommand}"
                             Style="{StaticResource SecondaryButtonStyle}"
                             Width="80"
-                            Margin="10,0,0,0"/>
+                            Margin="10,0,20,0"/>
                 </Grid>
 
                 <!-- Customer Status -->
@@ -81,13 +85,15 @@
                            Style="{StaticResource FormLabelStyle}"/>
                 <ComboBox ItemsSource="{Binding StatusOptions}"
                           SelectedItem="{Binding Customer.CustomerStatus}"
+                          Margin="0,0,20,0"
                           Style="{StaticResource FormComboBoxStyle}"/>
 
                 <!-- Registration Date -->
                 <TextBlock Text="Registration Date *"
                            Style="{StaticResource FormLabelStyle}"/>
                 <DatePicker SelectedDate="{Binding Customer.RegistrationDate}"
-                           Style="{StaticResource FormDatePickerStyle}"/>
+                           Style="{StaticResource FormDatePickerStyle}"
+                            Margin="10,0,20,0"/>
             </StackPanel>
         </ScrollViewer>
 
@@ -114,7 +120,7 @@
             <Button Grid.Column="2"
                     Content="Save"
                     Command="{Binding SaveCommand}"
-                    Style="{StaticResource PrimaryButtonStyle}"
+                    Style="{StaticResource SaveButtonStyle}"
                     Width="100"/>
         </Grid>
     </Grid>

@@ -8,7 +8,8 @@
         xmlns:views="clr-namespace:Nomad2.Views"
         xmlns:converters="clr-namespace:Nomad2.Converters"
         mc:Ignorable="d"
-        Title="MainWindow" Height="900" MinHeight="900" MaxHeight="900" Width="1440" MinWidth="1440" MaxWidth="1440"
+        WindowStartupLocation="CenterScreen"
+        Title="MainWindow" Height="900" MinHeight="900" Width="1440" MinWidth="1440"
         Background="{StaticResource PrimaryBackgroundBrush}">
 
         <!--  MinHeight="720" MinWidth="1280"-->
