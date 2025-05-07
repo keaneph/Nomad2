@@ -63,9 +63,20 @@
                   RowHeaderWidth="0"
                   x:Name="customersDataGrid">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Government ID" 
-                          Binding="{Binding GovernmentIdPicture}"
-                          Width="0.9*"/>
+                <DataGridTemplateColumn Header="Government ID" Width="0.9*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Command="{Binding DataContext.ViewImageCommand, 
+                                    RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                    CommandParameter="{Binding GovernmentIdPicture}"
+                                    Style="{StaticResource TransparentButtonStyle}">
+                                <Image Source="{Binding GovernmentIdPicture}"
+                       Stretch="Uniform"
+                       Height="40"/>
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Customer ID" 
                           Binding="{Binding CustomerId}"
                           Width="0.8*"/>

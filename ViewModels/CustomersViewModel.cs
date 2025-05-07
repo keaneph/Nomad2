@@ -21,6 +21,7 @@ namespace Nomad2.ViewModels
         private bool _isDialogOpen;
         private Customer _selectedCustomer;
         private System.Collections.IList _selectedCustomers;
+        public ICommand ViewImageCommand { get; }
 
 
         public CustomersViewModel()
@@ -40,12 +41,22 @@ namespace Nomad2.ViewModels
             ClearCommand = new RelayCommand(() => ExecuteClear());
             NextPageCommand = new RelayCommand(ExecuteNextPage, CanExecuteNextPage);
             PreviousPageCommand = new RelayCommand(ExecutePreviousPage, CanExecutePreviousPage);
+            ViewImageCommand = new RelayCommand<string>(ExecuteViewImage);
 
             // Load initial data
             _ = LoadCustomers(); // Fire and forget, but better to handle properly
         }
 
         #region Properties
+
+        private void ExecuteViewImage(string imagePath)
+        {
+            if (!string.IsNullOrEmpty(imagePath))
+            {
+                var imageViewer = new ImageViewerWindow(imagePath);
+                imageViewer.ShowDialog();
+            }
+        }
 
         public ObservableCollection<Customer> Customers
         {
