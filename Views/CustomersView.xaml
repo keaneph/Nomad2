@@ -62,26 +62,26 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Government ID" 
                           Binding="{Binding GovernmentIdPicture}"
-                          Width="120"/>
+                          Width="0.8*"/>
                 <DataGridTextColumn Header="Customer ID" 
                           Binding="{Binding CustomerId}"
-                          Width="120"/>
+                          Width="0.8*"/>
                 <DataGridTextColumn Header="Name" 
                           Binding="{Binding Name}"
-                          Width="200"/>
+                          Width="1.5*"/>
                 <DataGridTextColumn Header="Phone Number" 
                           Binding="{Binding PhoneNumber}"
-                          Width="120"/>
+                          Width="0.8*"/>
                 <DataGridTextColumn Header="Address" 
                           Binding="{Binding Address}"
-                          Width="240"/>
+                          Width="2*"/>
                 <DataGridTextColumn Header="Status" 
                           Binding="{Binding CustomerStatus}"
-                          Width="80"/>
+                          Width="0.5*"/>
                 <DataGridTextColumn Header="Registration Date" 
                           Binding="{Binding RegistrationDate, StringFormat={}{0:MM/dd/yyyy}}"
-                          Width="140"/>
-                <DataGridTemplateColumn Header="Actions" Width="120">
+                          Width="1*"/>
+                <DataGridTemplateColumn Header="Actions" Width="Auto" MinWidth="120">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
@@ -128,7 +128,6 @@
                         </Grid>
                     </Viewbox>
                 </Button.Tag>
-                Clear Customer
             </Button>
 
             <!-- Pagination -->
