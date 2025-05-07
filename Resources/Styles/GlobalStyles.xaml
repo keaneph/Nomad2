@@ -7,10 +7,43 @@
     <FontFamily x:Key="RubikBold">/Nomad2;component/Resources/Fonts/Rubik/#Rubik Bold</FontFamily>
     <FontFamily x:Key="Satoshi">/Nomad2;component/Resources/Fonts/Satoshi/#Satoshi</FontFamily>
 
+    <!-- Common Gradients -->
+    <RadialGradientBrush x:Key="PurpleGradientBackground" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
+        <GradientStop Color="#682EC7" Offset="0.1"/>
+        <GradientStop Color="#190F33" Offset="1"/>
+    </RadialGradientBrush>
 
-    
-    
-    <!-- Searchbox STYLE-->
+    <RadialGradientBrush x:Key="PurpleGradientBorder" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.7" RadiusY="0.9">
+        <GradientStop Color="#682EC7" Offset="0.5"/>
+        <GradientStop Color="#2B2942" Offset="1"/>
+    </RadialGradientBrush>
+
+    <RadialGradientBrush x:Key="RedGradientBackground" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
+        <GradientStop Color="#843153" Offset="0.1"/>
+        <GradientStop Color="#2C1A1E" Offset="1"/>
+    </RadialGradientBrush>
+
+    <RadialGradientBrush x:Key="RedGradientBorder" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.7" RadiusY="0.9">
+        <GradientStop Color="#843153" Offset="0.5"/>
+        <GradientStop Color="#3A2228" Offset="1"/>
+    </RadialGradientBrush>
+
+    <RadialGradientBrush x:Key="GreenGradientBackground" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
+        <GradientStop Color="#2EC78A" Offset="0.1"/>
+        <GradientStop Color="#103D2E" Offset="1"/>
+    </RadialGradientBrush>
+
+    <RadialGradientBrush x:Key="GreenGradientBorder" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.7" RadiusY="0.9">
+        <GradientStop Color="#23A976" Offset="0.5"/>
+        <GradientStop Color="#103D2E" Offset="1"/>
+    </RadialGradientBrush>
+
+    <!-- Common Effects -->
+    <DropShadowEffect x:Key="PurpleShadowEffect" Color="#682EC7" BlurRadius="20" ShadowDepth="0" Opacity="0.3"/>
+    <DropShadowEffect x:Key="RedShadowEffect" Color="#843153" BlurRadius="20" ShadowDepth="0" Opacity="0.3"/>
+    <DropShadowEffect x:Key="GreenShadowEffect" Color="#75B99B" BlurRadius="20" ShadowDepth="0" Opacity="0.3"/>
+
+    <!-- Searchbox Style -->
     <Style x:Key="SearchBoxStyle" TargetType="TextBox">
         <Setter Property="Height" Value="34"/>
         <Setter Property="Margin" Value="20"/>
@@ -20,7 +53,7 @@
         <Setter Property="Background" Value="{StaticResource SearchboxBackgroundBrush}"/>
         <Setter Property="BorderThickness" Value="1.5,1.5,1.5,2"/>
         <Setter Property="BorderBrush" Value="{StaticResource FourthBackgroundBrush}"/>
-        <Setter Property="Template"> 
+        <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TextBox">
                     <Border Background="{TemplateBinding Background}"
@@ -34,14 +67,14 @@
                                   Width="20"
                                   Height="20"
                                   Margin="8,0,0,0"
-                                  HorizontalAlignment="Left"/>  
-                            <ScrollViewer x:Name="PART_ContentHost" 
-                                          Margin="{TemplateBinding Padding}"
-                                          VerticalAlignment="Center"/>
+                                  HorizontalAlignment="Left"/>
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                        Margin="{TemplateBinding Padding}"
+                                        VerticalAlignment="Center"/>
                             <TextBlock Text="Search"
-                                       Margin="35,0,0,0"
-                                       VerticalAlignment="Center"
-                                       IsHitTestVisible="False">
+                                     Margin="35,0,0,0"
+                                     VerticalAlignment="Center"
+                                     IsHitTestVisible="False">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
@@ -63,7 +96,285 @@
         </Setter>
     </Style>
 
-    <!-- Menu header STYLE-->
+    <!-- Base Button Style -->
+    <Style x:Key="BaseButtonStyle" TargetType="Button">
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="BorderThickness" Value="2,1.5,2,2"/>
+        <Setter Property="FontFamily" Value="{StaticResource RubikSemibold}"/>
+        <Setter Property="Foreground" Value="#E0E1EE"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#682EC7" 
+                                                BlurRadius="20" 
+                                                ShadowDepth="0" 
+                                                Opacity="0.3"/>
+                            </Border.Effect>
+                        </Border>
+                        <Grid Margin="16,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <ContentPresenter Grid.Column="0" 
+                                            Content="{TemplateBinding Tag}"
+                                            VerticalAlignment="Center"
+                                            Margin="0,0,8,0"/>
+                            <ContentPresenter Grid.Column="1"
+                                            Content="{TemplateBinding Content}"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"/>
+                        </Grid>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Primary Button Style -->
+    <Style x:Key="PrimaryButtonStyle" BasedOn="{StaticResource BaseButtonStyle}" TargetType="Button">
+        <Setter Property="Height" Value="39"/>
+        <Setter Property="Width" Value="140"/>
+        <Setter Property="Background" Value="{StaticResource PurpleGradientBackground}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource PurpleGradientBorder}"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
+                            <GradientStop Color="#4B2393" Offset="0.1"/>
+                            <GradientStop Color="#190F33" Offset="1"/>
+                        </RadialGradientBrush>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Secondary Button Style -->
+    <Style x:Key="SecondaryButtonStyle" BasedOn="{StaticResource BaseButtonStyle}" TargetType="Button">
+        <Setter Property="Height" Value="25"/>
+        <Setter Property="Background" Value="{StaticResource RedGradientBackground}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource RedGradientBorder}"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
+                            <GradientStop Color="#6E2945" Offset="0.1"/>
+                            <GradientStop Color="#2C1A1E" Offset="1"/>
+                        </RadialGradientBrush>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Pagination Button Style -->
+    <Style x:Key="PaginationButtonStyle" BasedOn="{StaticResource BaseButtonStyle}" TargetType="Button">
+        <Setter Property="Height" Value="25"/>
+        <Setter Property="Width" Value="80"/>
+        <Setter Property="Background" Value="{StaticResource PurpleGradientBackground}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource PurpleGradientBorder}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border x:Name="ButtonBorder"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="8">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#682EC7" 
+                                            BlurRadius="20" 
+                                            ShadowDepth="0" 
+                                            Opacity="0.3"/>
+                            </Border.Effect>
+                        </Border>
+                        <ContentPresenter Content="{TemplateBinding Tag}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
+                                        <GradientStop Color="#282939" Offset="0.1"/>
+                                        <GradientStop Color="#1A1728" Offset="1"/>
+                                    </RadialGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="BorderBrush">
+                                <Setter.Value>
+                                    <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.7" RadiusY="0.9">
+                                        <GradientStop Color="#282939" Offset="0.5"/>
+                                        <GradientStop Color="#1A1728" Offset="1"/>
+                                    </RadialGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
+                            <GradientStop Color="#4B2393" Offset="0.1"/>
+                            <GradientStop Color="#190F33" Offset="1"/>
+                        </RadialGradientBrush>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Clear Button Style -->
+    <Style x:Key="ClearButtonStyle" BasedOn="{StaticResource BaseButtonStyle}" TargetType="Button">
+        <Setter Property="Height" Value="25"/>
+        <Setter Property="Background" Value="{StaticResource RedGradientBackground}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource RedGradientBorder}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border x:Name="ButtonBorder"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="8">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#843153" 
+                                            BlurRadius="20" 
+                                            ShadowDepth="0" 
+                                            Opacity="0.3"/>
+                            </Border.Effect>
+                        </Border>
+                        <!-- Maintain the same outer margin to keep width -->
+                        <Grid Margin="16,0,20,0">
+                            <!-- Single column grid for centered icon -->
+                            <ContentPresenter Content="{TemplateBinding Tag}"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"/>
+                        </Grid>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
+                            <GradientStop Color="#6E2945" Offset="0.1"/>
+                            <GradientStop Color="#2C1A1E" Offset="1"/>
+                        </RadialGradientBrush>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Save Button Style -->
+    <Style x:Key="SaveButtonStyle" BasedOn="{StaticResource BaseButtonStyle}" TargetType="Button">
+        <Setter Property="Height" Value="39"/>
+        <Setter Property="Width" Value="140"/>
+        <Setter Property="Background" Value="{StaticResource GreenGradientBackground}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource GreenGradientBorder}"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
+                            <GradientStop Color="#6E2945" Offset="0.1"/>
+                            <GradientStop Color="#2C1A1E" Offset="1"/>
+                        </RadialGradientBrush>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Edit Button Style -->
+    <Style x:Key="EditButtonStyle" BasedOn="{StaticResource BaseButtonStyle}" TargetType="Button">
+        <Setter Property="Height" Value="25"/>
+        <Setter Property="Width" Value="50"/>
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="Background" Value="{StaticResource PurpleGradientBackground}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource PurpleGradientBorder}"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
+                            <GradientStop Color="#4B2393" Offset="0.1"/>
+                            <GradientStop Color="#190F33" Offset="1"/>
+                        </RadialGradientBrush>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Delete Button Style -->
+    <Style x:Key="DeleteButtonStyle" BasedOn="{StaticResource BaseButtonStyle}" TargetType="Button">
+        <Setter Property="Height" Value="25"/>
+        <Setter Property="Background" Value="{StaticResource RedGradientBackground}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource RedGradientBorder}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border x:Name="ButtonBorder"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="8">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#843153" 
+                                        BlurRadius="20" 
+                                        ShadowDepth="0" 
+                                        Opacity="0.3"/>
+                            </Border.Effect>
+                        </Border>
+                        <!-- Maintain the same outer margin to keep width -->
+                        <Grid Margin="14,-3,20,0">
+                            <!-- Single column grid for centered icon -->
+                            <ContentPresenter Content="{TemplateBinding Tag}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"/>
+                        </Grid>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
+                            <GradientStop Color="#6E2945" Offset="0.1"/>
+                            <GradientStop Color="#2C1A1E" Offset="1"/>
+                        </RadialGradientBrush>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Menu Styles -->
     <Style x:Key="MenuHeaderStyle" TargetType="TextBlock">
         <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
         <Setter Property="FontFamily" Value="{StaticResource RubikSemibold}"/>
@@ -71,7 +382,7 @@
         <Setter Property="Margin" Value="12,0,0,8"/>
     </Style>
 
-    <!-- Menu item STYLE-->
+    <!-- Menu Item Style -->
     <Style x:Key="MenuItemStyle" TargetType="RadioButton">
         <Setter Property="Height" Value="50"/>
         <Setter Property="Background" Value="Transparent"/>
@@ -84,31 +395,27 @@
             <Setter.Value>
                 <ControlTemplate TargetType="RadioButton">
                     <Grid>
-                        <!-- Background elements container -->
                         <Grid x:Name="BackgroundContainer">
-                            <!-- Left indicator bar -->
                             <Border x:Name="LeftIndicator"
-                            Width="7"
-                            Height="23"
-                            HorizontalAlignment="Left"
-                            Background="Transparent"
-                            VerticalAlignment="Center"
-                            BorderBrush="Transparent"
-                            BorderThickness="0,1.5,1.5,1.5"
-                            CornerRadius="0,5,5,0"
-                            Margin="-10,0,0,0"/>
+                                    Width="7"
+                                    Height="23"
+                                    HorizontalAlignment="Left"
+                                    Background="Transparent"
+                                    VerticalAlignment="Center"
+                                    BorderBrush="Transparent"
+                                    BorderThickness="0,1.5,1.5,1.5"
+                                    CornerRadius="0,5,5,0"
+                                    Margin="-10,0,0,0"/>
 
-                            <!-- Main background -->
                             <Border x:Name="MainBackground"
-                                Background="{TemplateBinding Background}"
-                                Height="39" 
-                                CornerRadius="8"
-                                BorderBrush="Transparent"
-                                BorderThickness="2,1.5,2,2"
-                                Margin="8,0,20,-5"/>
+                                    Background="{TemplateBinding Background}"
+                                    Height="39" 
+                                    CornerRadius="8"
+                                    BorderBrush="Transparent"
+                                    BorderThickness="2,1.5,2,2"
+                                    Margin="8,0,20,-5"/>
                         </Grid>
 
-                        <!-- Content -->
                         <Grid Margin="8,0,20,-5">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="32"/>
@@ -116,15 +423,15 @@
                             </Grid.ColumnDefinitions>
 
                             <ContentPresenter Grid.Column="0" 
-                                              Content="{TemplateBinding Tag}"
-                                              HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"/>
+                                            Content="{TemplateBinding Tag}"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"/>
 
                             <TextBlock Grid.Column="1" 
-                                 Text="{TemplateBinding Content}" 
-                                 VerticalAlignment="Center"
-                                 Foreground="{TemplateBinding Foreground}"
-                                 Margin="4,0,0,0"/>
+                                     Text="{TemplateBinding Content}" 
+                                     VerticalAlignment="Center"
+                                     Foreground="{TemplateBinding Foreground}"
+                                     Margin="4,0,0,0"/>
                         </Grid>
                     </Grid>
                     <ControlTemplate.Triggers>
@@ -134,14 +441,7 @@
                         </Trigger>
                         <Trigger Property="IsChecked" Value="True">
                             <Setter Property="Foreground" Value="#E0E1EE"/>
-                            <Setter Property="Background" TargetName="MainBackground">
-                                <Setter.Value>
-                                    <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-                                        <GradientStop Color="#682EC7" Offset="0.1"/>
-                                        <GradientStop Color="#190F33" Offset="1"/>
-                                    </RadialGradientBrush>
-                                </Setter.Value>
-                            </Setter>
+                            <Setter Property="Background" TargetName="MainBackground" Value="{StaticResource PurpleGradientBackground}"/>
                             <Setter Property="Background" TargetName="LeftIndicator">
                                 <Setter.Value>
                                     <RadialGradientBrush GradientOrigin="0.5,1" Center="0,0.3" RadiusX="2" RadiusY="1">
@@ -150,50 +450,9 @@
                                     </RadialGradientBrush>
                                 </Setter.Value>
                             </Setter>
-
-                            <!--
-                        <Setter Property="Background" TargetName="LeftIndicator">
-                            <Setter.Value>
-                                <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.6" RadiusY="0.9">
-                                    <GradientStop Color="#4B2393" Offset="0.5"/>
-                                    <GradientStop Color="#190F33" Offset="1"/>
-                                </RadialGradientBrush>
-                            </Setter.Value>
-                        </Setter>
-                        -->
-
-
-                            <!--Not sure whether to add this border or not-->
-                            <Setter Property="BorderBrush" TargetName="MainBackground">
-                                <Setter.Value>
-                                    <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.7" RadiusY="0.9">
-                                        <GradientStop Color="#682EC7" Offset="0.5"/>
-                                        <GradientStop Color="#2B2942" Offset="1"/>
-                                    </RadialGradientBrush>
-                                </Setter.Value>
-                            </Setter>
-
-                            <Setter Property="BorderBrush" TargetName="LeftIndicator" Value="#7553B2">
-                            </Setter>
-
-                            <!--
-                        <Setter Property="BorderBrush" TargetName="LeftIndicator">
-                            <Setter.Value>
-                                <RadialGradientBrush GradientOrigin="0.5,0.5" Center="0.5,1" RadiusX="0.6" RadiusY="0.9">
-                                    <GradientStop Color="#4B2393" Offset="0.5"/>
-                                    <GradientStop Color="#190F33" Offset="1"/>
-                                </RadialGradientBrush>
-                            </Setter.Value>
-                        </Setter>
-                        -->
-                            <Setter Property="Effect" TargetName="BackgroundContainer">
-                                <Setter.Value>
-                                    <DropShadowEffect Color="#682EC7" 
-                                                BlurRadius="20" 
-                                                ShadowDepth="0" 
-                                                Opacity="0.3"/>
-                                </Setter.Value>
-                            </Setter>
+                            <Setter Property="BorderBrush" TargetName="MainBackground" Value="{StaticResource PurpleGradientBorder}"/>
+                            <Setter Property="BorderBrush" TargetName="LeftIndicator" Value="#7553B2"/>
+                            <Setter Property="Effect" TargetName="BackgroundContainer" Value="{StaticResource PurpleShadowEffect}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -201,11 +460,81 @@
         </Setter>
     </Style>
 
-    <!--Path STYLE-->
-    <Style x:Key="PathStyle" TargetType="Path">
-        <Setter Property="StrokeThickness" Value="2"/>
-        <Setter Property="StrokeLineJoin" Value="Round"/>
-        <Setter Property="StrokeStartLineCap" Value="Round"/>
+    <!-- DataGrid Styles -->
+    <Style x:Key="DataGridStyle" TargetType="DataGrid">
+        <Setter Property="Background" Value="{StaticResource PrimaryBackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1.5"/>
+        <Setter Property="RowBackground" Value="{StaticResource SecondaryBackgroundBrush}"/>
+        <Setter Property="AlternatingRowBackground" Value="#1C1C28"/>
+        <Setter Property="GridLinesVisibility" Value="None"/>
+        <Setter Property="VerticalGridLinesBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="RowHeight" Value="50"/>
+        <Setter Property="FontFamily" Value="{StaticResource RubikSemibold}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+    </Style>
+
+    <Style x:Key="DataGridColumnHeaderStyle" TargetType="DataGridColumnHeader">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+        <Setter Property="FontFamily" Value="{StaticResource RubikBold}"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Padding" Value="12,8"/>
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="IsHitTestVisible" Value="False"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DataGridColumnHeader">
+                    <Grid>
+                        <Border x:Name="HeaderBorder"
+                                BorderThickness="0,0,0,1"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                Background="{TemplateBinding Background}">
+                            <ContentPresenter Margin="{TemplateBinding Padding}"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Center"/>
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="DataGridCellStyle" TargetType="DataGridCell">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="12,8"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DataGridCell">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <ContentPresenter VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Foreground" Value="#E0E1EE"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="DataGridRowStyle" TargetType="DataGridRow">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="SnapsToDevicePixels" Value="true"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#1A1C2E"/>
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="#282939"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <!-- Form Styles -->
@@ -242,8 +571,16 @@
         <Setter Property="BorderThickness" Value="1"/>
     </Style>
 
+    <!-- Path Style -->
+    <Style x:Key="PathStyle" TargetType="Path">
+        <Setter Property="StrokeThickness" Value="2"/>
+        <Setter Property="StrokeLineJoin" Value="Round"/>
+        <Setter Property="StrokeStartLineCap" Value="Round"/>
+    </Style>
+
+    <!-- Base Combobox Style -->
     <Style x:Key="BaseComboboxStyle" TargetType="ComboBox">
-        <Setter Property="Height" Value="39"/>
+        <Setter Property="Height" Value="25"/>
         <Setter Property="Width" Value="150"/>
         <Setter Property="Margin" Value="0,20"/>
         <Setter Property="FontSize" Value="12"/>
@@ -259,41 +596,39 @@
                 <ControlTemplate TargetType="ComboBox">
                     <Grid>
                         <ToggleButton x:Name="ToggleButton"
-                                      Background="{Binding Background, RelativeSource={RelativeSource AncestorType=ComboBox}}"
-                                      Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ComboBox}}"
-                                      IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                                      Focusable="False">
+                                    Background="{Binding Background, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                    Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                    IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                    Focusable="False">
                             <ToggleButton.Template>
                                 <ControlTemplate TargetType="ToggleButton">
                                     <Border x:Name="MainBorder"
-                                        Background="{TemplateBinding Background}"
-                                        BorderBrush="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=ComboBox}}"
-                                        BorderThickness="{Binding BorderThickness, RelativeSource={RelativeSource AncestorType=ComboBox}}"
-                                        CornerRadius="2">
+                                            Background="{TemplateBinding Background}"
+                                            BorderBrush="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                            BorderThickness="{Binding BorderThickness, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                            CornerRadius="2">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
 
-                                            <!-- Content -->
                                             <ContentPresenter Grid.Column="0"
-                                                        Content="{Binding Path=SelectionBoxItem, RelativeSource={RelativeSource AncestorType=ComboBox}}"
-                                                        ContentTemplate="{Binding Path=SelectionBoxItemTemplate, RelativeSource={RelativeSource AncestorType=ComboBox}}"
-                                                        ContentTemplateSelector="{Binding Path=ItemTemplateSelector, RelativeSource={RelativeSource AncestorType=ComboBox}}"
-                                                        VerticalAlignment="Center"
-                                                        Margin="12,0,0,0"/>
+                                                            Content="{Binding Path=SelectionBoxItem, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                                            ContentTemplate="{Binding Path=SelectionBoxItemTemplate, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                                            ContentTemplateSelector="{Binding Path=ItemTemplateSelector, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                                            VerticalAlignment="Center"
+                                                            Margin="12,0,0,0"/>
 
-                                            <!-- Dropdown Arrow -->
                                             <Path Grid.Column="1"
-                                              Data="M1,1 L5,5 L9,1"
-                                              Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ComboBox}}"
-                                              StrokeThickness="1.5"
-                                              Width="10"
-                                              Height="10"
-                                              Stretch="Uniform"
-                                              VerticalAlignment="Center"
-                                              Margin="0,0,12,0"/>
+                                                  Data="M1,1 L5,5 L9,1"
+                                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                                  StrokeThickness="1.5"
+                                                  Width="10"
+                                                  Height="10"
+                                                  Stretch="Uniform"
+                                                  VerticalAlignment="Center"
+                                                  Margin="0,0,12,0"/>
                                         </Grid>
                                     </Border>
                                     <ControlTemplate.Triggers>
@@ -315,22 +650,21 @@
                             </ToggleButton.Template>
                         </ToggleButton>
 
-                        <!-- Popup for dropdown -->
                         <Popup x:Name="PART_Popup"
-                           AllowsTransparency="True"
-                           IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
-                           PopupAnimation="Slide"
-                           Placement="Bottom">
+                               AllowsTransparency="True"
+                               IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                               PopupAnimation="Slide"
+                               Placement="Bottom">
                             <Border x:Name="DropDownBorder"
-                                MinWidth="{TemplateBinding ActualWidth}"                          
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="0"
-                                CornerRadius="2"
-                                Margin="0,5,0,0">
+                                    MinWidth="{TemplateBinding ActualWidth}"                          
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="0"
+                                    CornerRadius="2"
+                                    Margin="0,5,0,0">
                                 <ScrollViewer Margin="0" SnapsToDevicePixels="True">
                                     <StackPanel IsItemsHost="True"
-                                          KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                              KeyboardNavigation.DirectionalNavigation="Contained"/>
                                 </ScrollViewer>
                             </Border>
                         </Popup>
@@ -339,7 +673,6 @@
             </Setter.Value>
         </Setter>
 
-        <!-- Item Container Style -->
         <Setter Property="ItemContainerStyle">
             <Setter.Value>
                 <Style TargetType="ComboBoxItem">
@@ -349,7 +682,7 @@
                         <Setter.Value>
                             <ControlTemplate TargetType="ComboBoxItem">
                                 <Border Background="{TemplateBinding Background}"
-                                    Padding="{TemplateBinding Padding}">
+                                        Padding="{TemplateBinding Padding}">
                                     <ContentPresenter/>
                                 </Border>
                                 <ControlTemplate.Triggers>
@@ -377,240 +710,6 @@
         </Setter>
     </Style>
 
-
-    <Style x:Key="PrimaryButtonStyle" TargetType="Button">
-        <Setter Property="Height" Value="39"/>
-        <Setter Property="Cursor" Value="Hand"/>
-        <Setter Property="BorderThickness" Value="2,1.5,2,2"/>
-        <Setter Property="Width" Value="140"/>
-           <!--192 width-->
-        <Setter Property="FontFamily" Value="{StaticResource RubikSemibold}"/>
-        <Setter Property="Foreground" Value="#E0E1EE"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Grid>
-                        <Border x:Name="ButtonBorder"
-                            Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="8">
-                            <Border.Effect>
-                                <DropShadowEffect Color="#682EC7" 
-                                            BlurRadius="20" 
-                                            ShadowDepth="0" 
-                                            Opacity="0.3"/>
-                            </Border.Effect>
-                        </Border>
-                        <!-- Content Grid with Icon and Text -->
-                        <Grid Margin="16,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <!-- Icon -->
-                            <ContentPresenter Grid.Column="0" 
-                                        Content="{TemplateBinding Tag}"
-                                        VerticalAlignment="Center"
-                                        Margin="0,0,8,0"/>
-
-                            <!-- Text -->
-                            <ContentPresenter Grid.Column="1"
-                                        Content="{TemplateBinding Content}"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Center"/>
-                        </Grid>
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="Background">
-            <Setter.Value>
-                <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-                    <GradientStop Color="#682EC7" Offset="0.1"/>
-                    <GradientStop Color="#190F33" Offset="1"/>
-                </RadialGradientBrush>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="BorderBrush">
-            <Setter.Value>
-                <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.7" RadiusY="0.9">
-                    <GradientStop Color="#682EC7" Offset="0.5"/>
-                    <GradientStop Color="#2B2942" Offset="1"/>
-                </RadialGradientBrush>
-            </Setter.Value>
-        </Setter>
-
-        <!-- Triggers -->
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background">
-                    <Setter.Value>
-                        <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-                            <GradientStop Color="#4B2393" Offset="0.1"/>
-                            <GradientStop Color="#190F33" Offset="1"/>
-                        </RadialGradientBrush>
-                    </Setter.Value>
-                </Setter>
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-
-    <Style x:Key="SecondaryButtonStyle" TargetType="Button">
-        <Setter Property="Height" Value="25"/>
-        <Setter Property="Cursor" Value="Hand"/>
-        <Setter Property="BorderThickness" Value="2,1.5,2,2"/>
-        <!--192 width-->
-        <Setter Property="FontFamily" Value="{StaticResource RubikSemibold}"/>
-        <Setter Property="Foreground" Value="#E0E1EE"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Grid>
-                        <Border x:Name="ButtonBorder"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="8">
-                            <Border.Effect>
-                                <DropShadowEffect Color="#843153" 
-                                        BlurRadius="20" 
-                                        ShadowDepth="0" 
-                                        Opacity="0.3"/>
-                            </Border.Effect>
-                        </Border>
-                        <!-- Content Grid with Icon and Text -->
-                        <Grid Margin="16,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <!-- Icon -->
-                            <ContentPresenter Grid.Column="0" 
-                                    Content="{TemplateBinding Tag}"
-                                    VerticalAlignment="Center"
-                                    Margin="0,0,8,0"/>
-
-                            <!-- Text -->
-                            <ContentPresenter Grid.Column="1"
-                                    Content="{TemplateBinding Content}"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Center"/>
-                        </Grid>
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-
-        <Setter Property="Background">
-            <Setter.Value>
-                <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-                    <GradientStop Color="#843153" Offset="0.1"/>
-                    <GradientStop Color="#2C1A1E" Offset="1"/>
-                </RadialGradientBrush>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="BorderBrush">
-            <Setter.Value>
-                <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.7" RadiusY="0.9">
-                    <GradientStop Color="#843153" Offset="0.5"/>
-                    <GradientStop Color="#3A2228" Offset="1"/>
-                </RadialGradientBrush>
-            </Setter.Value>
-        </Setter>
-
-        <!-- Triggers -->
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background">
-                    <Setter.Value>
-                        <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-                            <GradientStop Color="#6E2945" Offset="0.1"/>
-                            <GradientStop Color="#2C1A1E" Offset="1"/>
-                        </RadialGradientBrush>
-                    </Setter.Value>
-                </Setter>
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-
-    <!--Background gradient:
-            - Start: #44336A (darker purple)
-            - End: #1A1728 (very dark purple)
-
-            Border gradient:
-            - Start: #44336A
-            - End: #2B2942-->
-    
-    <Style x:Key="TertiaryButtonStyle" TargetType="Button">
-        <Setter Property="Height" Value="25"/>
-        <Setter Property="Foreground" Value="#E0E1EE"/>
-        <Setter Property="Cursor" Value="Hand"/>
-        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-        <Setter Property="BorderThickness" Value="1.5,1.5,1.5,1.5"/>
-        <Setter Property="Width" Value="80"/>
-        <Setter Property="FontFamily" Value="{StaticResource RubikSemibold}"/>
-
-        <!-- Add background and border brush -->
-        <Setter Property="Background">
-            <Setter.Value>
-                <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-                    <GradientStop Color="#682EC7" Offset="0.1"/>
-                    <GradientStop Color="#190F33" Offset="1"/>
-                </RadialGradientBrush>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="BorderBrush">
-            <Setter.Value>
-                <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.7" RadiusY="0.9">
-                    <GradientStop Color="#682EC7" Offset="0.5"/>
-                    <GradientStop Color="#2B2942" Offset="1"/>
-                </RadialGradientBrush>
-            </Setter.Value>
-        </Setter>
-
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Grid>
-                        <Border x:Name="ButtonBorder"
-                            Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="8">
-                            <Border.Effect>
-                                <DropShadowEffect Color="#682EC7" 
-                                BlurRadius="20" 
-                                ShadowDepth="0" 
-                                Opacity="0.3"/>
-                            </Border.Effect>
-                        </Border>
-
-                        <!-- Fixed content presenter to display Tag properly -->
-                        <ContentPresenter Content="{TemplateBinding Tag}"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"/>
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-
-        <!-- Add hover state -->
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background">
-                    <Setter.Value>
-                        <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-                            <GradientStop Color="#4B2393" Offset="0.1"/>
-                            <GradientStop Color="#190F33" Offset="1"/>
-                        </RadialGradientBrush>
-                    </Setter.Value>
-                </Setter>
-            </Trigger>
-        </Style.Triggers>
-    </Style>
     <Style x:Key="TertiaryButtonStyleTest" TargetType="Button">
         <Setter Property="Height" Value="25"/>
         <Setter Property="Foreground" Value="#E0E1EE"/>
@@ -620,7 +719,6 @@
         <Setter Property="Width" Value="80"/>
         <Setter Property="FontFamily" Value="{StaticResource RubikSemibold}"/>
 
-        <!-- Add background and border brush -->
         <Setter Property="Background">
             <Setter.Value>
                 <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
@@ -643,28 +741,26 @@
                 <ControlTemplate TargetType="Button">
                     <Grid>
                         <Border x:Name="ButtonBorder"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="8">
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
                             <Border.Effect>
                                 <DropShadowEffect Color="#44336A" 
-                            BlurRadius="20" 
-                            ShadowDepth="0" 
-                            Opacity="0.3"/>
+                                                BlurRadius="20" 
+                                                ShadowDepth="0" 
+                                                Opacity="0.3"/>
                             </Border.Effect>
                         </Border>
 
-                        <!-- Fixed content presenter to display Tag properly -->
                         <ContentPresenter Content="{TemplateBinding Tag}"
-                                  HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"/>
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"/>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
 
-        <!-- Add hover state -->
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background">
@@ -679,305 +775,4 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="SaveButtonStyle" TargetType="Button">
-        <Setter Property="Height" Value="39"/>
-        <Setter Property="Cursor" Value="Hand"/>
-        <Setter Property="BorderThickness" Value="2,1.5,2,2"/>
-        <Setter Property="Width" Value="140"/>
-        <!--192 width-->
-        <Setter Property="FontFamily" Value="{StaticResource RubikSemibold}"/>
-        <Setter Property="Foreground" Value="#E0E1EE"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Grid>
-                        <Border x:Name="ButtonBorder"
-                    Background="{TemplateBinding Background}"
-                    BorderBrush="{TemplateBinding BorderBrush}"
-                    BorderThickness="{TemplateBinding BorderThickness}"
-                    CornerRadius="8">
-                            <Border.Effect>
-                                <DropShadowEffect Color="#75B99B"
-                                    BlurRadius="20" 
-                                    ShadowDepth="0" 
-                                    Opacity="0.3"/>
-                            </Border.Effect>
-                        </Border>
-                        <!-- Content Grid with Icon and Text -->
-                        <Grid Margin="16,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <!-- Icon -->
-                            <ContentPresenter Grid.Column="0" 
-                                Content="{TemplateBinding Tag}"
-                                VerticalAlignment="Center"
-                                Margin="0,0,8,0"/>
-
-                            <!-- Text -->
-                            <ContentPresenter Grid.Column="1"
-                                Content="{TemplateBinding Content}"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"/>
-                        </Grid>
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-
-        <Setter Property="Background">
-            <Setter.Value>
-                <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-                    <GradientStop Color="#2EC78A" Offset="0.1"/>
-                    <GradientStop Color="#103D2E" Offset="1"/>
-                </RadialGradientBrush>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="BorderBrush">
-            <Setter.Value>
-                <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.7" RadiusY="0.9">
-                    <GradientStop Color="#23A976" Offset="0.5"/>
-                    <GradientStop Color="#103D2E" Offset="1"/>
-                </RadialGradientBrush>
-            </Setter.Value>
-        </Setter>
-
-        <!-- Triggers -->
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background">
-                    <Setter.Value>
-                        <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-                            <GradientStop Color="#6E2945" Offset="0.1"/>
-                            <GradientStop Color="#2C1A1E" Offset="1"/>
-                        </RadialGradientBrush>
-                    </Setter.Value>
-                </Setter>
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-
-
-    <Style x:Key="EditButtonStyle" TargetType="Button">
-        <Setter Property="Height" Value="25"/>
-        <Setter Property="Foreground" Value="#E0E1EE"/>
-        <Setter Property="Cursor" Value="Hand"/>
-        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-        <Setter Property="BorderThickness" Value="1.5,1.5,1.5,1.5"/>
-        <Setter Property="Width" Value="80"/>
-        <Setter Property="FontFamily" Value="{StaticResource RubikSemibold}"/>
-
-        <!-- Add background and border brush -->
-        <Setter Property="Background">
-            <Setter.Value>
-                <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-                    <GradientStop Color="#44336A " Offset="0.1"/>
-                    <GradientStop Color="#1A1728" Offset="1"/>
-                </RadialGradientBrush>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="BorderBrush">
-            <Setter.Value>
-                <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.7" RadiusY="0.9">
-                    <GradientStop Color="#44336A" Offset="0.5"/>
-                    <GradientStop Color="#2B2942" Offset="1"/>
-                </RadialGradientBrush>
-            </Setter.Value>
-        </Setter>
-
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Grid>
-                        <Border x:Name="ButtonBorder"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="8">
-                            <Border.Effect>
-                                <DropShadowEffect Color="#44336A" 
-                            BlurRadius="20" 
-                            ShadowDepth="0" 
-                            Opacity="0.3"/>
-                            </Border.Effect>
-                        </Border>
-
-                        <!-- Fixed content presenter to display Tag properly -->
-                        <ContentPresenter Content="{TemplateBinding Tag}"
-                                  HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"/>
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-
-        <!-- Add hover state -->
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background">
-                    <Setter.Value>
-                        <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-                            <GradientStop Color="#362C59" Offset="0.1"/>
-                            <GradientStop Color="#1A1728" Offset="1"/>
-                        </RadialGradientBrush>
-                    </Setter.Value>
-                </Setter>
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-
-    <Style x:Key="DeleteButtonStyle" TargetType="Button">
-        <Setter Property="Height" Value="25"/>
-        <Setter Property="Foreground" Value="#E0E1EE"/>
-        <Setter Property="Cursor" Value="Hand"/>
-        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-        <Setter Property="BorderThickness" Value="1.5,1.5,1.5,1.5"/>
-        <Setter Property="Width" Value="80"/>
-        <Setter Property="FontFamily" Value="{StaticResource RubikSemibold}"/>
-
-        <!-- Add background and border brush -->
-        <Setter Property="Background">
-            <Setter.Value>
-                <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-                    <GradientStop Color="#44336A " Offset="0.1"/>
-                    <GradientStop Color="#1A1728" Offset="1"/>
-                </RadialGradientBrush>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="BorderBrush">
-            <Setter.Value>
-                <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.7" RadiusY="0.9">
-                    <GradientStop Color="#44336A" Offset="0.5"/>
-                    <GradientStop Color="#2B2942" Offset="1"/>
-                </RadialGradientBrush>
-            </Setter.Value>
-        </Setter>
-
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Grid>
-                        <Border x:Name="ButtonBorder"
-                    Background="{TemplateBinding Background}"
-                    BorderBrush="{TemplateBinding BorderBrush}"
-                    BorderThickness="{TemplateBinding BorderThickness}"
-                    CornerRadius="8">
-                            <Border.Effect>
-                                <DropShadowEffect Color="#44336A" 
-                        BlurRadius="20" 
-                        ShadowDepth="0" 
-                        Opacity="0.3"/>
-                            </Border.Effect>
-                        </Border>
-
-                        <!-- Fixed content presenter to display Tag properly -->
-                        <ContentPresenter Content="{TemplateBinding Tag}"
-                              HorizontalAlignment="Center"
-                              VerticalAlignment="Center"/>
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-
-        <!-- Add hover state -->
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background">
-                    <Setter.Value>
-                        <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-                            <GradientStop Color="#362C59" Offset="0.1"/>
-                            <GradientStop Color="#1A1728" Offset="1"/>
-                        </RadialGradientBrush>
-                    </Setter.Value>
-                </Setter>
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-
-    <Style x:Key="DataGridStyle" TargetType="DataGrid">
-
-        <Setter Property="Background" Value="{StaticResource PrimaryBackgroundBrush}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
-        <Setter Property="BorderThickness" Value="1.5"/>
-        <Setter Property="RowBackground" Value="{StaticResource SecondaryBackgroundBrush}"/>
-        <Setter Property="AlternatingRowBackground" Value="#1C1C28"/>
-        <Setter Property="GridLinesVisibility" Value="None"/>
-        <Setter Property="VerticalGridLinesBrush" Value="{StaticResource BorderBrush}"/>
-        <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource BorderBrush}"/>
-        <Setter Property="RowHeight" Value="50"/>
-        <Setter Property="FontFamily" Value="{StaticResource RubikSemibold}"/>
-        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
-        <!--<Setter Property="Background">
-            <Setter.Value>
-                <RadialGradientBrush GradientOrigin="1,0" Center="1,1" RadiusX="3.5" RadiusY="3">
-                    <GradientStop Color="#682EC7" Offset="0.1"/>
-                    <GradientStop Color="{StaticResource PrimaryBackgroundColor}" Offset="0.3"/>
-                </RadialGradientBrush>
-            </Setter.Value>
-        </Setter>-->
-    </Style>
-
-    <Style x:Key="DataGridColumnHeaderStyle" TargetType="DataGridColumnHeader">
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
-        <Setter Property="FontFamily" Value="{StaticResource RubikBold}"/>
-        <Setter Property="FontSize" Value="12"/>
-        <Setter Property="Padding" Value="12,8"/>
-        <Setter Property="Height" Value="40"/>
-        <Setter Property="IsHitTestVisible" Value="False"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="DataGridColumnHeader">
-                    <Grid>
-                        <Border x:Name="HeaderBorder"
-                            BorderThickness="0,0,0,1"
-                            BorderBrush="{StaticResource BorderBrush}"
-                            Background="{TemplateBinding Background}">
-                            <ContentPresenter Margin="{TemplateBinding Padding}"
-                                        VerticalAlignment="Center"
-                                        HorizontalAlignment="Center"/>
-                        </Border>
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <Style x:Key="DataGridCellStyle" TargetType="DataGridCell">
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Padding" Value="12,8"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="DataGridCell">
-                    <Border Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}">
-                        <ContentPresenter VerticalAlignment="Center"
-                                    HorizontalAlignment="Center"/>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Foreground" Value="#E0E1EE"/>
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-
-    <Style x:Key="DataGridRowStyle" TargetType="DataGridRow">
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="SnapsToDevicePixels" Value="true"/>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="#1A1C2E"/>
-            </Trigger>
-            <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Background" Value="#282939"/>
-            </Trigger>
-        </Style.Triggers>
-    </Style>
 </ResourceDictionary>

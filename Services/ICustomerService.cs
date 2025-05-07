@@ -12,5 +12,6 @@ namespace Nomad2.Services
         Task<bool> AddCustomerAsync(Customer customer);
         Task<bool> UpdateCustomerAsync(Customer customer);
         Task<bool> DeleteCustomerAsync(string id);
+        Task<bool> ClearAllCustomersAsync();
     }
 }

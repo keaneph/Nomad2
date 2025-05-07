@@ -35,7 +35,7 @@ namespace Nomad2.ViewModels
             AddCustomerCommand = new RelayCommand(ExecuteAddCustomer);
             EditCustomerCommand = new RelayCommand<Customer>(ExecuteEditCustomer);
             DeleteCustomerCommand = new RelayCommand<Customer>(ExecuteDeleteCustomer);
-            ClearCommand = new RelayCommand(ExecuteClear);
+            ClearCommand = new RelayCommand(() => ExecuteClear());
             NextPageCommand = new RelayCommand(ExecuteNextPage, CanExecuteNextPage);
             PreviousPageCommand = new RelayCommand(ExecutePreviousPage, CanExecutePreviousPage);
 
@@ -186,12 +186,51 @@ namespace Nomad2.ViewModels
             }
         }
 
-        private void ExecuteClear()
+        private async void ExecuteClear()
         {
-            SearchText = string.Empty;
-            SelectedSortOption = "Name";
-            _currentPage = 1;
-            LoadCustomers();
+            // Show confirmation dialog
+            var result = MessageBox.Show(
+                "Are you sure you want to delete ALL customers? This action cannot be undone.",
+                "Confirm Delete All",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    // Delete all records from database
+                    bool success = await _customerService.ClearAllCustomersAsync();
+
+                    if (success)
+                    {
+                        // Clear the local collection
+                        Customers.Clear();
+                        _currentPage = 1;
+                        _totalPages = 0;
+                        OnPropertyChanged(nameof(CurrentPageDisplay));
+
+                        MessageBox.Show("All customers have been deleted successfully.",
+                            "Success",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Failed to delete all customers.",
+                            "Error",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"An error occurred: {ex.Message}",
+                        "Error",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                }
+            }
         }
 
         private void ExecuteNextPage()

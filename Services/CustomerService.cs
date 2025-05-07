@@ -178,5 +178,28 @@ namespace Nomad2.Services
                 }
             }
         }
+
+        public async Task<bool> ClearAllCustomersAsync()
+        {
+            using (var connection = _db.GetConnection())
+            {
+                await connection.OpenAsync();
+                string query = "DELETE FROM customer";
+
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    try
+                    {
+                        await command.ExecuteNonQueryAsync();
+                        return true;
+                    }
+                    catch (Exception)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+        }
     }
 }
