@@ -20,6 +20,8 @@ namespace Nomad2.ViewModels
         private string _currentPageDisplay;
         private bool _isDialogOpen;
         private Customer _selectedCustomer;
+        private System.Collections.IList _selectedCustomers;
+
 
         public CustomersViewModel()
         {
@@ -51,6 +53,16 @@ namespace Nomad2.ViewModels
             set
             {
                 _customers = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public System.Collections.IList SelectedCustomers
+        {
+            get => _selectedCustomers;
+            set
+            {
+                _selectedCustomers = value;
                 OnPropertyChanged();
             }
         }
@@ -162,26 +174,56 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // Modify your existing ExecuteDeleteCustomer method to this:
         private async void ExecuteDeleteCustomer(Customer customer)
         {
-            if (customer == null) return;
-
-            var result = MessageBox.Show(
-                "Are you sure you want to delete this customer?",
-                "Confirm Delete",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning);
-
-            if (result == MessageBoxResult.Yes)
+            // Check if we have multiple selections
+            if (SelectedCustomers != null && SelectedCustomers.Count > 0)
             {
-                try
+                var result = MessageBox.Show(
+                    $"Are you sure you want to delete {SelectedCustomers.Count} customers?",
+                    "Confirm Delete",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.Yes)
                 {
-                    await _customerService.DeleteCustomerAsync(customer.CustomerId);
-                    LoadCustomers();
+                    try
+                    {
+                        foreach (Customer selectedCustomer in SelectedCustomers.Cast<Customer>().ToList())
+                        {
+                            await _customerService.DeleteCustomerAsync(selectedCustomer.CustomerId);
+                        }
+                        await LoadCustomers();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error deleting customers: {ex.Message}", "Error",
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
-                catch (Exception ex)
+            }
+            // If no multiple selection, delete single customer
+            else if (customer != null)
+            {
+                var result = MessageBox.Show(
+                    "Are you sure you want to delete this customer?",
+                    "Confirm Delete",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.Yes)
                 {
-                    MessageBox.Show($"Error deleting customer: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    try
+                    {
+                        await _customerService.DeleteCustomerAsync(customer.CustomerId);
+                        await LoadCustomers();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error deleting customer: {ex.Message}", "Error",
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
             }
         }
@@ -264,7 +306,7 @@ namespace Nomad2.ViewModels
                 Customers.Clear();
                 foreach (var customer in customers)
                 {
-                    Customers.Add(customer);
+                    Customers.Add(customer);    
                 }
 
                 _totalPages = (int)Math.Ceiling(totalCount / (double)_customerService.PageSize);

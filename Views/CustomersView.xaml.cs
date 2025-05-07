@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Nomad2.ViewModels;
 
 namespace Nomad2.Views
 {
@@ -23,6 +24,14 @@ namespace Nomad2.Views
         public CustomersView()
         {
             InitializeComponent();
+        }
+
+        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (DataContext is CustomersViewModel viewModel)
+            {
+                viewModel.SelectedCustomers = customersDataGrid.SelectedItems;
+            }
         }
     }
 }

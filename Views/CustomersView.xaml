@@ -47,6 +47,8 @@
         </Grid>
 
         <DataGrid Grid.Row="1"
+                  SelectionMode="Extended"
+                  SelectionChanged="DataGrid_SelectionChanged"
                   Style="{StaticResource DataGridStyle}"
                   ColumnHeaderStyle="{StaticResource DataGridColumnHeaderStyle}"                 
                   CellStyle="{StaticResource DataGridCellStyle}"
@@ -58,7 +60,8 @@
                   CanUserAddRows="False"
                   CanUserDeleteRows="False"
                   IsReadOnly="True"
-                  RowHeaderWidth="0">
+                  RowHeaderWidth="0"
+                  x:Name="customersDataGrid">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Government ID" 
                           Binding="{Binding GovernmentIdPicture}"
