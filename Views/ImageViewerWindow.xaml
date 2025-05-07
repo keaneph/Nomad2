@@ -11,33 +11,6 @@
         <Image x:Name="FullSizeImage" 
                Stretch="Uniform"
                RenderOptions.BitmapScalingMode="HighQuality"
-               Margin="20">
-            <Image.LayoutTransform>
-                <RotateTransform x:Name="ImageRotation" Angle="0"/>
-            </Image.LayoutTransform>
-        </Image>
-
-        <StackPanel Orientation="Horizontal"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Bottom"
-                    Margin="20">
-            <Button Content="Rotate Left" 
-                    Click="RotateLeft_Click"
-                    Margin="5"
-                    Padding="20,10"
-                    Style="{StaticResource PrimaryButtonStyle}"/>
-
-            <Button Content="Rotate Right" 
-                    Click="RotateRight_Click"
-                    Margin="5"
-                    Padding="20,10"
-                    Style="{StaticResource PrimaryButtonStyle}"/>
-
-            <Button Content="Close" 
-                    Click="CloseButton_Click"
-                    Margin="5"
-                    Padding="20,10"
-                    Style="{StaticResource PrimaryButtonStyle}"/>
-        </StackPanel>
+               Margin="20"/>
     </Grid>
 </Window>
