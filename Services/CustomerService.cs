@@ -1,5 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using Nomad2.Models;
+using Nomad2.Validators;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -109,7 +110,14 @@ namespace Nomad2.Services
         }
 
         public async Task<bool> AddCustomerAsync(Customer customer)
+
         {
+            var (isValid, errorMessage) = CustomerValidator.ValidateCustomer(customer);
+            if (!isValid)
+            {
+                throw new ArgumentException(errorMessage);
+            }
+
             using (var connection = _db.GetConnection())
             {
                 await connection.OpenAsync();
@@ -136,6 +144,13 @@ namespace Nomad2.Services
 
         public async Task<bool> UpdateCustomerAsync(Customer customer)
         {
+
+            var (isValid, errorMessage) = CustomerValidator.ValidateCustomer(customer);
+            if (!isValid)
+            {
+                throw new ArgumentException(errorMessage);
+            }
+
             using (var connection = _db.GetConnection())
             {
                 await connection.OpenAsync();

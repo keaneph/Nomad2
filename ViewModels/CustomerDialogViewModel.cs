@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using Nomad2.Models;
+using Nomad2.Validators;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -51,24 +52,6 @@ namespace Nomad2.ViewModels
         public ICommand CancelCommand { get; }
         public ICommand BrowseCommand { get; }
 
-        private bool CanExecuteSave()
-        {
-            // Validate required fields
-            if (string.IsNullOrWhiteSpace(Customer.Name) ||
-                string.IsNullOrWhiteSpace(Customer.PhoneNumber) ||
-                string.IsNullOrWhiteSpace(Customer.Address) ||
-                string.IsNullOrWhiteSpace(Customer.GovernmentIdPicture) ||
-                string.IsNullOrWhiteSpace(Customer.CustomerStatus))
-            {
-                ErrorMessage = "Please fill in all required fields.";
-                return false;
-            }
-
-
-            ErrorMessage = string.Empty;
-            return true;
-        }
-
         private void ExecuteSave()
         {
             if (CanExecuteSave())
@@ -95,6 +78,19 @@ namespace Nomad2.ViewModels
                 Customer.GovernmentIdPicture = openFileDialog.FileName;
                 OnPropertyChanged(nameof(Customer));
             }
+        }
+
+        private bool CanExecuteSave()
+        {
+            var (isValid, errorMessage) = CustomerValidator.ValidateCustomer(_customer);
+            if (!isValid)
+            {
+                ErrorMessage = errorMessage;
+                return false;
+            }
+
+            ErrorMessage = string.Empty;
+            return true;
         }
     }
 }

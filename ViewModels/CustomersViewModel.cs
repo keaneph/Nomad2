@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows;
 using Nomad2.Views;
+using Nomad2.Scripts;
 
 namespace Nomad2.ViewModels
 {
@@ -21,6 +22,8 @@ namespace Nomad2.ViewModels
         private bool _isDialogOpen;
         private Customer _selectedCustomer;
         private System.Collections.IList _selectedCustomers;
+
+        // In your constructor:
         public ICommand ViewImageCommand { get; }
 
 
@@ -42,7 +45,6 @@ namespace Nomad2.ViewModels
             NextPageCommand = new RelayCommand(ExecuteNextPage, CanExecuteNextPage);
             PreviousPageCommand = new RelayCommand(ExecutePreviousPage, CanExecutePreviousPage);
             ViewImageCommand = new RelayCommand<string>(ExecuteViewImage);
-
             // Load initial data
             _ = LoadCustomers(); // Fire and forget, but better to handle properly
         }
@@ -172,15 +174,22 @@ namespace Nomad2.ViewModels
             }
         }
 
-        private void ExecuteEditCustomer(Customer customer)
+        private async void ExecuteEditCustomer(Customer customer)
         {
             if (customer != null)
             {
                 var dialog = new CustomerDialog(customer, true);
                 if (dialog.ShowDialog() == true)
                 {
-                    // Refresh the customer list after successful edit
-                    LoadCustomers();
+                    try
+                    {
+                        await _customerService.UpdateCustomerAsync(customer);
+                        await LoadCustomers(); // Refresh the list to show updated data
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error updating customer: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
             }
         }
@@ -361,5 +370,6 @@ namespace Nomad2.ViewModels
         }
 
         #endregion
+
     }
 }

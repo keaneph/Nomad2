@@ -5,11 +5,54 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:Nomad2.Views"
              mc:Ignorable="d">
-    <Grid Background="#0F1022">
-        <TextBlock Text="Help View"
-                  Foreground="White"
+
+    <Grid Background="#0F1022" Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Text="Developer Tools"
+                  Foreground="#E0E1EE"
                   FontSize="24"
-                  HorizontalAlignment="Center"
-                  VerticalAlignment="Center"/>
+                  FontFamily="{StaticResource RubikBold}"
+                  Margin="0,0,0,20"/>
+
+        <!-- Tools Section -->
+        <Border Grid.Row="1"
+                Background="#1C1D2C"
+                CornerRadius="8"
+                Padding="20">
+            <StackPanel>
+                <TextBlock Text="Data Seeding"
+                          Foreground="#E0E1EE"
+                          FontSize="18"
+                          FontFamily="{StaticResource RubikSemibold}"
+                          Margin="0,0,0,10"/>
+
+                <TextBlock Text="Generate sample customer data for testing purposes."
+                          Foreground="#8183A7"
+                          FontFamily="{StaticResource Rubik}"
+                          TextWrapping="Wrap"
+                          Margin="0,0,0,15"/>
+
+                <Button Command="{Binding SeedDataCommand}"
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        Width="200"
+                        HorizontalAlignment="Left">
+                    <StackPanel Orientation="Horizontal">
+                        <Path Data="{StaticResource AddCustomersIcon}"
+                              Width="16"
+                              Height="16"
+                              Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                              Style="{StaticResource PathStyle}"
+                              Margin="0,0,8,0"/>
+                        <TextBlock Text="Generate 100 Customers"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </Border>
     </Grid>
 </UserControl>
