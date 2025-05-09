@@ -201,5 +201,20 @@ namespace Nomad2.Services
             }
 
         }
+
+        public async Task<string> GetLastCustomerIdAsync()
+        {
+            using (var connection = _db.GetConnection())
+            {
+                await connection.OpenAsync();
+                string query = "SELECT customer_id FROM customer ORDER BY customer_id DESC LIMIT 1";
+
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    var result = await command.ExecuteScalarAsync();
+                    return result?.ToString();
+                }
+            }
+        }
     }
 }

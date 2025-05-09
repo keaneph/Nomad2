@@ -152,7 +152,7 @@ namespace Nomad2.ViewModels
         {
             var newCustomer = new Customer
             {
-                CustomerId = GenerateNewCustomerId(),
+                CustomerId = await GenerateNewCustomerId(),
                 RegistrationDate = DateTime.Now,
                 CustomerStatus = "Active"
             };
@@ -163,7 +163,7 @@ namespace Nomad2.ViewModels
                 try
                 {
                     await _customerService.AddCustomerAsync(newCustomer);
-                    LoadCustomers();
+                    await LoadCustomers();
                 }
                 catch (Exception ex)
                 {
@@ -339,10 +339,25 @@ namespace Nomad2.ViewModels
             return _currentPage > 1;
         }
 
-        private string GenerateNewCustomerId()
+        private async Task<string> GenerateNewCustomerId()
         {
-            // Format: 0000-0000
-            return $"{new Random().Next(0, 9999):D4}-{new Random().Next(0, 9999):D4}";
+            string lastId = await _customerService.GetLastCustomerIdAsync();
+
+            if (string.IsNullOrEmpty(lastId))
+            {
+                return "0000-0001";
+            }
+
+            // Extract the numeric part after the hyphen
+            string[] parts = lastId.Split('-');
+            if (parts.Length == 2 && int.TryParse(parts[1], out int lastNumber))
+            {
+                int newNumber = lastNumber + 1;
+                return $"0000-{newNumber:D4}";
+            }
+
+            // Fallback in case of unexpected format
+            return "0000-0001";
         }
 
         #endregion
