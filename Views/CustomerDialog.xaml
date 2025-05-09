@@ -5,123 +5,224 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="{Binding DialogTitle}"
-        Height="600" 
-        Width="500"
+        Height="720" 
+        Width="560"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource PrimaryBackgroundBrush}"
         ResizeMode="NoResize">
 
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <Border>
+        <Grid Margin="35,25">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-        <!-- Header -->
-        <TextBlock Text="{Binding DialogTitle}"
-                   Foreground="White"
-                   FontSize="24"
-                   FontFamily="{StaticResource RubikSemibold}"
-                   Margin="0,0,0,20"/>
-
-        <!-- Form Fields -->
-        <ScrollViewer Grid.Row="1"
-                      VerticalScrollBarVisibility="Auto">
+            <!-- Enhanced Header -->
             <StackPanel>
+                <TextBlock Text="{Binding DialogTitle}"
+                           Foreground=  "#E0E1EE"
+                           FontSize="24"
+                           FontFamily="{StaticResource RubikBold}"
+                           Margin="0,0,0,5"/>
+                <TextBlock Text="All fields marked with * are required"
+                          Foreground="#8183A7"
+                          FontSize="12"
+                          FontFamily="{StaticResource RubikSemibold}"
+                          Margin="0,0,0,15"/>
+                <Border Height="1" 
+                        Background="#282939" 
+                        Margin="0,0,0,15"/>
+            </StackPanel>
+
+            <!-- Form Fields -->
+            <StackPanel Grid.Row="1" Margin="0,0,0,15">
                 <!-- Customer ID -->
-                <TextBlock Text="Customer ID"
-                           Style="{StaticResource FormLabelStyle}"/>
-                <TextBox Text="{Binding Customer.CustomerId}"
-                         Style="{StaticResource FormTextBoxStyle}"
-                         Margin="0,0,20,0"
-                         IsReadOnly="True"/>
+                <DockPanel LastChildFill="True" Margin="0,0,0,15">
+                    <TextBlock Text="Customer ID"
+                               DockPanel.Dock="Top"
+                               FontFamily="{StaticResource RubikSemibold}"
+                               Foreground="#E0E1EE"
+                               Margin="0,0,0,5"/>
+                    <Border Background="#282939" 
+                            CornerRadius="8"
+                            Padding="15,8">
+                        <TextBlock Text="{Binding Customer.CustomerId}"
+                                   Foreground="#8183A7"
+                                   FontFamily="{StaticResource RubikSemibold}"/>
+                    </Border>
+                </DockPanel>
 
                 <!-- Name -->
-                <TextBlock Text="Name *"
-                           Style="{StaticResource FormLabelStyle}"/>
-                <TextBox Text="{Binding Customer.Name, UpdateSourceTrigger=PropertyChanged}"
-                         Margin="0,0,20,0"
-                         Style="{StaticResource FormTextBoxStyle}"/>
+                <DockPanel LastChildFill="True" Margin="0,0,0,15">
+                    <TextBlock DockPanel.Dock="Top" Margin="0,0,0,5">
+                        <Run Text="Name" 
+                             FontFamily="{StaticResource RubikSemibold}" 
+                             Foreground="#E0E1EE"                           />
+                        <Run Text="*" 
+                             Foreground="#843153"/>
+                    </TextBlock>
+                    <Border >
+                        <TextBox Text="{Binding Customer.Name, UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource FormTextBoxStyle}"/>
+                    </Border>
+
+                </DockPanel>
 
                 <!-- Phone Number -->
-                <TextBlock Text="Phone Number *"
-                           Style="{StaticResource FormLabelStyle}"/>
-                <TextBox Text="{Binding Customer.PhoneNumber, UpdateSourceTrigger=PropertyChanged}"
-                         Margin="0,0,20,0"
-                         Style="{StaticResource FormTextBoxStyle}"/>
+                <DockPanel LastChildFill="True" Margin="0,0,0,15">
+                    <TextBlock DockPanel.Dock="Top" Margin="0,0,0,5">
+                        <Run Text="Phone Number" 
+                             FontFamily="{StaticResource RubikSemibold}" 
+                             Foreground="#E0E1EE"/>
+                        <Run Text="*" 
+                             Foreground="#843153"/>
+                    </TextBlock>
+                    <TextBox Text="{Binding Customer.PhoneNumber, UpdateSourceTrigger=PropertyChanged}"
+                            Style="{StaticResource FormTextBoxStyle}"
+                            Height="35"/>
+                </DockPanel>
 
                 <!-- Address -->
-                <TextBlock Text="Address *"
-                           Style="{StaticResource FormLabelStyle}"/>
-                <TextBox Text="{Binding Customer.Address, UpdateSourceTrigger=PropertyChanged}"
-                         Style="{StaticResource FormTextBoxStyle}"
-                         Height="60"
-                         Margin="0,0,20,0"
-                         TextWrapping="Wrap"
-                         AcceptsReturn="True"/>
+                <DockPanel LastChildFill="True" Margin="0,0,0,15">
+                    <TextBlock DockPanel.Dock="Top" Margin="0,0,0,5">
+                        <Run Text="Address" 
+                             FontFamily="{StaticResource RubikSemibold}" 
+                             Foreground="#E0E1EE"/>
+                        <Run Text="*" 
+                             Foreground="#843153"/>
+                    </TextBlock>
+                    <TextBox Text="{Binding Customer.Address, UpdateSourceTrigger=PropertyChanged}"
+                            Style="{StaticResource FormTextBoxStyle}"
+                            Height="35"
+                            TextWrapping="Wrap"
+                            AcceptsReturn="True"/>
+                </DockPanel>
 
                 <!-- Government ID Picture -->
-                <TextBlock Text="Government ID Picture *"
-                           Style="{StaticResource FormLabelStyle}"/>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBox Text="{Binding Customer.GovernmentIdPicture, UpdateSourceTrigger=PropertyChanged}"
-                             Style="{StaticResource FormTextBoxStyle}"
-                             IsReadOnly="True"/>
-                    <Button Grid.Column="1"
-                            Content="Browse"
-                            Command="{Binding BrowseCommand}"
-                            Style="{StaticResource SecondaryButtonStyle}"
-                            Width="80"
-                            Margin="10,0,20,0"/>
-                </Grid>
+                <DockPanel LastChildFill="True" Margin="0,0,0,15">
+                    <TextBlock DockPanel.Dock="Top" Margin="0,0,0,5">
+                        <Run Text="Government ID Picture" 
+                             FontFamily="{StaticResource RubikSemibold}" 
+                             Foreground="#E0E1EE"/>
+                        <Run Text="*" 
+                             Foreground="#843153"/>
+                    </TextBlock>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Text="{Binding Customer.GovernmentIdPicture, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource FormTextBoxStyle}"
+                                Height="35"
+                                IsReadOnly="True"/>
+                        <!-- Browse Button -->
+                        <Button Grid.Column="1"
+                                Content="Browse"
+                                Command="{Binding BrowseCommand}"
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Width="100"
+                                Height="35"
+                                Margin="10,0,0,0">
+                            <Button.Tag>
+                                <Viewbox Width="16" 
+                                         Height="16">
+                                    <Grid>
+                                        <Path Data="{StaticResource BrowseIcon}"
+                                              Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                              Style="{StaticResource PathStyle}"/>
+                                    </Grid>
+                                </Viewbox>
+                            </Button.Tag>
+                        </Button>
+                    </Grid>
+                </DockPanel>
 
                 <!-- Customer Status -->
-                <TextBlock Text="Status *"
-                           Style="{StaticResource FormLabelStyle}"/>
-                <ComboBox ItemsSource="{Binding StatusOptions}"
-                          SelectedItem="{Binding Customer.CustomerStatus}"
-                          Margin="0,0,20,0"
-                          Style="{StaticResource FormComboBoxStyle}"/>
+                <DockPanel LastChildFill="True" Margin="0,0,0,5">
+                    <TextBlock DockPanel.Dock="Top" Margin="0,0,0,5">
+                        <Run Text="Status" 
+                             FontFamily="{StaticResource RubikSemibold}" 
+                             Foreground="#E0E1EE"/>
+                        <Run Text="*" 
+                             Foreground="#843153"/>
+                    </TextBlock>
+                    <ComboBox ItemsSource="{Binding StatusOptions}"
+                             SelectedItem="{Binding Customer.CustomerStatus}"
+                             Style="{StaticResource BaseComboboxStyle}"
+                             Height="25"
+                             Margin="-320,0,0,15"/>
+                </DockPanel>
 
                 <!-- Registration Date -->
-                <TextBlock Text="Registration Date *"
-                           Style="{StaticResource FormLabelStyle}"/>
-                <DatePicker SelectedDate="{Binding Customer.RegistrationDate}"
-                           Style="{StaticResource FormDatePickerStyle}"
-                            Margin="10,0,20,0"/>
+                <DockPanel LastChildFill="True">
+                    <TextBlock DockPanel.Dock="Top" Margin="0,0,0,5">
+                        <Run Text="Registration Date" 
+                             FontFamily="{StaticResource RubikSemibold}" 
+                             Foreground="#E0E1EE"/>
+                        <Run Text="*" 
+                             Foreground="#843153"/>
+                    </TextBlock>
+                    <DatePicker SelectedDate="{Binding Customer.RegistrationDate}"
+                              Style="{StaticResource FormDatePickerStyle}"
+                              Height="35"/>
+                </DockPanel>
             </StackPanel>
-        </ScrollViewer>
 
-        <!-- Buttons -->
-        <Grid Grid.Row="2" 
-              Margin="0,20,0,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+            <!-- Bottom Section -->
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-            <TextBlock Text="{Binding ErrorMessage}"
-                       Foreground="Red"
-                       VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding ErrorMessage}"
+                          Foreground="#843153"
+                          FontFamily="{StaticResource RubikSemibold}"
+                          VerticalAlignment="Center"/>
 
-            <Button Grid.Column="1"
-                    Content="Cancel"
-                    Command="{Binding CancelCommand}"
-                    Style="{StaticResource SecondaryButtonStyle}"
-                    Width="100"
-                    Margin="0,0,10,0"/>
+                <!-- Cancel Button -->
+                <Button Grid.Column="1"
+                        Content="Cancel"
+                        Command="{Binding CancelCommand}"
+                        Style="{StaticResource CancelButtonStyle}"
+                        Width="120"
+                        Height="35"
+                        Margin="0,0,10,0">
+                    <Button.Tag>
+                        <Viewbox Width="16" 
+                                 Height="16">
+                            <Grid>
+                                <Path Data="{StaticResource CancelIcon}"
+                                      Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                      Style="{StaticResource PathStyle}"/>
+                            </Grid>
+                        </Viewbox>
+                    </Button.Tag>
+                </Button>
 
-            <Button Grid.Column="2"
-                    Content="Save"
-                    Command="{Binding SaveCommand}"
-                    Style="{StaticResource SaveButtonStyle}"
-                    Width="100"/>
+                <!-- Save Button -->
+                <Button Grid.Column="2"
+                        Content="Save"
+                        Command="{Binding SaveCommand}"
+                        Style="{StaticResource SaveButtonStyle}"
+                        Width="120"
+                        Height="35">
+                    <Button.Tag>
+                        <Viewbox Width="16" 
+                                 Height="16">
+                            <Grid>
+                                <Path Data="{StaticResource SaveIcon}"
+                                      Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                      Style="{StaticResource PathStyle}"/>
+                            </Grid>
+                        </Viewbox>
+                    </Button.Tag>
+                </Button>
+            </Grid>
         </Grid>
-    </Grid>
+    </Border>
 </Window>
