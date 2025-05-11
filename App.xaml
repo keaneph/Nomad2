@@ -12,6 +12,9 @@
                 <ResourceDictionary Source="Resources/Styles/ColorResources.xaml"/>
                 <ResourceDictionary Source="Resources/Styles/IconControls.xaml"/>
                 <ResourceDictionary Source="Resources/Styles/GlobalStyles.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/ButtonStyles.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/DataGridStyles.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/FormStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <!--Data Template-->
