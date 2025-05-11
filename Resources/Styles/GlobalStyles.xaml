@@ -7,6 +7,34 @@
     <FontFamily x:Key="RubikBold">/Nomad2;component/Resources/Fonts/Rubik/#Rubik Bold</FontFamily>
     <FontFamily x:Key="Satoshi">/Nomad2;component/Resources/Fonts/Satoshi/#Satoshi</FontFamily>
 
+    <!-- Base Colors -->
+    <Color x:Key="PrimaryBackgroundColor">#06071A</Color>
+    <Color x:Key="SecondaryBackgroundColor">#0F1123</Color>
+    <Color x:Key="ThirdBackgroundColor">#282939</Color>
+    <Color x:Key="FourthBackgroundColor">#191A30</Color>
+    <Color x:Key="BorderColor">#282A3D</Color>
+    <Color x:Key="TextPrimaryColor">#E0E1EE</Color>
+    <Color x:Key="TextSecondaryColor">#74769A</Color>
+    <Color x:Key="SearchboxBackgroundColor">#0F1123</Color>
+    <Color x:Key="ButtonBackgroundColor">#181B30</Color>
+    <Color x:Key="PurpleColor">#682EC7</Color>
+    <Color x:Key="GreenColor">#7DE260</Color>
+    <Color x:Key="OrangeColor">#FF9F0A</Color>
+
+    <!-- Brushes -->
+    <SolidColorBrush x:Key="PrimaryBackgroundBrush" Color="{StaticResource PrimaryBackgroundColor}"/>
+    <SolidColorBrush x:Key="SecondaryBackgroundBrush" Color="{StaticResource SecondaryBackgroundColor}"/>
+    <SolidColorBrush x:Key="ThirdBackgroundBrush" Color="{StaticResource ThirdBackgroundColor}"/>
+    <SolidColorBrush x:Key="FourthBackgroundBrush" Color="{StaticResource FourthBackgroundColor}"/>
+    <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderColor}"/>
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource TextPrimaryColor}"/>
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource TextSecondaryColor}"/>
+    <SolidColorBrush x:Key="SearchboxBackgroundBrush" Color="{StaticResource SearchboxBackgroundColor}"/>
+    <SolidColorBrush x:Key="ButtonBackgroundBrush" Color="{StaticResource ButtonBackgroundColor}"/>
+    <SolidColorBrush x:Key="PurpleBrush" Color="{StaticResource PurpleColor}"/>
+    <SolidColorBrush x:Key="OrangeBrush" Color="{StaticResource OrangeColor}"/>
+    <SolidColorBrush x:Key="GreenBrush" Color="{StaticResource GreenColor}"/>
+
     <!-- Common Gradients -->
     <RadialGradientBrush x:Key="PurpleGradientBackground" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
         <GradientStop Color="#682EC7" Offset="0.1"/>
@@ -38,7 +66,13 @@
         <GradientStop Color="#103D2E" Offset="1"/>
     </RadialGradientBrush>
 
-    <!-- Common Effects -->
+     <RadialGradientBrush x:Key="Test" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
+        <GradientStop Color="#44336A " Offset="0.1"/>
+        <GradientStop Color="#1A1728" Offset="1"/>
+     </RadialGradientBrush>
+
+
+            <!-- Common Effects -->
     <DropShadowEffect x:Key="PurpleShadowEffect" Color="#682EC7" BlurRadius="20" ShadowDepth="0" Opacity="0.3"/>
     <DropShadowEffect x:Key="RedShadowEffect" Color="#843153" BlurRadius="20" ShadowDepth="0" Opacity="0.3"/>
     <DropShadowEffect x:Key="GreenShadowEffect" Color="#75B99B" BlurRadius="20" ShadowDepth="0" Opacity="0.3"/>
@@ -197,11 +231,11 @@
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
-        <Setter Property="Background" Value="{StaticResource FourthBackgroundBrush}"/>
+        <Setter Property="Background" Value="{StaticResource PurpleGradientBackground}"/>
+        <Setter Property="BorderThickness" Value="1.5,1.5,1.5,2"/>
+        <Setter Property="BorderBrush" Value="{StaticResource PurpleGradientBorder}"/>
         <Setter Property="FontFamily" Value="{StaticResource RubikSemibold}"/>
         <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
-        <Setter Property="BorderThickness" Value="1.5,1.5,1.5,2"/>
-        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ComboBox">
@@ -217,19 +251,25 @@
                                             Background="{TemplateBinding Background}"
                                             BorderBrush="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=ComboBox}}"
                                             BorderThickness="{Binding BorderThickness, RelativeSource={RelativeSource AncestorType=ComboBox}}"
-                                            CornerRadius="2">
+                                            CornerRadius="8">
+                                        <Border.Effect>
+                                            <DropShadowEffect Color="#682EC7" 
+                                                             BlurRadius="20" 
+                                                             ShadowDepth="0" 
+                                                             Opacity="0.3"/>
+                                        </Border.Effect>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
 
-                                            <ContentPresenter Grid.Column="0"
-                                                            Content="{Binding Path=SelectionBoxItem, RelativeSource={RelativeSource AncestorType=ComboBox}}"
-                                                            ContentTemplate="{Binding Path=SelectionBoxItemTemplate, RelativeSource={RelativeSource AncestorType=ComboBox}}"
-                                                            ContentTemplateSelector="{Binding Path=ItemTemplateSelector, RelativeSource={RelativeSource AncestorType=ComboBox}}"
-                                                            VerticalAlignment="Center"
-                                                            Margin="12,0,0,0"/>
+                                                <ContentPresenter Grid.Column="0"
+                                                         Content="{Binding Path=SelectionBoxItem, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                                         ContentTemplate="{Binding Path=SelectionBoxItemTemplate, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                                         ContentTemplateSelector="{Binding Path=ItemTemplateSelector, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                                         VerticalAlignment="Center"
+                                                         Margin="12,0,0,0"/>
 
                                             <Path Grid.Column="1"
                                                   Data="M1,1 L5,5 L9,1"
@@ -247,6 +287,7 @@
                                             <Setter Property="Background" Value="#1A1C2E"/>
                                         </Trigger>
                                         <Trigger Property="IsChecked" Value="True">
+                                            <Setter TargetName="MainBorder" Property="CornerRadius" Value="8,8,0,0"/>
                                             <Setter Property="Background">
                                                 <Setter.Value>
                                                     <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
@@ -268,11 +309,11 @@
                                Placement="Bottom">
                             <Border x:Name="DropDownBorder"
                                     MinWidth="{TemplateBinding ActualWidth}"                          
-                                    Background="{TemplateBinding Background}"
-                                    BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="0"
-                                    CornerRadius="2"
-                                    Margin="0,5,0,0">
+                                    Background="{StaticResource PrimaryBackgroundBrush}"
+                                    BorderBrush="{StaticResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="0,0,8,8"
+                                    Margin="0,0,0,0">
                                 <ScrollViewer Margin="0" SnapsToDevicePixels="True">
                                     <StackPanel IsItemsHost="True"
                                               KeyboardNavigation.DirectionalNavigation="Contained"/>
@@ -289,28 +330,21 @@
                 <Style TargetType="ComboBoxItem">
                     <Setter Property="Padding" Value="12,8"/>
                     <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="ComboBoxItem">
                                 <Border Background="{TemplateBinding Background}"
-                                        Padding="{TemplateBinding Padding}">
+                                Padding="{TemplateBinding Padding}"
+                                CornerRadius="0">
                                     <ContentPresenter/>
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#282939"/>
-                                        <Setter Property="Foreground" Value="#E0E1EE"/>
+                                        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
                                     </Trigger>
                                     <Trigger Property="IsSelected" Value="True">
-                                        <Setter Property="Background">
-                                            <Setter.Value>
-                                                <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-                                                    <GradientStop Color="#682EC7" Offset="0.1"/>
-                                                    <GradientStop Color="#190F33" Offset="1"/>
-                                                </RadialGradientBrush>
-                                            </Setter.Value>
-                                        </Setter>
-                                        <Setter Property="Foreground" Value="#E0E1EE"/>
+                                        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
