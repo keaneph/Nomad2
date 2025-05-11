@@ -7,6 +7,8 @@ using System.Windows.Input;
 using System.Windows;
 using Nomad2.Views;
 using Nomad2.Scripts;
+using Nomad2.Sorting;
+using System.Linq;
 
 namespace Nomad2.ViewModels
 {
@@ -17,11 +19,12 @@ namespace Nomad2.ViewModels
         private string _searchText;
         private int _currentPage = 1;
         private int _totalPages;
-        private string _selectedSortOption;
         private string _currentPageDisplay;
         private bool _isDialogOpen;
         private Customer _selectedCustomer;
         private System.Collections.IList _selectedCustomers;
+        private SortOption _currentSortOption;
+        private ObservableCollection<SortOption> _availableSortOptions;
 
         // In your constructor:
         public ICommand ViewImageCommand { get; }
@@ -34,8 +37,35 @@ namespace Nomad2.ViewModels
 
             _customerService = new CustomerService();
             Customers = new ObservableCollection<Customer>();
-            SortOptions = new ObservableCollection<string> { "Name", "Date", "Status" };
-            SelectedSortOption = "Name";
+            // Initialize sort options
+            AvailableSortOptions = new ObservableCollection<SortOption>
+        {
+            // Customer ID
+            new SortOption { DisplayName = "ID (Ascending)", Option = CustomerSortOption.CustomerId, IsAscending = true },
+            new SortOption { DisplayName = "ID (Descending)", Option = CustomerSortOption.CustomerId, IsAscending = false },
+            
+            // Name
+            new SortOption { DisplayName = "Name (A-Z)", Option = CustomerSortOption.Name, IsAscending = true },
+            new SortOption { DisplayName = "Name (Z-A)", Option = CustomerSortOption.Name, IsAscending = false },
+            
+            // Phone Number
+            new SortOption { DisplayName = "Phone (A-Z)", Option = CustomerSortOption.PhoneNumber, IsAscending = true },
+            new SortOption { DisplayName = "Phone (Z-A)", Option = CustomerSortOption.PhoneNumber, IsAscending = false },
+            
+            // Address
+            new SortOption { DisplayName = "Address (A-Z)", Option = CustomerSortOption.Address, IsAscending = true },
+            new SortOption { DisplayName = "Address (Z-A)", Option = CustomerSortOption.Address, IsAscending = false },
+            
+            // Registration Date
+            new SortOption { DisplayName = "Date (Newest)", Option = CustomerSortOption.RegistrationDate, IsAscending = false },
+            new SortOption { DisplayName = "Date (Oldest)", Option = CustomerSortOption.RegistrationDate, IsAscending = true },
+            
+            // Status
+            new SortOption { DisplayName = "Status (A-Z)", Option = CustomerSortOption.Status, IsAscending = true },
+            new SortOption { DisplayName = "Status (Z-A)", Option = CustomerSortOption.Status, IsAscending = false }
+        };
+
+            CurrentSortOption = AvailableSortOptions.First();
 
             // Initialize Commands
             AddCustomerCommand = new RelayCommand(ExecuteAddCustomer);
@@ -45,8 +75,9 @@ namespace Nomad2.ViewModels
             NextPageCommand = new RelayCommand(ExecuteNextPage, CanExecuteNextPage);
             PreviousPageCommand = new RelayCommand(ExecutePreviousPage, CanExecutePreviousPage);
             ViewImageCommand = new RelayCommand<string>(ExecuteViewImage);
+
             // Load initial data
-            _ = LoadCustomers(); // Fire and forget, but better to handle properly
+            _ = LoadCustomers();
         }
 
         #region Properties
@@ -80,6 +111,27 @@ namespace Nomad2.ViewModels
             }
         }
 
+        public ObservableCollection<SortOption> AvailableSortOptions
+        {
+            get => _availableSortOptions;
+            set
+            {
+                _availableSortOptions = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public SortOption CurrentSortOption
+        {
+            get => _currentSortOption;
+            set
+            {
+                _currentSortOption = value;
+                OnPropertyChanged();
+                LoadCustomers();
+            }
+        }
+
         public string SearchText
         {
             get => _searchText;
@@ -88,19 +140,6 @@ namespace Nomad2.ViewModels
                 _searchText = value;
                 OnPropertyChanged();
                 _currentPage = 1; // Reset to first page when searching
-                LoadCustomers();
-            }
-        }
-
-        public ObservableCollection<string> SortOptions { get; }
-
-        public string SelectedSortOption
-        {
-            get => _selectedSortOption;
-            set
-            {
-                _selectedSortOption = value;
-                OnPropertyChanged();
                 LoadCustomers();
             }
         }
@@ -321,7 +360,7 @@ namespace Nomad2.ViewModels
         {
             try
             {
-                var (customers, totalCount) = await _customerService.GetCustomersAsync(_currentPage, SearchText, SelectedSortOption);
+                var (customers, totalCount) = await _customerService.GetCustomersAsync(_currentPage, SearchText, CurrentSortOption);
 
                 Customers.Clear();
                 foreach (var customer in customers)

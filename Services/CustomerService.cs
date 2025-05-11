@@ -1,5 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using Nomad2.Models;
+using Nomad2.Sorting;
 using Nomad2.Validators;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,10 @@ namespace Nomad2.Services
             _db = new DatabaseHelper();
         }
 
-        public async Task<(List<Customer> customers, int totalCount)> GetCustomersAsync(int page = 1, string searchTerm = "", string sortBy = "Name")
+        public async Task<(List<Customer> customers, int totalCount)> GetCustomersAsync(
+            int page = 1,
+            string searchTerm = "",
+            SortOption sortOption = null)
         {
             using (var connection = _db.GetConnection())
             {
@@ -29,22 +33,29 @@ namespace Nomad2.Services
                 var offset = (page - 1) * _pageSize;
                 var customers = new List<Customer>();
 
-                string orderBy = sortBy switch
+                string orderByColumn = sortOption?.Option switch
                 {
-                    "Name" => "name",
-                    "Date" => "registration_date",
-                    "Status" => "customer_status",
+                    CustomerSortOption.CustomerId => "customer_id",
+                    CustomerSortOption.Name => "name",
+                    CustomerSortOption.PhoneNumber => "phone_number",
+                    CustomerSortOption.Address => "address",
+                    CustomerSortOption.RegistrationDate => "registration_date",
+                    CustomerSortOption.Status => "customer_status",
                     _ => "name"
                 };
 
+                string direction = sortOption?.IsAscending == true ? "ASC" : "DESC";
+
                 string query = @"
-                    SELECT SQL_CALC_FOUND_ROWS *
-                    FROM customer
-                    WHERE name LIKE @SearchTerm 
-                       OR phone_number LIKE @SearchTerm 
-                       OR address LIKE @SearchTerm
-                    ORDER BY " + orderBy + @"
-                    LIMIT @Offset, @PageSize";
+            SELECT SQL_CALC_FOUND_ROWS *
+            FROM customer
+            WHERE customer_id LIKE @SearchTerm 
+               OR name LIKE @SearchTerm 
+               OR phone_number LIKE @SearchTerm 
+               OR address LIKE @SearchTerm
+               OR customer_status LIKE @SearchTerm
+            ORDER BY " + orderByColumn + " " + direction + @"
+            LIMIT @Offset, @PageSize";
 
                 using (var command = new MySqlCommand(query, connection))
                 {

@@ -25,8 +25,9 @@
             <!-- Sort Combo Box -->
             <ComboBox Grid.Column="0"
                       Style="{StaticResource BaseComboboxStyle}"
-                      ItemsSource="{Binding SortOptions}"
-                      SelectedItem="{Binding SelectedSortOption}"/>
+                      ItemsSource="{Binding AvailableSortOptions}"
+                      SelectedItem="{Binding CurrentSortOption}"
+                      DisplayMemberPath="DisplayName"/>
 
             <!-- Add Customer Button -->
             <Button Grid.Column="2"
