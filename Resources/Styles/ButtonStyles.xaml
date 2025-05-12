@@ -66,6 +66,7 @@
     </Style>
 
     <!-- Pagination Button Style -->
+    <!--h 25, w 80-->
     <Style x:Key="PaginationButtonStyle" BasedOn="{StaticResource BaseButtonStyle}" TargetType="Button">
         <Setter Property="Height" Value="25"/>
         <Setter Property="Width" Value="80"/>
@@ -115,7 +116,7 @@
     </Style>
 
     <!-- Clear Button Style -->
-    <!--width of 65 for small-->
+    <!--h 25, w 65-->
     <Style x:Key="ClearButtonStyle" BasedOn="{StaticResource BaseButtonStyle}" TargetType="Button">
         <Setter Property="Height" Value="25"/>
         <Setter Property="Width" Value="65"/>
@@ -176,7 +177,7 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <!--qqkdqi RAHHHHHHHHHH-->
+                            <!--2 column grid just like the basebuttonstyle-->
                             <ContentPresenter Grid.Column="0" 
                                         Content="{TemplateBinding Tag}"
                                         VerticalAlignment="Center"
@@ -191,7 +192,7 @@
                         <Trigger Property="IsEnabled" Value="True">
                             <Setter TargetName="ButtonBorder" Property="Effect">
                                 <Setter.Value>
-                                    <DropShadowEffect Color="#2EC78A" 
+                                    <DropShadowEffect Color="{StaticResource GreenColor}" 
                                                 BlurRadius="20" 
                                                 ShadowDepth="0" 
                                                 Opacity="0.3"/>
@@ -199,24 +200,9 @@
                             </Setter>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Background">
-                                <Setter.Value>
-                                    <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-                                        <GradientStop Color="#282939" Offset="0.1"/>
-                                        <GradientStop Color="#1A1728" Offset="1"/>
-                                    </RadialGradientBrush>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="BorderBrush">
-                                <Setter.Value>
-                                    <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.7" RadiusY="0.9">
-                                        <GradientStop Color="#282939" Offset="0.5"/>
-                                        <GradientStop Color="#1A1728" Offset="1"/>
-                                    </RadialGradientBrush>
-                                </Setter.Value>
-                            </Setter>
+                            <Setter Property="Background" Value="{StaticResource DisabledBackground}"/>
+                            <Setter Property="BorderBrush" Value="{StaticResource DisabledBorder}"/>
                             <Setter Property="Opacity" Value="0.5"/>
-                            <Setter TargetName="ButtonBorder" Property="Effect" Value="{x:Null}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -224,14 +210,7 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background">
-                    <Setter.Value>
-                        <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-                            <GradientStop Color="#23A976" Offset="0.1"/>
-                            <GradientStop Color="#103D2E" Offset="1"/>
-                        </RadialGradientBrush>
-                    </Setter.Value>
-                </Setter>
+                <Setter Property="Background" Value="{StaticResource GreenGradientHover}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -252,7 +231,7 @@
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="8">
                             <Border.Effect>
-                                <DropShadowEffect Color="#843153" 
+                                <DropShadowEffect Color="{StaticResource RedColor}" 
                                             BlurRadius="20" 
                                             ShadowDepth="0" 
                                             Opacity="0.3"/>
@@ -278,19 +257,14 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background">
-                    <Setter.Value>
-                        <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-                            <GradientStop Color="#6E2945" Offset="0.1"/>
-                            <GradientStop Color="#2C1A1E" Offset="1"/>
-                        </RadialGradientBrush>
-                    </Setter.Value>
+                <Setter Property="Background" Value="{StaticResource RedGradientHover}">
                 </Setter>
             </Trigger>
         </Style.Triggers>
     </Style>
 
     <!-- Edit Button Style -->
+    <!-- height 25 width 50 margin 5-->
     <Style x:Key="EditButtonStyle" BasedOn="{StaticResource BaseButtonStyle}" TargetType="Button">
         <Setter Property="Height" Value="25"/>
         <Setter Property="Width" Value="50"/>
@@ -299,13 +273,7 @@
         <Setter Property="BorderBrush" Value="{StaticResource PurpleGradientBorder}"/>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background">
-                    <Setter.Value>
-                        <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-                            <GradientStop Color="#4B2393" Offset="0.1"/>
-                            <GradientStop Color="#190F33" Offset="1"/>
-                        </RadialGradientBrush>
-                    </Setter.Value>
+                <Setter Property="Background" Value="{StaticResource PurpleGradientHover}">
                 </Setter>
             </Trigger>
         </Style.Triggers>
@@ -314,6 +282,7 @@
     <!-- Delete Button Style -->
     <Style x:Key="DeleteButtonStyle" BasedOn="{StaticResource BaseButtonStyle}" TargetType="Button">
         <Setter Property="Height" Value="25"/>
+        <Setter Property="Width" Value="50"/>
         <Setter Property="Background" Value="{StaticResource RedGradientBackground}"/>
         <Setter Property="BorderBrush" Value="{StaticResource RedGradientBorder}"/>
         <Setter Property="Template">
@@ -321,43 +290,32 @@
                 <ControlTemplate TargetType="Button">
                     <Grid>
                         <Border x:Name="ButtonBorder"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="8">
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
                             <Border.Effect>
-                                <DropShadowEffect Color="#843153" 
+                                <DropShadowEffect Color="{StaticResource RedColor}" 
                                         BlurRadius="20" 
                                         ShadowDepth="0" 
                                         Opacity="0.3"/>
                             </Border.Effect>
                         </Border>
-                        <!-- Maintain the same outer margin to keep width -->
-                        <Grid Margin="14,-3,20,0">
-                            <!-- Single column grid for centered icon -->
-                            <ContentPresenter Content="{TemplateBinding Tag}"
-                                    HorizontalAlignment="Center"
+                        <ContentPresenter Content="{TemplateBinding Tag}"
+                                    HorizontalAlignment="Center"    
                                     VerticalAlignment="Center"/>
-                        </Grid>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background">
-                    <Setter.Value>
-                        <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-                            <GradientStop Color="#6E2945" Offset="0.1"/>
-                            <GradientStop Color="#2C1A1E" Offset="1"/>
-                        </RadialGradientBrush>
-                    </Setter.Value>
-                </Setter>
+                <Setter Property="Background" Value="{StaticResource RedGradientHover}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
 
-    <!-- Transparent Button Style (For images) -->
+    <!-- Transparent Button Style (for images) -->
     <Style x:Key="TransparentButtonStyle" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
@@ -371,80 +329,13 @@
         </Setter>
     </Style>
 
-    <Style x:Key="TertiaryButtonStyleTest" TargetType="Button">
+    <!-- Toggle Sort Button Style -->
+    <Style x:Key="ToggleSortButtonStyle" BasedOn="{StaticResource BaseButtonStyle}" TargetType="Button" >
         <Setter Property="Height" Value="25"/>
-        <Setter Property="Foreground" Value="#E0E1EE"/>
-        <Setter Property="Cursor" Value="Hand"/>
-        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-        <Setter Property="BorderThickness" Value="1.5,1.5,1.5,1.5"/>
-        <Setter Property="Width" Value="80"/>
-        <Setter Property="FontFamily" Value="{StaticResource RubikSemibold}"/>
-
-        <Setter Property="Background">
-            <Setter.Value>
-                <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-                    <GradientStop Color="#44336A " Offset="0.1"/>
-                    <GradientStop Color="#1A1728" Offset="1"/>
-                </RadialGradientBrush>
-            </Setter.Value>
-        </Setter>
-        <Setter Property="BorderBrush">
-            <Setter.Value>
-                <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.7" RadiusY="0.9">
-                    <GradientStop Color="#44336A" Offset="0.5"/>
-                    <GradientStop Color="#2B2942" Offset="1"/>
-                </RadialGradientBrush>
-            </Setter.Value>
-        </Setter>
-
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Grid>
-                        <Border x:Name="ButtonBorder"
-                             Background="{TemplateBinding Background}"
-                             BorderBrush="{TemplateBinding BorderBrush}"
-                             BorderThickness="{TemplateBinding BorderThickness}"
-                             CornerRadius="8">
-                            <Border.Effect>
-                                <DropShadowEffect Color="#44336A" 
-                                             BlurRadius="20" 
-                                             ShadowDepth="0" 
-                                             Opacity="0.3"/>
-                            </Border.Effect>
-                        </Border>
-
-                        <ContentPresenter Content="{TemplateBinding Tag}"
-                                     HorizontalAlignment="Center"
-                                     VerticalAlignment="Center"/>
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background">
-                    <Setter.Value>
-                        <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-                            <GradientStop Color="#362C59" Offset="0.1"/>
-                            <GradientStop Color="#1A1728" Offset="1"/>
-                        </RadialGradientBrush>
-                    </Setter.Value>
-                </Setter>
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-
-    <!-- In ButtonStyles.xaml -->
-    <Style x:Key="CircularButtonStyle" TargetType="Button" >
-        <Setter Property="Height" Value="25"/>
-        <Setter Property="Margin" Value="5,0,0,0"/>
+        <Setter Property="Width" Value="50"/>
+        <Setter Property="Margin" Value="5"/>
         <Setter Property="Background" Value="{StaticResource PurpleGradientBackground}"/>
         <Setter Property="BorderBrush" Value="{StaticResource PurpleGradientBorder}"/>
-        <Setter Property="Foreground" Value="#E0E1EE"/>
-        <Setter Property="Cursor" Value="Hand"/>
-        <Setter Property="BorderThickness" Value="1.5"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -454,33 +345,22 @@
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="8">
                             <Border.Effect>
-                                <DropShadowEffect Color="#682EC7" 
+                                <DropShadowEffect Color="{StaticResource PurpleColor}" 
                                             BlurRadius="20" 
                                             ShadowDepth="0" 
                                             Opacity="0.3"/>
                             </Border.Effect>
                         </Border>
-                        <!-- Maintain the same outer margin to keep width -->
-                        <Grid Margin="18,0,18,0">
-                            <!-- Single column grid for centered icon -->
-                            <ContentPresenter Content="{TemplateBinding Tag}"
+                        <ContentPresenter Content="{TemplateBinding Tag}"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"/>
                         </Grid>
-                    </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background">
-                    <Setter.Value>
-                        <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-                            <GradientStop Color="#4B2393" Offset="0.1"/>
-                            <GradientStop Color="#190F33" Offset="1"/>
-                        </RadialGradientBrush>
-                    </Setter.Value>
-                </Setter>
+                <Setter Property="Background" Value="{StaticResource PurpleGradientHover}"/>
             </Trigger>
         </Style.Triggers>
     </Style>

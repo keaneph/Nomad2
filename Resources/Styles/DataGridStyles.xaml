@@ -2,20 +2,20 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!-- DataGrid Styles -->
+    <!--overall datagrid style, general-->
     <Style x:Key="DataGridStyle" TargetType="DataGrid">
         <Setter Property="Background" Value="{StaticResource PrimaryBackgroundBrush}"/>
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
         <Setter Property="BorderThickness" Value="1.5"/>
         <Setter Property="RowBackground" Value="{StaticResource SecondaryBackgroundBrush}"/>
-        <Setter Property="AlternatingRowBackground" Value="#1C1C28"/>
+        <!--thinking to just set vertical lines; looks weird, will look into it after a couple more data-->
         <Setter Property="GridLinesVisibility" Value="None"/>
-        <Setter Property="VerticalGridLinesBrush" Value="{StaticResource BorderBrush}"/>
-        <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource BorderBrush}"/>
         <Setter Property="RowHeight" Value="50"/>
         <Setter Property="FontFamily" Value="{StaticResource RubikSemibold}"/>
         <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
     </Style>
-
+    
+    <!--datagrid column header, dividing it for aesthetics-->
     <Style x:Key="DataGridColumnHeaderStyle" TargetType="DataGridColumnHeader">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
@@ -23,6 +23,7 @@
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="Padding" Value="12,8"/>
         <Setter Property="Height" Value="40"/>
+        <!--set to false so column header wont sort itself-->
         <Setter Property="IsHitTestVisible" Value="False"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -33,15 +34,16 @@
                                 BorderBrush="{StaticResource BorderBrush}"
                                 Background="{TemplateBinding Background}">
                             <ContentPresenter Margin="{TemplateBinding Padding}"
-                                            VerticalAlignment="Center"
-                                            HorizontalAlignment="Center"/>
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Center"/>
                         </Border>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-
+    
+    <!--actual cell style-->
     <Style x:Key="DataGridCellStyle" TargetType="DataGridCell">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
@@ -60,20 +62,21 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Foreground" Value="#E0E1EE"/>
+                <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
 
+    <!--by gridrow, mouseover is fourthbackgroundbrush, isselected thirdbackgroundbrush-->
     <Style x:Key="DataGridRowStyle" TargetType="DataGridRow">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="SnapsToDevicePixels" Value="true"/>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="#1A1C2E"/>
+                <Setter Property="Background" Value="{StaticResource FourthBackgroundBrush}"/>
             </Trigger>
             <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Background" Value="#282939"/>
+                <Setter Property="Background" Value="{StaticResource ThirdBackgroundBrush}"/>
             </Trigger>
         </Style.Triggers>
     </Style>

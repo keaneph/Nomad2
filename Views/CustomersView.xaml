@@ -30,7 +30,7 @@
                           DisplayMemberPath="DisplayName"/>
 
                 <Button Command="{Binding ToggleSortDirectionCommand}"
-                        Style="{StaticResource CircularButtonStyle}">
+                        Style="{StaticResource ToggleSortButtonStyle}">
                     <Button.Tag>
                         <Viewbox Width="16" 
                                  Height="16">

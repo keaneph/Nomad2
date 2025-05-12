@@ -8,10 +8,11 @@
         <Setter Property="Margin" Value="0,10,0,5"/>
     </Style>
 
+    <!--height 34-->
     <Style x:Key="FormTextBoxStyle" TargetType="TextBox">
         <Setter Property="Height" Value="34"/>
-        <Setter Property="Background" Value="#1C1C28"/>
-        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="{StaticResource FourthBackgroundBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
         <Setter Property="FontFamily" Value="{StaticResource RubikBold}"/>
         <Setter Property="FontSize" Value="12"/>
@@ -22,30 +23,23 @@
             <Setter.Value>
                 <ControlTemplate TargetType="TextBox">
                     <Border Background="{TemplateBinding Background}"
-                     BorderBrush="{TemplateBinding BorderBrush}"
-                     BorderThickness="{TemplateBinding BorderThickness}"
-                     CornerRadius="8">
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="8">
+                        <!--text inside-->
                         <ScrollViewer x:Name="PART_ContentHost"
-                             Margin="{TemplateBinding Padding}"
-                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                      Margin="{TemplateBinding Padding}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-
-    <Style x:Key="FormComboBoxStyle" TargetType="ComboBox">
-        <Setter Property="Height" Value="40"/>
-        <Setter Property="Background" Value="#1C1C28"/>
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="Padding" Value="10,0"/>
-    </Style>
-
+    
+    <!--dark theme formdatepicker-->
     <Style x:Key="FormDatePickerStyle" TargetType="DatePicker">
-        <Setter Property="Background" Value="#1C1C28"/>
-        <Setter Property="Foreground" Value="#E0E1EE"/>
+        <Setter Property="Background" Value="{StaticResource FourthBackgroundBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Template">
@@ -53,22 +47,22 @@
                 <ControlTemplate TargetType="DatePicker">
                     <Grid>
                         <Border Background="{TemplateBinding Background}"
-                         BorderBrush="{TemplateBinding BorderBrush}"
-                         BorderThickness="{TemplateBinding BorderThickness}"
-                         CornerRadius="8">
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
                             <Grid Margin="0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="35"/>
-                                    <!-- Increased width -->
                                 </Grid.ColumnDefinitions>
-
+                                
+                                <!--this is the day-month-year text-->
                                 <DatePickerTextBox x:Name="PART_TextBox"
                                           Grid.Column="0"
                                           Foreground="{TemplateBinding Foreground}"
                                           FontFamily="{StaticResource RubikSemibold}"
-                                          FontSize="13"
-                                          Padding="15,0,0,0"
+                                          FontSize="12"
+                                          Padding="10,0,0,0"
                                           VerticalContentAlignment="Center"
                                           Background="Transparent"
                                           BorderThickness="0">
@@ -81,32 +75,33 @@
                                         </ControlTemplate>
                                     </DatePickerTextBox.Template>
                                 </DatePickerTextBox>
-
+                                
+                                <!--arrow button-->
                                 <Button x:Name="PART_Button"
-                                 Grid.Column="1"
-                                 Margin="0,0,0,0"
-                                 Padding="0"
-                                 Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=Border}}"
-                                 Width="35"
-                                 Foreground="#8183A7"
-                                 VerticalAlignment="Stretch"
-                                 HorizontalAlignment="Stretch"
-                                 Style="{StaticResource TransparentButtonStyle}">
+                                         Grid.Column="1"
+                                         Margin="0,0,0,0"
+                                         Padding="0"
+                                         Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=Border}}"
+                                         Width="35"
+                                         Foreground="#8183A7"
+                                         VerticalAlignment="Stretch"
+                                         HorizontalAlignment="Stretch"
+                                         Style="{StaticResource TransparentButtonStyle}">
                                     <Path Data="M7,10L12,15L17,10"
-                                   Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
-                                   StrokeThickness="1.5"
-                                   StrokeLineJoin="Round"
-                                   Width="25"
-                                   Height="25"/>
+                                           Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                           Style="{StaticResource PathStyle}"
+                                           Width="25"
+                                           Height="25"/>
                                 </Button>
                             </Grid>
                         </Border>
 
+                        <!--where the calendar actually spawns-->
                         <Popup x:Name="PART_Popup"
-                        AllowsTransparency="True"
-                        Placement="Bottom"
-                        PlacementTarget="{Binding ElementName=PART_TextBox}"
-                        StaysOpen="False">
+                                AllowsTransparency="True"
+                                Placement="Bottom"
+                                PlacementTarget="{Binding ElementName=PART_TextBox}"
+                                StaysOpen="False">
                             <Border Background="#1C1C28"
                              BorderBrush="{StaticResource BorderBrush}"
                              BorderThickness="1"
@@ -114,7 +109,7 @@
                              Padding="10">
                                 <Calendar x:Name="PART_Calendar"
                                   Background="Transparent"
-                                  Foreground="#E0E1EE"
+                                  Foreground="{StaticResource TextPrimaryBrush}"
                                   BorderThickness="0"/>
                             </Border>
                         </Popup>
@@ -122,44 +117,6 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>
-
-    <!-- Add this Calendar style -->
-    <Style TargetType="Calendar">
-        <Setter Property="Background" Value="#1C1C28"/>
-        <Setter Property="Foreground" Value="#E0E1EE"/>
-        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
-    </Style>
-
-    <Style TargetType="CalendarItem">
-        <Setter Property="Background" Value="#1C1C28"/>
-        <Setter Property="Foreground" Value="#E0E1EE"/>
-    </Style>
-
-    <Style TargetType="CalendarDayButton">
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="#E0E1EE"/>
-        <Setter Property="FontFamily" Value="{StaticResource RubikSemibold}"/>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="#282939"/>
-            </Trigger>
-            <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Background" Value="{StaticResource PurpleGradientBackground}"/>
-                <Setter Property="Foreground" Value="#E0E1EE"/>
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-
-    <Style TargetType="CalendarButton">
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="#E0E1EE"/>
-        <Setter Property="FontFamily" Value="{StaticResource RubikSemibold}"/>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="#282939"/>
-            </Trigger>
-        </Style.Triggers>
     </Style>
 
 </ResourceDictionary>

@@ -47,9 +47,11 @@
                                Margin="0,0,0,5"/>
                     <Border Background="#282939" 
                             CornerRadius="8"
-                            Padding="15,8">
+                            Padding="15,8"
+                            Height="34"                        >
                         <TextBlock Text="{Binding Customer.CustomerId}"
                                    Foreground="#8183A7"
+                                   VerticalAlignment="Center"                                 
                                    FontFamily="{StaticResource RubikSemibold}"/>
                     </Border>
                 </DockPanel>
@@ -174,7 +176,7 @@
                           Foreground="#843153"
                           FontFamily="{StaticResource RubikSemibold}"
                           VerticalAlignment="Center"
-                           Margin="0,20,0,0"/>
+                           Margin="0,15,0,0"/>
             </StackPanel>
 
             <!-- Bottom Section -->

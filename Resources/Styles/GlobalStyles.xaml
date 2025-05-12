@@ -21,8 +21,6 @@
     <Color x:Key="GreenColor">#2EC78A</Color>
     <Color x:Key="OrangeColor">#FF9F0A</Color>
     <Color x:Key="RedColor">#843153</Color>
-    
-
 
     <!-- Brushes -->
     <SolidColorBrush x:Key="PrimaryBackgroundBrush" Color="{StaticResource PrimaryBackgroundColor}"/>
@@ -71,6 +69,11 @@
 
     <RadialGradientBrush x:Key="GreenGradientBackground" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
         <GradientStop Color="#2EC78A" Offset="0.1"/>
+        <GradientStop Color="#103D2E" Offset="1"/>
+    </RadialGradientBrush>
+
+    <RadialGradientBrush x:Key="GreenGradientHover" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
+        <GradientStop Color="#23A976" Offset="0.1"/>
         <GradientStop Color="#103D2E" Offset="1"/>
     </RadialGradientBrush>
 
@@ -219,7 +222,7 @@
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" TargetName="MainBackground" Value="#1A1C2E"/>
+                            <Setter Property="Background" TargetName="MainBackground" Value="{StaticResource FourthBackgroundBrush}"/>
                             <Setter Property="Foreground" Value="#E0E1EE"/>
                         </Trigger>
                         <Trigger Property="IsChecked" Value="True">
