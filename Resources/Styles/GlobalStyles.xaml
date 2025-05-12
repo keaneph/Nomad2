@@ -18,8 +18,11 @@
     <Color x:Key="SearchboxBackgroundColor">#0F1123</Color>
     <Color x:Key="ButtonBackgroundColor">#181B30</Color>
     <Color x:Key="PurpleColor">#682EC7</Color>
-    <Color x:Key="GreenColor">#7DE260</Color>
+    <Color x:Key="GreenColor">#2EC78A</Color>
     <Color x:Key="OrangeColor">#FF9F0A</Color>
+    <Color x:Key="RedColor">#843153</Color>
+    
+
 
     <!-- Brushes -->
     <SolidColorBrush x:Key="PrimaryBackgroundBrush" Color="{StaticResource PrimaryBackgroundColor}"/>
@@ -41,6 +44,11 @@
         <GradientStop Color="#190F33" Offset="1"/>
     </RadialGradientBrush>
 
+    <RadialGradientBrush x:Key="PurpleGradientHover" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
+        <GradientStop Color="#4B2393" Offset="0.1"/>
+        <GradientStop Color="#190F33" Offset="1"/>
+    </RadialGradientBrush>
+
     <RadialGradientBrush x:Key="PurpleGradientBorder" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.7" RadiusY="0.9">
         <GradientStop Color="#682EC7" Offset="0.5"/>
         <GradientStop Color="#2B2942" Offset="1"/>
@@ -50,6 +58,11 @@
         <GradientStop Color="#843153" Offset="0.1"/>
         <GradientStop Color="#2C1A1E" Offset="1"/>
     </RadialGradientBrush>
+
+    <RadialGradientBrush x:Key="RedGradientHover" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
+            <GradientStop Color="#6E2945" Offset="0.1"/>
+            <GradientStop Color="#2C1A1E" Offset="1"/>
+     </RadialGradientBrush>
 
     <RadialGradientBrush x:Key="RedGradientBorder" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.7" RadiusY="0.9">
         <GradientStop Color="#843153" Offset="0.5"/>
@@ -66,13 +79,27 @@
         <GradientStop Color="#103D2E" Offset="1"/>
     </RadialGradientBrush>
 
-     <RadialGradientBrush x:Key="Test" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
+    <RadialGradientBrush x:Key="DisabledBackground" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
+        <GradientStop Color="#282939" Offset="0.1"/>
+        <GradientStop Color="#1A1728" Offset="1"/>
+    </RadialGradientBrush>
+
+    <RadialGradientBrush x:Key="DisabledBorder" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.7" RadiusY="0.9">
+        <GradientStop Color="#282939" Offset="0.5"/>
+        <GradientStop Color="#1A1728" Offset="1"/>
+    </RadialGradientBrush>
+
+    <RadialGradientBrush x:Key="Test" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
         <GradientStop Color="#44336A " Offset="0.1"/>
         <GradientStop Color="#1A1728" Offset="1"/>
      </RadialGradientBrush>
 
+    <RadialGradientBrush x:Key="TealGradientBackground" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
+        <GradientStop Color="#2EC7C7" Offset="0.1"/>
+        <GradientStop Color="#0F3333" Offset="1"/>
+    </RadialGradientBrush>
 
-            <!-- Common Effects -->
+    <!-- Common Effects -->
     <DropShadowEffect x:Key="PurpleShadowEffect" Color="#682EC7" BlurRadius="20" ShadowDepth="0" Opacity="0.3"/>
     <DropShadowEffect x:Key="RedShadowEffect" Color="#843153" BlurRadius="20" ShadowDepth="0" Opacity="0.3"/>
     <DropShadowEffect x:Key="GreenShadowEffect" Color="#75B99B" BlurRadius="20" ShadowDepth="0" Opacity="0.3"/>

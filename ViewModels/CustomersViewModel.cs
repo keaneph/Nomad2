@@ -25,6 +25,19 @@ namespace Nomad2.ViewModels
         private System.Collections.IList _selectedCustomers;
         private SortOption _currentSortOption;
         private ObservableCollection<SortOption> _availableSortOptions;
+        private bool _isAscending = true;
+        public bool IsAscending
+        {
+            get => _isAscending;
+            set
+            {
+                _isAscending = value;
+                OnPropertyChanged();
+                LoadCustomers(); // Refresh when sort direction changes
+            }
+        }
+
+        public ICommand ToggleSortDirectionCommand { get; }
 
         // In your constructor:
         public ICommand ViewImageCommand { get; }
@@ -37,32 +50,17 @@ namespace Nomad2.ViewModels
 
             _customerService = new CustomerService();
             Customers = new ObservableCollection<Customer>();
+
+           
             // Initialize sort options
             AvailableSortOptions = new ObservableCollection<SortOption>
         {
-            // Customer ID
-            new SortOption { DisplayName = "ID (Ascending)", Option = CustomerSortOption.CustomerId, IsAscending = true },
-            new SortOption { DisplayName = "ID (Descending)", Option = CustomerSortOption.CustomerId, IsAscending = false },
-            
-            // Name
-            new SortOption { DisplayName = "Name (A-Z)", Option = CustomerSortOption.Name, IsAscending = true },
-            new SortOption { DisplayName = "Name (Z-A)", Option = CustomerSortOption.Name, IsAscending = false },
-            
-            // Phone Number
-            new SortOption { DisplayName = "Phone (A-Z)", Option = CustomerSortOption.PhoneNumber, IsAscending = true },
-            new SortOption { DisplayName = "Phone (Z-A)", Option = CustomerSortOption.PhoneNumber, IsAscending = false },
-            
-            // Address
-            new SortOption { DisplayName = "Address (A-Z)", Option = CustomerSortOption.Address, IsAscending = true },
-            new SortOption { DisplayName = "Address (Z-A)", Option = CustomerSortOption.Address, IsAscending = false },
-            
-            // Registration Date
-            new SortOption { DisplayName = "Date (Newest)", Option = CustomerSortOption.RegistrationDate, IsAscending = false },
-            new SortOption { DisplayName = "Date (Oldest)", Option = CustomerSortOption.RegistrationDate, IsAscending = true },
-            
-            // Status
-            new SortOption { DisplayName = "Status (A-Z)", Option = CustomerSortOption.Status, IsAscending = true },
-            new SortOption { DisplayName = "Status (Z-A)", Option = CustomerSortOption.Status, IsAscending = false }
+            new SortOption { DisplayName = "ID", Option = CustomerSortOption.CustomerId },
+            new SortOption { DisplayName = "Name", Option = CustomerSortOption.Name },
+            new SortOption { DisplayName = "Phone", Option = CustomerSortOption.PhoneNumber },
+            new SortOption { DisplayName = "Address", Option = CustomerSortOption.Address },
+            new SortOption { DisplayName = "Date", Option = CustomerSortOption.RegistrationDate },
+            new SortOption { DisplayName = "Status", Option = CustomerSortOption.Status }
         };
 
             CurrentSortOption = AvailableSortOptions.First();
@@ -75,6 +73,7 @@ namespace Nomad2.ViewModels
             NextPageCommand = new RelayCommand(ExecuteNextPage, CanExecuteNextPage);
             PreviousPageCommand = new RelayCommand(ExecutePreviousPage, CanExecutePreviousPage);
             ViewImageCommand = new RelayCommand<string>(ExecuteViewImage);
+            ToggleSortDirectionCommand = new RelayCommand(() => IsAscending = !IsAscending);
 
             // Load initial data
             _ = LoadCustomers();
@@ -360,7 +359,14 @@ namespace Nomad2.ViewModels
         {
             try
             {
-                var (customers, totalCount) = await _customerService.GetCustomersAsync(_currentPage, SearchText, CurrentSortOption);
+                var sortOption = new SortOption
+                {
+                    Option = CurrentSortOption.Option,
+                    IsAscending = IsAscending
+                };
+
+                var (customers, totalCount) = await _customerService.GetCustomersAsync(
+                    _currentPage, SearchText, sortOption);
 
                 Customers.Clear();
                 foreach (var customer in customers)

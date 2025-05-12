@@ -1,7 +1,10 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
+
     <!-- Base Button Style -->
+    <!--what i set for base button: cursor, borderthickness, fontfamily, foreground, border dropshadow, tag and content-->
+    <!--this is so i can track other styles that will inherit from this, for redundancy-->
     <Style x:Key="BaseButtonStyle" TargetType="Button">
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="BorderThickness" Value="2,1.5,2,2"/>
@@ -11,11 +14,13 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Grid>
+                        <!--border for base button-->
                         <Border x:Name="ButtonBorder"
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="8">
+                            <!--dropshadow effect-->
                             <Border.Effect>
                                 <DropShadowEffect Color="#682EC7" 
                                                 BlurRadius="20" 
@@ -23,19 +28,22 @@
                                                 Opacity="0.3"/>
                             </Border.Effect>
                         </Border>
+                        
+                        <!--content layout-->
                         <Grid Margin="16,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
+                            <!--2-column layout defined above, one for the tag and one for the content. tag is icon, content is text-->
                             <ContentPresenter Grid.Column="0" 
-                                            Content="{TemplateBinding Tag}"
-                                            VerticalAlignment="Center"
-                                            Margin="0,0,8,0"/>
+                                              Content="{TemplateBinding Tag}"
+                                              VerticalAlignment="Center"
+                                              Margin="0,0,8,0"/>
                             <ContentPresenter Grid.Column="1"
-                                            Content="{TemplateBinding Content}"
-                                            HorizontalAlignment="Left"
-                                            VerticalAlignment="Center"/>
+                                              Content="{TemplateBinding Content}"
+                                              HorizontalAlignment="Left"
+                                              VerticalAlignment="Center"/>
                         </Grid>
                     </Grid>
                 </ControlTemplate>
@@ -51,32 +59,7 @@
         <Setter Property="BorderBrush" Value="{StaticResource PurpleGradientBorder}"/>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background">
-                    <Setter.Value>
-                        <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-                            <GradientStop Color="#4B2393" Offset="0.1"/>
-                            <GradientStop Color="#190F33" Offset="1"/>
-                        </RadialGradientBrush>
-                    </Setter.Value>
-                </Setter>
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-
-    <!-- Secondary Button Style -->
-    <Style x:Key="SecondaryButtonStyle" BasedOn="{StaticResource BaseButtonStyle}" TargetType="Button">
-        <Setter Property="Height" Value="25"/>
-        <Setter Property="Background" Value="{StaticResource RedGradientBackground}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource RedGradientBorder}"/>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background">
-                    <Setter.Value>
-                        <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-                            <GradientStop Color="#6E2945" Offset="0.1"/>
-                            <GradientStop Color="#2C1A1E" Offset="1"/>
-                        </RadialGradientBrush>
-                    </Setter.Value>
+                <Setter Property="Background" Value="{StaticResource PurpleGradientHover}">
                 </Setter>
             </Trigger>
         </Style.Triggers>
@@ -93,62 +76,49 @@
                 <ControlTemplate TargetType="Button">
                     <Grid>
                         <Border x:Name="ButtonBorder"
-                            Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="8">
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <!--setting border dropshadow effect once again, cause it doesnt inherit from base button idk why-->
+                            <!--maybe cause its under a template-->
                             <Border.Effect>
-                                <DropShadowEffect Color="#682EC7" 
+                                <DropShadowEffect Color="{StaticResource PurpleColor}" 
                                             BlurRadius="20" 
                                             ShadowDepth="0" 
                                             Opacity="0.3"/>
                             </Border.Effect>
                         </Border>
+                        <!--just 1 column layout; for the tag only (icon), will not be adding content(text) to keep it clean-->
                         <ContentPresenter Content="{TemplateBinding Tag}"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"/>
                     </Grid>
                     <ControlTemplate.Triggers>
+                        <!--if pagination cant be clicked due to low no. of data, it changes styles-->
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Background">
-                                <Setter.Value>
-                                    <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-                                        <GradientStop Color="#282939" Offset="0.1"/>
-                                        <GradientStop Color="#1A1728" Offset="1"/>
-                                    </RadialGradientBrush>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="BorderBrush">
-                                <Setter.Value>
-                                    <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.7" RadiusY="0.9">
-                                        <GradientStop Color="#282939" Offset="0.5"/>
-                                        <GradientStop Color="#1A1728" Offset="1"/>
-                                    </RadialGradientBrush>
-                                </Setter.Value>
-                            </Setter>
+                            <Setter Property="Background" Value="{StaticResource DisabledBackground}"/>
+                            <Setter Property="BorderBrush" Value="{StaticResource DisabledBorder}"/>
                             <Setter Property="Opacity" Value="0.5"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        
+        <!--hover state style of pagination-->
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background">
-                    <Setter.Value>
-                        <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-                            <GradientStop Color="#4B2393" Offset="0.1"/>
-                            <GradientStop Color="#190F33" Offset="1"/>
-                        </RadialGradientBrush>
-                    </Setter.Value>
-                </Setter>
+                <Setter Property="Background" Value="{StaticResource PurpleGradientHover}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
 
     <!-- Clear Button Style -->
+    <!--width of 65 for small-->
     <Style x:Key="ClearButtonStyle" BasedOn="{StaticResource BaseButtonStyle}" TargetType="Button">
         <Setter Property="Height" Value="25"/>
+        <Setter Property="Width" Value="65"/>
         <Setter Property="Background" Value="{StaticResource RedGradientBackground}"/>
         <Setter Property="BorderBrush" Value="{StaticResource RedGradientBorder}"/>
         <Setter Property="Template">
@@ -161,32 +131,23 @@
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="8">
                             <Border.Effect>
-                                <DropShadowEffect Color="#843153" 
+                                <DropShadowEffect Color="{StaticResource RedColor}" 
                                             BlurRadius="20" 
                                             ShadowDepth="0" 
                                             Opacity="0.3"/>
                             </Border.Effect>
                         </Border>
-                        <!-- Maintain the same outer margin to keep width -->
-                        <Grid Margin="16,0,20,0">
-                            <!-- Single column grid for centered icon -->
-                            <ContentPresenter Content="{TemplateBinding Tag}"
+                        <!-- single column grid for icon just like pagination -->
+                        <ContentPresenter Content="{TemplateBinding Tag}"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"/>
-                        </Grid>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background">
-                    <Setter.Value>
-                        <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-                            <GradientStop Color="#6E2945" Offset="0.1"/>
-                            <GradientStop Color="#2C1A1E" Offset="1"/>
-                        </RadialGradientBrush>
-                    </Setter.Value>
+                <Setter Property="Background" Value="{StaticResource RedGradientHover}">
                 </Setter>
             </Trigger>
         </Style.Triggers>
@@ -194,6 +155,7 @@
 
     <!-- Save Button Style -->
     <Style x:Key="SaveButtonStyle" BasedOn="{StaticResource BaseButtonStyle}" TargetType="Button">
+        <!--same h and w for big buttons like primary-->
         <Setter Property="Height" Value="39"/>
         <Setter Property="Width" Value="140"/>
         <Setter Property="Background" Value="{StaticResource GreenGradientBackground}"/>
@@ -208,11 +170,13 @@
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="8">
                         </Border>
+                        <!--still cant inherit from base button style-->
                         <Grid Margin="16,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
+                            <!--qqkdqi RAHHHHHHHHHH-->
                             <ContentPresenter Grid.Column="0" 
                                         Content="{TemplateBinding Tag}"
                                         VerticalAlignment="Center"
@@ -465,6 +429,55 @@
                         <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
                             <GradientStop Color="#362C59" Offset="0.1"/>
                             <GradientStop Color="#1A1728" Offset="1"/>
+                        </RadialGradientBrush>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- In ButtonStyles.xaml -->
+    <Style x:Key="CircularButtonStyle" TargetType="Button" >
+        <Setter Property="Height" Value="25"/>
+        <Setter Property="Margin" Value="5,0,0,0"/>
+        <Setter Property="Background" Value="{StaticResource PurpleGradientBackground}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource PurpleGradientBorder}"/>
+        <Setter Property="Foreground" Value="#E0E1EE"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="BorderThickness" Value="1.5"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="8">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#682EC7" 
+                                            BlurRadius="20" 
+                                            ShadowDepth="0" 
+                                            Opacity="0.3"/>
+                            </Border.Effect>
+                        </Border>
+                        <!-- Maintain the same outer margin to keep width -->
+                        <Grid Margin="18,0,18,0">
+                            <!-- Single column grid for centered icon -->
+                            <ContentPresenter Content="{TemplateBinding Tag}"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"/>
+                        </Grid>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
+                            <GradientStop Color="#4B2393" Offset="0.1"/>
+                            <GradientStop Color="#190F33" Offset="1"/>
                         </RadialGradientBrush>
                     </Setter.Value>
                 </Setter>

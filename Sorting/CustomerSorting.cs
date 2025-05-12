@@ -20,6 +20,6 @@ namespace Nomad2.Sorting
     {
         public string DisplayName { get; set; }
         public CustomerSortOption Option { get; set; }
-        public bool IsAscending { get; set; } = true;
+        public bool IsAscending { get; set; } = true; // Keep this for the service
     }
 }
