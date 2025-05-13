@@ -52,6 +52,8 @@ namespace Nomad2.Services
 
 
                 // SQL query to fetch customers with search and sort functionality
+                // date_format is implemented like that so that it can be searched in different formats
+                // yyyy-mm-dd, mm/dd/yyyy, dd/mm/yyyy
                 string query = @"
                                 SELECT SQL_CALC_FOUND_ROWS *
                                 FROM customer
@@ -60,7 +62,10 @@ namespace Nomad2.Services
                                     LOWER(name) LIKE LOWER(@SearchTerm) OR
                                     LOWER(phone_number) LIKE LOWER(@SearchTerm) OR
                                     LOWER(address) LIKE LOWER(@SearchTerm) OR
-                                    LOWER(customer_status) LIKE LOWER(@SearchTerm)
+                                    LOWER(customer_status) LIKE LOWER(@SearchTerm) OR
+                                    DATE_FORMAT(registration_date, '%Y-%m-%d') LIKE @SearchTerm OR
+                                    DATE_FORMAT(registration_date, '%m/%d/%Y') LIKE @SearchTerm OR
+                                    DATE_FORMAT(registration_date, '%d/%m/%Y') LIKE @SearchTerm
                                 ORDER BY " + orderByColumn + " " + direction + @"
                                 LIMIT @Offset, @PageSize";
 
