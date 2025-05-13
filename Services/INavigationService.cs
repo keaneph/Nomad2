@@ -1,5 +1,4 @@
-﻿// Services/INavigationService.cs
-using System;
+﻿using System;
 
 namespace Nomad2.Services
 {
