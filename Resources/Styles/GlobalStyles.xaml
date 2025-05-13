@@ -41,65 +41,45 @@
         <GradientStop Color="#682EC7" Offset="0.1"/>
         <GradientStop Color="#190F33" Offset="1"/>
     </RadialGradientBrush>
-
     <RadialGradientBrush x:Key="PurpleGradientHover" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
         <GradientStop Color="#4B2393" Offset="0.1"/>
         <GradientStop Color="#190F33" Offset="1"/>
     </RadialGradientBrush>
-
     <RadialGradientBrush x:Key="PurpleGradientBorder" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.7" RadiusY="0.9">
         <GradientStop Color="#682EC7" Offset="0.5"/>
         <GradientStop Color="#2B2942" Offset="1"/>
     </RadialGradientBrush>
-
     <RadialGradientBrush x:Key="RedGradientBackground" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
         <GradientStop Color="#843153" Offset="0.1"/>
         <GradientStop Color="#2C1A1E" Offset="1"/>
     </RadialGradientBrush>
-
     <RadialGradientBrush x:Key="RedGradientHover" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-            <GradientStop Color="#6E2945" Offset="0.1"/>
-            <GradientStop Color="#2C1A1E" Offset="1"/>
-     </RadialGradientBrush>
-
+        <GradientStop Color="#6E2945" Offset="0.1"/>
+        <GradientStop Color="#2C1A1E" Offset="1"/>
+    </RadialGradientBrush>
     <RadialGradientBrush x:Key="RedGradientBorder" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.7" RadiusY="0.9">
         <GradientStop Color="#843153" Offset="0.5"/>
         <GradientStop Color="#3A2228" Offset="1"/>
     </RadialGradientBrush>
-
     <RadialGradientBrush x:Key="GreenGradientBackground" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
         <GradientStop Color="#2EC78A" Offset="0.1"/>
         <GradientStop Color="#103D2E" Offset="1"/>
     </RadialGradientBrush>
-
     <RadialGradientBrush x:Key="GreenGradientHover" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
         <GradientStop Color="#23A976" Offset="0.1"/>
         <GradientStop Color="#103D2E" Offset="1"/>
     </RadialGradientBrush>
-
     <RadialGradientBrush x:Key="GreenGradientBorder" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.7" RadiusY="0.9">
         <GradientStop Color="#23A976" Offset="0.5"/>
         <GradientStop Color="#103D2E" Offset="1"/>
     </RadialGradientBrush>
-
     <RadialGradientBrush x:Key="DisabledBackground" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
         <GradientStop Color="#282939" Offset="0.1"/>
         <GradientStop Color="#1A1728" Offset="1"/>
     </RadialGradientBrush>
-
     <RadialGradientBrush x:Key="DisabledBorder" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.7" RadiusY="0.9">
         <GradientStop Color="#282939" Offset="0.5"/>
         <GradientStop Color="#1A1728" Offset="1"/>
-    </RadialGradientBrush>
-
-    <RadialGradientBrush x:Key="Test" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-        <GradientStop Color="#44336A " Offset="0.1"/>
-        <GradientStop Color="#1A1728" Offset="1"/>
-     </RadialGradientBrush>
-
-    <RadialGradientBrush x:Key="TealGradientBackground" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-        <GradientStop Color="#2EC7C7" Offset="0.1"/>
-        <GradientStop Color="#0F3333" Offset="1"/>
     </RadialGradientBrush>
 
     <!-- Common Effects -->
@@ -108,6 +88,7 @@
     <DropShadowEffect x:Key="GreenShadowEffect" Color="#75B99B" BlurRadius="20" ShadowDepth="0" Opacity="0.3"/>
 
     <!-- Searchbox Style -->
+    <!--FIXME: searchbox hover and selected-->
     <Style x:Key="SearchBoxStyle" TargetType="TextBox">
         <Setter Property="Height" Value="34"/>
         <Setter Property="Margin" Value="20"/>
@@ -257,6 +238,7 @@
     <Style x:Key="BaseComboboxStyle" TargetType="ComboBox">
         <Setter Property="Height" Value="25"/>
         <Setter Property="Width" Value="150"/>
+        <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Margin" Value="0,20"/>
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
@@ -283,7 +265,7 @@
                                             BorderThickness="{Binding BorderThickness, RelativeSource={RelativeSource AncestorType=ComboBox}}"
                                             CornerRadius="8">
                                         <Border.Effect>
-                                            <DropShadowEffect Color="#682EC7" 
+                                            <DropShadowEffect Color="{StaticResource PurpleColor}" 
                                                              BlurRadius="20" 
                                                              ShadowDepth="0" 
                                                              Opacity="0.3"/>
@@ -312,19 +294,14 @@
                                                   Margin="0,0,12,0"/>
                                         </Grid>
                                     </Border>
+                                    <!--needed to setup the bg binding in order for the hover to work...-->
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="#1A1C2E"/>
+                                            <Setter TargetName="MainBorder" Property="Background" Value="{StaticResource PurpleGradientHover}"/>
                                         </Trigger>
                                         <Trigger Property="IsChecked" Value="True">
                                             <Setter TargetName="MainBorder" Property="CornerRadius" Value="8,8,0,0"/>
-                                            <Setter Property="Background">
-                                                <Setter.Value>
-                                                    <RadialGradientBrush GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
-                                                        <GradientStop Color="#4B2393" Offset="0.1"/>
-                                                        <GradientStop Color="#190F33" Offset="1"/>
-                                                    </RadialGradientBrush>
-                                                </Setter.Value>
+                                            <Setter Property="Background" Value="{StaticResource PurpleGradientBackground}">
                                             </Setter>
                                         </Trigger>
                                     </ControlTemplate.Triggers>

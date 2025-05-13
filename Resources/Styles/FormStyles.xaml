@@ -102,6 +102,7 @@
                                 Placement="Bottom"
                                 PlacementTarget="{Binding ElementName=PART_TextBox}"
                                 StaysOpen="False">
+                            <!--FIXME: i cant get this to work -->
                             <Border Background="#1C1C28"
                              BorderBrush="{StaticResource BorderBrush}"
                              BorderThickness="1"
