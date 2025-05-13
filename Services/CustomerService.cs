@@ -11,6 +11,7 @@ namespace Nomad2.Services
 {
     public class CustomerService : ICustomerService
     {
+        //db instance and pagination fixed size
         private readonly DatabaseHelper _db;
         private readonly int _pageSize = 12;
 
@@ -26,6 +27,7 @@ namespace Nomad2.Services
             string searchTerm = "",
             SortOption sortOption = null)
         {
+            //db check
             using (var connection = _db.GetConnection())
             {
                 await connection.OpenAsync();
@@ -33,6 +35,7 @@ namespace Nomad2.Services
                 var offset = (page - 1) * _pageSize;
                 var customers = new List<Customer>();
 
+                // determines the column name for sorting based on the sort option
                 string orderByColumn = sortOption?.Option switch
                 {
                     CustomerSortOption.CustomerId => "customer_id",
@@ -44,27 +47,33 @@ namespace Nomad2.Services
                     _ => "name"
                 };
 
+                //sets sort direction
                 string direction = sortOption?.IsAscending == true ? "ASC" : "DESC";
 
-                string query = @"
-            SELECT SQL_CALC_FOUND_ROWS *
-            FROM customer
-            WHERE customer_id LIKE @SearchTerm 
-               OR name LIKE @SearchTerm 
-               OR phone_number LIKE @SearchTerm 
-               OR address LIKE @SearchTerm
-               OR customer_status LIKE @SearchTerm
-            ORDER BY " + orderByColumn + " " + direction + @"
-            LIMIT @Offset, @PageSize";
 
+                // SQL query to fetch customers with search and sort functionality
+                string query = @"
+                                SELECT SQL_CALC_FOUND_ROWS *
+                                FROM customer
+                                WHERE customer_id LIKE @SearchTerm 
+                                OR name LIKE @SearchTerm 
+                                OR phone_number LIKE @SearchTerm 
+                                OR address LIKE @SearchTerm
+                                OR customer_status LIKE @SearchTerm
+                                ORDER BY " + orderByColumn + " " + direction + @"
+                                LIMIT @Offset, @PageSize";
+
+                //just commands to prevent injection
                 using (var command = new MySqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@SearchTerm", $"%{searchTerm}%");
                     command.Parameters.AddWithValue("@Offset", offset);
                     command.Parameters.AddWithValue("@PageSize", _pageSize);
 
+                    // executes
                     using (var reader = await command.ExecuteReaderAsync())
                     {
+                        // reads each record and creates Customer objects
                         while (await reader.ReadAsync())
                         {
                             customers.Add(new Customer
@@ -81,6 +90,8 @@ namespace Nomad2.Services
                     }
                 }
 
+                // this gets the total count of records
+                //FIXME: resposive cound of records if maximized
                 using (var countCommand = new MySqlCommand("SELECT FOUND_ROWS()", connection))
                 {
                     var totalCount = Convert.ToInt32(await countCommand.ExecuteScalarAsync());
@@ -89,6 +100,7 @@ namespace Nomad2.Services
             }
         }
 
+        //gets a customer by id
         public async Task<Customer> GetCustomerByIdAsync(string id)
         {
             using (var connection = _db.GetConnection())
@@ -120,9 +132,12 @@ namespace Nomad2.Services
             }
         }
 
+        //adding customer to db
         public async Task<bool> AddCustomerAsync(Customer customer)
 
         {
+            //using CustomerValidator.cs, will add more later on
+            //FIXME: more validations.
             var (isValid, errorMessage) = CustomerValidator.ValidateCustomer(customer);
             if (!isValid)
             {
@@ -132,6 +147,7 @@ namespace Nomad2.Services
             using (var connection = _db.GetConnection())
             {
                 await connection.OpenAsync();
+                // query to insert customer
                 string query = @"
                     INSERT INTO customer 
                     (customer_id, name, phone_number, address, government_id_picture, customer_status, registration_date) 
@@ -153,9 +169,11 @@ namespace Nomad2.Services
             }
         }
 
+        //for the edit part (update)
         public async Task<bool> UpdateCustomerAsync(Customer customer)
         {
-
+            //same validaiton
+            //FIXME: add more validation
             var (isValid, errorMessage) = CustomerValidator.ValidateCustomer(customer);
             if (!isValid)
             {
@@ -165,6 +183,7 @@ namespace Nomad2.Services
             using (var connection = _db.GetConnection())
             {
                 await connection.OpenAsync();
+                // just simple updates based on the customerid
                 string query = @"
                     UPDATE customer 
                     SET name = @Name, 
@@ -190,6 +209,7 @@ namespace Nomad2.Services
             }
         }
 
+        //deletes based on id
         public async Task<bool> DeleteCustomerAsync(string id)
         {
             using (var connection = _db.GetConnection())
@@ -205,6 +225,7 @@ namespace Nomad2.Services
             }
         }
 
+        //cleas all to clear table
         public async Task<bool> ClearAllCustomersAsync()
         {
             using (var connection = _db.GetConnection())
@@ -228,6 +249,7 @@ namespace Nomad2.Services
 
         }
 
+        //gets last id, then adds 1 to it, for the automatic customer id implementation
         public async Task<string> GetLastCustomerIdAsync()
         {
             using (var connection = _db.GetConnection())

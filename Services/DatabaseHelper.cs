@@ -3,6 +3,10 @@ using System;
 
 namespace Nomad2.Services
 {
+    //serves as db and table initalization.
+    //not sure what to add here yet aside from sql initalization
+
+    //FIXME: data integrity.
     public class DatabaseHelper
     {
         private readonly string _serverConnectionString;
@@ -11,6 +15,8 @@ namespace Nomad2.Services
 
         public DatabaseHelper()
         {
+            //FIXME: This should be moved to a config file. learn more about env hahahha.
+            //maybe use in SSIS too; to be notified later on.
             _serverConnectionString = "Server=localhost;Uid=root;Pwd=root;";
             _databaseConnectionString = $"{_serverConnectionString}Database={DATABASE_NAME};";
         }
@@ -30,6 +36,7 @@ namespace Nomad2.Services
 
         public void InitializeDatabase()
         {
+            //called from App.xaml.cs. will start everytime.
             CreateDatabase();
             CreateTables();
         }
@@ -42,15 +49,15 @@ namespace Nomad2.Services
                 {
                     connection.Open();
 
-                    // Check if database exists
+                    // check if database exists
                     string checkDatabase = $"SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{DATABASE_NAME}'";
                     using (var checkCommand = new MySqlCommand(checkDatabase, connection))
                     {
                         var result = checkCommand.ExecuteScalar();
-                        if (result != null) return; // Database already exists
+                        if (result != null) return; // database already exists
                     }
 
-                    // Create database if it doesn't exist
+                    // create database if it doesnt exist
                     string createDatabase = $"CREATE DATABASE {DATABASE_NAME}";
                     using (var command = new MySqlCommand(createDatabase, connection))
                     {
@@ -72,7 +79,8 @@ namespace Nomad2.Services
                 {
                     connection.Open();
 
-                    // Create Customer table
+                    // create Customer table
+                    //prim key is customer_id
                     string createCustomerTable = @"
                         CREATE TABLE IF NOT EXISTS customer (
                             customer_id VARCHAR(9) PRIMARY KEY NOT NULL,
@@ -84,7 +92,9 @@ namespace Nomad2.Services
                             registration_date DATE NOT NULL
                         )";
 
-                    // Create Bike table
+                    // create Bike table
+                    //prim key is bike_id
+                    //debating whether to use int or decimal for the daily rate; int is more simple.
                     string createBikeTable = @"
                         CREATE TABLE IF NOT EXISTS bike (
                             bike_id VARCHAR(9) PRIMARY KEY NOT NULL,
@@ -94,19 +104,21 @@ namespace Nomad2.Services
                             bike_status VARCHAR(30) NOT NULL
                         )";
 
-                    // Create Rental table
+                    // create Rental table
+                    //prim key is rental_id. wanted to use this for the payment and return tables too.
+                    //sir said to not use it and just use bike and customer id
                     string createRentalTable = @"
                         CREATE TABLE IF NOT EXISTS rentals (
                             rental_id VARCHAR(9) PRIMARY KEY NOT NULL,
                             customer_id VARCHAR(9) NOT NULL,
                             bike_id VARCHAR(9) NOT NULL,
-                            rental_status VARCHAR(30) NOT NULL,
                             rental_date DATE NOT NULL,
+                            rental_status VARCHAR(30) NOT NULL,
                             FOREIGN KEY (customer_id) REFERENCES customer(customer_id),
                             FOREIGN KEY (bike_id) REFERENCES bike(bike_id)
                         )";
 
-                    // Create Payment table
+                    // create Payment table
                     string createPaymentTable = @"
                         CREATE TABLE IF NOT EXISTS payments (
                             payment_id VARCHAR(9) PRIMARY KEY NOT NULL,
@@ -120,7 +132,7 @@ namespace Nomad2.Services
                             FOREIGN KEY (bike_id) REFERENCES bike(bike_id)
                         )";
 
-                    // Create Return table
+                    // create Return table
                     string createReturnTable = @"
                         CREATE TABLE IF NOT EXISTS returns (
                             return_id VARCHAR(9) PRIMARY KEY NOT NULL,
@@ -131,7 +143,7 @@ namespace Nomad2.Services
                             FOREIGN KEY (bike_id) REFERENCES bike(bike_id)
                         )";
 
-                    // Execute all create table commands
+                    // execute all create table commands
                     using (var command = new MySqlCommand())
                     {
                         command.Connection = connection;
