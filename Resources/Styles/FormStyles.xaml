@@ -3,7 +3,7 @@
 
     <!-- Form Styles -->
     <Style x:Key="FormLabelStyle" TargetType="TextBlock">
-        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="Margin" Value="0,10,0,5"/>
     </Style>

@@ -7,25 +7,28 @@ using System.Windows.Input;
 
 namespace Nomad2.ViewModels
 {
+    // viewModel for the customer add/edit dialog
     public class CustomerDialogViewModel : BaseViewModel
     {
-        private readonly Customer _customer;
-        private readonly Action<bool> _closeCallback;
-        private string _errorMessage;
-        private readonly bool _isEdit;
+        // private fields to store customer data and dialog state
+        private readonly Customer _customer;                // current customer being edited or created
+        private readonly Action<bool> _closeCallback;       // callback to close dialog with result
+        private string _errorMessage;                       // stores validation error messages
+        private readonly bool _isEdit;                      // indicates if this is an edit operation
 
         public CustomerDialogViewModel(Customer customer, bool isEdit, Action<bool> closeCallback)
         {
+            // validate and store constructor parameters
             _customer = customer ?? throw new ArgumentNullException(nameof(customer));
             _closeCallback = closeCallback ?? throw new ArgumentNullException(nameof(closeCallback));
             _isEdit = isEdit;
 
-            // Initialize commands
+            // initialize command objects for UI interactions
             SaveCommand = new RelayCommand(ExecuteSave, CanExecuteSave);
             CancelCommand = new RelayCommand(ExecuteCancel);
             BrowseCommand = new RelayCommand(ExecuteBrowse);
 
-            // Initialize status options
+            // initialize status options
             StatusOptions = new ObservableCollection<string>
             {
                 "Active",
@@ -34,6 +37,7 @@ namespace Nomad2.ViewModels
             };
         }
 
+        // props for ui binding
         public string DialogTitle => _isEdit ? "Edit Customer" : "Add Customer";
         public Customer Customer => _customer;
         public ObservableCollection<string> StatusOptions { get; }
@@ -48,31 +52,37 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // commands for UI actions
         public ICommand SaveCommand { get; }
         public ICommand CancelCommand { get; }
         public ICommand BrowseCommand { get; }
 
+        // command methods
+        // saves customer data if validation passes
         private void ExecuteSave()
         {
             if (CanExecuteSave())
             {
-                _closeCallback(true);
+                _closeCallback(true);   // close dialog with success result
             }
         }
 
         private void ExecuteCancel()
         {
-            _closeCallback(false);
+            _closeCallback(false); // close dialog with cancel result
         }
 
         private void ExecuteBrowse()
         {
+
+            // opens the filedialog
             var openFileDialog = new OpenFileDialog
             {
                 Filter = "Image files (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg|All files (*.*)|*.*",
                 Title = "Select Government ID Picture"
             };
 
+            // updates customer data if a file is selected
             if (openFileDialog.ShowDialog() == true)
             {
                 Customer.GovernmentIdPicture = openFileDialog.FileName;
@@ -80,6 +90,7 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // validates customer data again before save
         private bool CanExecuteSave()
         {
             var (isValid, errorMessage) = CustomerValidator.ValidateCustomer(_customer);

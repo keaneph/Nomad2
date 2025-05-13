@@ -4,25 +4,42 @@ using System.Windows.Input;
 
 namespace Nomad2.ViewModels
 {
+    // handles navigation and user information
     public class MainViewModel : BaseViewModel
     {
+        // service for handling navigation between different views, calls the interface
         private readonly INavigationService _navigationService;
+
+        // holds the currently displayed view model
         private BaseViewModel _currentView;
+
+        // default values still doesnt know how to implement this
+        //FIXME: future implementation
         private string _username = "Keane";
         private string _userRole = "Test";
+
+        // search text for the search bar
+        //FIXME: searchbox full implementation
         private string _searchText;
 
+
+        // constructor initializes navigation and sets up initial view
         public MainViewModel(INavigationService navigationService)
         {
             _navigationService = navigationService;
+            // subscribe to navigation service's view change event
             _navigationService.CurrentViewChanged += OnCurrentViewChanged;
 
-            // Changed to use RelayCommand<string> explicitly
+            // initialize navigation command
             NavigateCommand = new RelayCommand<string>(Execute_Navigate);
 
-            Execute_Navigate("Dashboard"); // Set default view
+
+            // sets dashboard as the default view
+            Execute_Navigate("Dashboard"); 
         }
 
+
+        // not yet implemented: username, userrole, and searchtext.
         public string Username
         {
             get => _username;
@@ -51,7 +68,9 @@ namespace Nomad2.ViewModels
                 _searchText = value;
                 OnPropertyChanged();
             }
+
         }
+        // property for current view with change notifications
 
         public BaseViewModel CurrentView
         {
@@ -63,8 +82,11 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // command to handle the navigation of views
         public ICommand NavigateCommand { get; }
 
+
+        // executes navigation to specified destination
         private void Execute_Navigate(string destination)
         {
             if (destination != null)
@@ -73,13 +95,20 @@ namespace Nomad2.ViewModels
             }
         }
 
+
+        // wanted to clean up any resources or event handlers when the view model is disposed
+        // doesnt know how to implement this yet
+        // got this from an example and a tip
         public void Dispose()
         {
             _navigationService.CurrentViewChanged -= OnCurrentViewChanged;
         }
 
+        // event handler for view changes, creates appropriate view model based on destination
         private void OnCurrentViewChanged(string viewName)
         {
+
+            // switch expression to create appropriate view model based on navigation
             CurrentView = viewName switch
             {
                 "Dashboard" => new DashboardViewModel(),
@@ -91,7 +120,7 @@ namespace Nomad2.ViewModels
                 "About" => new AboutViewModel(),
                 "Settings" => new SettingsViewModel(),
                 "Help" => new HelpViewModel(),
-                _ => _currentView
+                _ => _currentView // default case returns current view if destination is unknown
             };
         }
     }

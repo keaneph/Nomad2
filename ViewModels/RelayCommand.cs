@@ -1,13 +1,17 @@
-﻿// ViewModels/RelayCommand.cs
-using System;
+﻿using System;
 using System.Windows.Input;
 
 namespace Nomad2.ViewModels
 {
-    // Non-generic version
+    // mon-generic version; this is for command binding
+    // this is an implementation of relaycommand, got from online source
     public class RelayCommand : ICommand
     {
+
+        // stores current action to be executed
         private readonly Action _execute;
+
+        // stores current action to check if it can be executed
         private readonly Func<bool> _canExecute;
 
         public RelayCommand(Action execute, Func<bool> canExecute = null)
@@ -33,7 +37,7 @@ namespace Nomad2.ViewModels
         }
     }
 
-    // Generic version
+    // generic version
     public class RelayCommand<T> : ICommand
     {
         private readonly Action<T> _execute;

@@ -35,6 +35,7 @@
     <SolidColorBrush x:Key="PurpleBrush" Color="{StaticResource PurpleColor}"/>
     <SolidColorBrush x:Key="OrangeBrush" Color="{StaticResource OrangeColor}"/>
     <SolidColorBrush x:Key="GreenBrush" Color="{StaticResource GreenColor}"/>
+    <SolidColorBrush x:Key="RedBrush" Color="{StaticResource RedColor}"/>
 
     <!-- Common Gradients -->
     <RadialGradientBrush x:Key="PurpleGradientBackground" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
@@ -92,6 +93,7 @@
     <Style x:Key="SearchBoxStyle" TargetType="TextBox">
         <Setter Property="Height" Value="34"/>
         <Setter Property="Margin" Value="20"/>
+        <Setter Property="Padding" Value="18,0,5,0"/>
         <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
         <Setter Property="FontFamily" Value="{StaticResource RubikSemibold}"/>
         <Setter Property="FontSize" Value="12"/>

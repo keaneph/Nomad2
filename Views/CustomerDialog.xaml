@@ -19,97 +19,97 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- Enhanced Header -->
+            <!-- header -->
             <StackPanel>
-                <TextBlock Text="{Binding DialogTitle}"
-                           Foreground=  "#E0E1EE"
+                <!--  text is actually responsive (add/edit)-->
+                <TextBlock Text="{Binding DialogTitle}"                    
+                           Foreground=  "{StaticResource TextPrimaryBrush}"
                            FontSize="24"
                            FontFamily="{StaticResource RubikBold}"
                            Margin="0,0,0,5"/>
                 <TextBlock Text="All fields marked with * are required"
-                          Foreground="#8183A7"
+                          Foreground="{StaticResource TextSecondaryBrush}"
                           FontSize="12"
                           FontFamily="{StaticResource RubikSemibold}"
                           Margin="0,0,0,15"/>
                 <Border Height="1" 
-                        Background="#282939" 
+                        Background="{StaticResource PrimaryBackgroundBrush}" 
                         Margin="0,0,0,15"/>
             </StackPanel>
 
-            <!-- Form Fields -->
+            <!-- form fields -->
             <StackPanel Grid.Row="1" Margin="0,0,0,15">
-                <!-- Customer ID -->
+                <!-- customer ID -->
                 <DockPanel LastChildFill="True" Margin="0,0,0,15">
                     <TextBlock Text="Customer ID"
                                DockPanel.Dock="Top"
                                FontFamily="{StaticResource RubikSemibold}"
-                               Foreground="#E0E1EE"
+                               Foreground="{StaticResource TextPrimaryBrush}"
                                Margin="0,0,0,5"/>
-                    <Border Background="#282939" 
+                    <Border Background="{StaticResource ThirdBackgroundBrush}" 
                             CornerRadius="8"
                             Padding="15,8"
-                            Height="34"                        >
+                            Height="34" >
                         <TextBlock Text="{Binding Customer.CustomerId}"
-                                   Foreground="#8183A7"
+                                   Foreground="{StaticResource TextSecondaryBrush}"
                                    VerticalAlignment="Center"                                 
                                    FontFamily="{StaticResource RubikSemibold}"/>
                     </Border>
                 </DockPanel>
 
-                <!-- Name -->
+                <!-- name -->
                 <DockPanel LastChildFill="True" Margin="0,0,0,15">
                     <TextBlock DockPanel.Dock="Top" Margin="0,0,0,5">
                         <Run Text="Name" 
                              FontFamily="{StaticResource RubikSemibold}" 
-                             Foreground="#E0E1EE"                           />
+                             Foreground="{StaticResource TextPrimaryBrush}"                           />
                         <Run Text="*" 
-                             Foreground="#843153"/>
+                             Foreground="{StaticResource RedBrush}"/>
                     </TextBlock>
                     <Border >
                         <TextBox Text="{Binding Customer.Name, UpdateSourceTrigger=PropertyChanged}"
-                             Style="{StaticResource FormTextBoxStyle}"/>
+                                 Style="{StaticResource FormTextBoxStyle}"
+                                 Height="34"/>
                     </Border>
 
                 </DockPanel>
 
-                <!-- Phone Number -->
+                <!-- phone number -->
                 <DockPanel LastChildFill="True" Margin="0,0,0,15">
                     <TextBlock DockPanel.Dock="Top" Margin="0,0,0,5">
                         <Run Text="Phone Number" 
                              FontFamily="{StaticResource RubikSemibold}" 
-                             Foreground="#E0E1EE"/>
+                             Foreground="{StaticResource TextPrimaryBrush}"/>
                         <Run Text="*" 
-                             Foreground="#843153"/>
+                             Foreground="{StaticResource RedBrush}"/>
                     </TextBlock>
                     <TextBox Text="{Binding Customer.PhoneNumber, UpdateSourceTrigger=PropertyChanged}"
                             Style="{StaticResource FormTextBoxStyle}"
-                            Height="35"/>
+                            Height="34"/>
                 </DockPanel>
 
-                <!-- Address -->
+                <!-- address -->
                 <DockPanel LastChildFill="True" Margin="0,0,0,15">
                     <TextBlock DockPanel.Dock="Top" Margin="0,0,0,5">
                         <Run Text="Address" 
                              FontFamily="{StaticResource RubikSemibold}" 
-                             Foreground="#E0E1EE"/>
+                             Foreground="{StaticResource TextPrimaryBrush}"/>
                         <Run Text="*" 
-                             Foreground="#843153"/>
+                             Foreground="{StaticResource RedBrush}"/>
                     </TextBlock>
                     <TextBox Text="{Binding Customer.Address, UpdateSourceTrigger=PropertyChanged}"
                             Style="{StaticResource FormTextBoxStyle}"
-                            Height="35"
-                            TextWrapping="Wrap"
-                            AcceptsReturn="True"/>
+                            Height="34"/>
                 </DockPanel>
 
-                <!-- Government ID Picture -->
+                <!-- government ID pic -->
                 <DockPanel LastChildFill="True" Margin="0,0,0,15">
                     <TextBlock DockPanel.Dock="Top" Margin="0,0,0,5">
                         <Run Text="Government ID Picture" 
                              FontFamily="{StaticResource RubikSemibold}" 
-                             Foreground="#E0E1EE"/>
+                             Foreground="{StaticResource TextPrimaryBrush}"/>
                         <Run Text="*" 
-                             Foreground="#843153"/>
+                             Foreground="{StaticResource RedBrush}"/>
                     </TextBlock>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -118,15 +118,15 @@
                         </Grid.ColumnDefinitions>
                         <TextBox Text="{Binding Customer.GovernmentIdPicture, UpdateSourceTrigger=PropertyChanged}"
                                 Style="{StaticResource FormTextBoxStyle}"
-                                Height="35"
+                                Height="34"
                                 IsReadOnly="True"/>
-                        <!-- Browse Button -->
+                        <!-- browse button -->
                         <Button Grid.Column="1"
                                 Content="Browse"
                                 Command="{Binding BrowseCommand}"
                                 Style="{StaticResource PrimaryButtonStyle}"
                                 Width="100"
-                                Height="35"
+                                Height="39"
                                 Margin="10,0,0,0">
                             <Button.Tag>
                                 <Viewbox Width="16" 
@@ -142,20 +142,19 @@
                     </Grid>
                 </DockPanel>
 
-                <!-- Customer Status -->
+                <!-- customer status -->
                 <DockPanel LastChildFill="True" Margin="0,0,0,5">
                     <TextBlock DockPanel.Dock="Top" Margin="0,0,0,5">
                         <Run Text="Status" 
                              FontFamily="{StaticResource RubikSemibold}" 
-                             Foreground="#E0E1EE"/>
+                             Foreground="{StaticResource TextPrimaryBrush}"/>
                         <Run Text="*" 
-                             Foreground="#843153"/>
+                             Foreground="{StaticResource RedBrush}"/>
                     </TextBlock>
-                    <ComboBox ItemsSource="{Binding StatusOptions}"
-                             SelectedItem="{Binding Customer.CustomerStatus}"
-                             Style="{StaticResource BaseComboboxStyle}"
-                             Height="25"
-                             Margin="-320,0,0,15"/>
+                    <ComboBox Style="{StaticResource BaseComboboxStyle}"
+                              ItemsSource="{Binding StatusOptions}"
+                              SelectedItem="{Binding Customer.CustomerStatus}"                          
+                              Margin="-323,0,0,10"/>
                 </DockPanel>
 
                 <!-- Registration Date -->
@@ -163,19 +162,19 @@
                     <TextBlock DockPanel.Dock="Top" Margin="0,0,0,5">
                         <Run Text="Registration Date" 
                              FontFamily="{StaticResource RubikSemibold}" 
-                             Foreground="#E0E1EE"/>
+                             Foreground="{StaticResource TextPrimaryBrush}"/>
                         <Run Text="*" 
-                             Foreground="#843153"/>
+                             Foreground="{StaticResource RedBrush}"/>
                     </TextBlock>
                     <DatePicker SelectedDate="{Binding Customer.RegistrationDate}"
-                              Style="{StaticResource FormDatePickerStyle}"
-                              Height="35"/>
+                                Style="{StaticResource FormDatePickerStyle}"
+                                Height="35"/>
                 </DockPanel>
 
                 <TextBlock Text="{Binding ErrorMessage}"
-                          Foreground="#843153"
-                          FontFamily="{StaticResource RubikSemibold}"
-                          VerticalAlignment="Center"
+                           Foreground="{StaticResource RedBrush}"
+                           FontFamily="{StaticResource RubikSemibold}"
+                           VerticalAlignment="Center"
                            Margin="0,15,0,0"/>
             </StackPanel>
 

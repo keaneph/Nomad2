@@ -12,10 +12,16 @@ using System.Linq;
 
 namespace Nomad2.ViewModels
 {
+    
     public class CustomersViewModel : BaseViewModel
     {
+        // service for handling customer-related database operations
         private readonly ICustomerService _customerService;
+
+        // observable collection to store and display customers
         private ObservableCollection<Customer> _customers;
+
+        // fields for search, pagination, and sorting
         private string _searchText;
         private int _currentPage = 1;
         private int _totalPages;
@@ -26,6 +32,8 @@ namespace Nomad2.ViewModels
         private SortOption _currentSortOption;
         private ObservableCollection<SortOption> _availableSortOptions;
         private bool _isAscending = true;
+
+        // property for sorting direction with da automatic refresh
         public bool IsAscending
         {
             get => _isAscending;
@@ -33,16 +41,16 @@ namespace Nomad2.ViewModels
             {
                 _isAscending = value;
                 OnPropertyChanged();
-                LoadCustomers(); // Refresh when sort direction changes
+                LoadCustomers(); // refresh when sort direction changes
             }
         }
 
+        // commands for UI interactions
         public ICommand ToggleSortDirectionCommand { get; }
-
-        // In your constructor:
         public ICommand ViewImageCommand { get; }
 
 
+        // constructor initializes services, collections, and commands
         public CustomersViewModel()
         {
             Title = "Customers";
@@ -80,6 +88,7 @@ namespace Nomad2.ViewModels
         }
 
         #region Properties
+        // properties with change notification for UI binding
 
         private void ExecuteViewImage(string imagePath)
         {
@@ -138,7 +147,7 @@ namespace Nomad2.ViewModels
             {
                 _searchText = value;
                 OnPropertyChanged();
-                _currentPage = 1; // Reset to first page when searching
+                _currentPage = 1; // reset to first page when searching
                 LoadCustomers();
             }
         }
@@ -187,7 +196,7 @@ namespace Nomad2.ViewModels
         #endregion
 
         #region Command Methods
-
+        // handles adding new customer with dialog
         private async void ExecuteAddCustomer()
         {
             var newCustomer = new Customer
@@ -211,7 +220,7 @@ namespace Nomad2.ViewModels
                 }
             }
         }
-
+        // handles editing existing customer with dialog
         private async void ExecuteEditCustomer(Customer customer)
         {
             if (customer != null)
@@ -232,10 +241,10 @@ namespace Nomad2.ViewModels
             }
         }
 
-        // Modify your existing ExecuteDeleteCustomer method to this:
+        // handles deleting single or multiple customers with confirmation
         private async void ExecuteDeleteCustomer(Customer customer)
         {
-            // Check if we have multiple selections
+            // check if we have multiple selections
             if (SelectedCustomers != null && SelectedCustomers.Count > 0)
             {
                 var result = MessageBox.Show(
@@ -261,7 +270,7 @@ namespace Nomad2.ViewModels
                     }
                 }
             }
-            // If no multiple selection, delete single customer
+            // if no multiple selection, delete single customer
             else if (customer != null)
             {
                 var result = MessageBox.Show(
@@ -285,10 +294,10 @@ namespace Nomad2.ViewModels
                 }
             }
         }
-
+        // handles clearing all customers with confirmation
         private async void ExecuteClear()
         {
-            // Show confirmation dialog
+            // show confirmation dialog
             var result = MessageBox.Show(
                 "Are you sure you want to delete ALL customers? This action cannot be undone.",
                 "Confirm Delete All",
@@ -299,12 +308,12 @@ namespace Nomad2.ViewModels
             {
                 try
                 {
-                    // Delete all records from database
+                    // delete all records from database
                     bool success = await _customerService.ClearAllCustomersAsync();
 
                     if (success)
                     {
-                        // Clear the local collection
+                        // clear the local collection
                         Customers.Clear();
                         _currentPage = 1;
                         _totalPages = 0;
@@ -333,6 +342,8 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // navigation methods for pagination
+
         private void ExecuteNextPage()
         {
             if (_currentPage < _totalPages)
@@ -354,7 +365,7 @@ namespace Nomad2.ViewModels
         #endregion
 
         #region Helper Methods
-
+        // loads customers from database with pagination and sorting
         private async Task LoadCustomers()
         {
             try
@@ -383,6 +394,8 @@ namespace Nomad2.ViewModels
             }
         }
 
+
+        // checks if page nav is possible
         private bool CanExecuteNextPage()
         {
             return _currentPage < _totalPages;
@@ -393,6 +406,7 @@ namespace Nomad2.ViewModels
             return _currentPage > 1;
         }
 
+        // generates new customer ID based on last used ID
         private async Task<string> GenerateNewCustomerId()
         {
             string lastId = await _customerService.GetLastCustomerIdAsync();
