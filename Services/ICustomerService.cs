@@ -9,8 +9,7 @@ namespace Nomad2.Services
     public interface ICustomerService
     {
         //gets the page size for pagination
-        //FIXME: responsive page size for maximizing window
-        int PageSize { get; }
+        int PageSize { get; set; }
 
         //retrieves paginated list
         Task<(List<Customer> customers, int totalCount)> GetCustomersAsync(int page, string searchTerm, SortOption sortOption);

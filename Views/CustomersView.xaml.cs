@@ -16,9 +16,6 @@ using Nomad2.ViewModels;
 
 namespace Nomad2.Views
 {
-    /// <summary>
-    /// Interaction logic for CustomersView.xaml
-    /// </summary>
     public partial class CustomersView : UserControl
     {
         public CustomersView()
@@ -26,6 +23,22 @@ namespace Nomad2.Views
             InitializeComponent();
         }
 
+        // event handler for when the size of the grid changes
+        private void Grid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (DataContext is CustomersViewModel viewModel)
+            {
+                // calculate rows that can fit in the visible area
+                // subtract heights of other elements (top controls, pagination)
+                double availableHeight = e.NewSize.Height - 120; // adjust based on other controls
+                double rowHeight = 53; // adjust based on row height
+                int visibleRows = Math.Max(1, (int)(availableHeight / rowHeight));
+
+                viewModel.UpdatePageSize(visibleRows);
+            }
+        }
+
+        // event handler for when the selection changes in the data grid
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (DataContext is CustomersViewModel viewModel)

@@ -13,9 +13,15 @@ namespace Nomad2.Services
     {
         //db instance and pagination fixed size
         private readonly DatabaseHelper _db;
-        private readonly int _pageSize = 12;
+        private int _pageSize = 12; // default size
 
-        public int PageSize => _pageSize;
+
+        // dynamic page
+        public int PageSize
+        {
+            get => _pageSize;
+            set => _pageSize = Math.Max(1, value); // ensure at least 1
+        }
 
         public CustomerService()
         {

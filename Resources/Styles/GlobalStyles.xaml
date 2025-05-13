@@ -89,7 +89,6 @@
     <DropShadowEffect x:Key="GreenShadowEffect" Color="#75B99B" BlurRadius="20" ShadowDepth="0" Opacity="0.3"/>
 
     <!-- Searchbox Style -->
-    <!--FIXME: searchbox hover and selected-->
     <Style x:Key="SearchBoxStyle" TargetType="TextBox">
         <Setter Property="Height" Value="34"/>
         <Setter Property="Margin" Value="20"/>

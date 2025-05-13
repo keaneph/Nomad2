@@ -99,6 +99,18 @@ namespace Nomad2.ViewModels
             }
         }
 
+
+        // updates the page size and reloads customers if it changes
+        public void UpdatePageSize(int newSize)
+        {
+            if (_customerService.PageSize != newSize)
+            {
+                _customerService.PageSize = newSize;
+                _ = LoadCustomers(); // using _ = to handle the async call
+            }
+        }
+
+        // properties for data binding
         public ObservableCollection<Customer> Customers
         {
             get => _customers;
@@ -109,6 +121,7 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // property for selected customers (for multi-select)
         public System.Collections.IList SelectedCustomers
         {
             get => _selectedCustomers;
@@ -119,6 +132,7 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // property for selected customer (for single select)
         public ObservableCollection<SortOption> AvailableSortOptions
         {
             get => _availableSortOptions;
@@ -129,6 +143,7 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // property for current sort option
         public SortOption CurrentSortOption
         {
             get => _currentSortOption;
@@ -139,7 +154,8 @@ namespace Nomad2.ViewModels
                 LoadCustomers();
             }
         }
-
+        
+        // property for search text
         public string SearchText
         {
             get => _searchText;
@@ -152,6 +168,7 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // property for current page display
         public string CurrentPageDisplay
         {
             get => $"Page {_currentPage} of {_totalPages}";
@@ -162,6 +179,7 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // property for total pages
         public bool IsDialogOpen
         {
             get => _isDialogOpen;
@@ -172,6 +190,7 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // property for selected customer
         public Customer SelectedCustomer
         {
             get => _selectedCustomer;
@@ -186,6 +205,7 @@ namespace Nomad2.ViewModels
 
         #region Commands
 
+        // commands for UI interactions
         public ICommand AddCustomerCommand { get; }
         public ICommand EditCustomerCommand { get; }
         public ICommand DeleteCustomerCommand { get; }
@@ -206,11 +226,13 @@ namespace Nomad2.ViewModels
                 CustomerStatus = "Active"
             };
 
+            // open dialog for new customer
             var dialog = new CustomerDialog(newCustomer, false);
             if (dialog.ShowDialog() == true)
             {
                 try
                 {
+                    // add new customer to database
                     await _customerService.AddCustomerAsync(newCustomer);
                     await LoadCustomers();
                 }
@@ -230,6 +252,7 @@ namespace Nomad2.ViewModels
                 {
                     try
                     {
+                        // update customer in database
                         await _customerService.UpdateCustomerAsync(customer);
                         await LoadCustomers(); // Refresh the list to show updated data
                     }
@@ -257,8 +280,10 @@ namespace Nomad2.ViewModels
                 {
                     try
                     {
+                        // delete each selected customer
                         foreach (Customer selectedCustomer in SelectedCustomers.Cast<Customer>().ToList())
                         {
+                            // delete customer from database
                             await _customerService.DeleteCustomerAsync(selectedCustomer.CustomerId);
                         }
                         await LoadCustomers();
@@ -283,6 +308,7 @@ namespace Nomad2.ViewModels
                 {
                     try
                     {
+                        // delete customer from database
                         await _customerService.DeleteCustomerAsync(customer.CustomerId);
                         await LoadCustomers();
                     }

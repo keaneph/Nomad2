@@ -19,7 +19,6 @@ namespace Nomad2.ViewModels
         private string _userRole = "Test";
 
         // search text for the search bar
-        //FIXME: searchbox full implementation
         private string _searchText;
 
         // constructor initializes navigation and sets up initial view
