@@ -22,7 +22,6 @@ namespace Nomad2.ViewModels
         //FIXME: searchbox full implementation
         private string _searchText;
 
-
         // constructor initializes navigation and sets up initial view
         public MainViewModel(INavigationService navigationService)
         {
@@ -67,11 +66,22 @@ namespace Nomad2.ViewModels
             {
                 _searchText = value;
                 OnPropertyChanged();
+                // [ropagate search to current view
+                PropagateSearch();
             }
-
         }
-        // property for current view with change notifications
 
+        // method to propagate search text to the current view
+        private void PropagateSearch()
+        {
+            // cast the CurrentView to ISearchable if it implements the interface
+            if (CurrentView is ISearchable searchableView)
+            {
+                searchableView.UpdateSearch(SearchText);
+            }
+        }
+
+        // property for current view with change notifications
         public BaseViewModel CurrentView
         {
             get => _currentView;
@@ -107,8 +117,7 @@ namespace Nomad2.ViewModels
         // event handler for view changes, creates appropriate view model based on destination
         private void OnCurrentViewChanged(string viewName)
         {
-
-            // switch expression to create appropriate view model based on navigation
+            var previousView = CurrentView;
             CurrentView = viewName switch
             {
                 "Dashboard" => new DashboardViewModel(),
@@ -120,8 +129,16 @@ namespace Nomad2.ViewModels
                 "About" => new AboutViewModel(),
                 "Settings" => new SettingsViewModel(),
                 "Help" => new HelpViewModel(),
-                _ => _currentView // default case returns current view if destination is unknown
+                _ => _currentView
             };
+
+            // Propagate current search term to new view if it's searchable
+            if (!string.IsNullOrEmpty(SearchText) && CurrentView is ISearchable searchable)
+            {
+                searchable.UpdateSearch(SearchText);
+            }
         }
+
+
     }
 }

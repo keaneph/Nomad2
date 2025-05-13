@@ -109,7 +109,8 @@
                 <StackPanel Grid.Row="1">
                     
                     <!-- Search Box -->
-                    <TextBox Style="{StaticResource SearchBoxStyle}"
+                    <TextBox x:Name="Searchbox"
+                             Style="{StaticResource SearchBoxStyle}"
                              Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <!-- Menu Section -->

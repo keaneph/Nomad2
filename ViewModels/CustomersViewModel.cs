@@ -13,7 +13,7 @@ using System.Linq;
 namespace Nomad2.ViewModels
 {
     
-    public class CustomersViewModel : BaseViewModel
+    public class CustomersViewModel : BaseViewModel, ISearchable
     {
         // service for handling customer-related database operations
         private readonly ICustomerService _customerService;
@@ -427,8 +427,12 @@ namespace Nomad2.ViewModels
             // Fallback in case of unexpected format
             return "0000-0001";
         }
-
         #endregion
+        public void UpdateSearch(string searchTerm)
+        {
+            SearchText = searchTerm;
+            // LoadCustomers() will be called automatically due to the SearchText property setter
+        }
 
     }
 }

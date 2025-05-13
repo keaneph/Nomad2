@@ -55,11 +55,12 @@ namespace Nomad2.Services
                 string query = @"
                                 SELECT SQL_CALC_FOUND_ROWS *
                                 FROM customer
-                                WHERE customer_id LIKE @SearchTerm 
-                                OR name LIKE @SearchTerm 
-                                OR phone_number LIKE @SearchTerm 
-                                OR address LIKE @SearchTerm
-                                OR customer_status LIKE @SearchTerm
+                                WHERE 
+                                    LOWER(customer_id) LIKE LOWER(@SearchTerm) OR
+                                    LOWER(name) LIKE LOWER(@SearchTerm) OR
+                                    LOWER(phone_number) LIKE LOWER(@SearchTerm) OR
+                                    LOWER(address) LIKE LOWER(@SearchTerm) OR
+                                    LOWER(customer_status) LIKE LOWER(@SearchTerm)
                                 ORDER BY " + orderByColumn + " " + direction + @"
                                 LIMIT @Offset, @PageSize";
 
