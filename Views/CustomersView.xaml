@@ -85,8 +85,8 @@
                                     CommandParameter="{Binding GovernmentIdPicture}"
                                     Style="{StaticResource TransparentButtonStyle}">
                                 <Image Source="{Binding GovernmentIdPicture}"
-                       Stretch="Uniform"
-                       Height="40"/>
+                                       Stretch="Uniform"
+                                       Height="40"/>
                             </Button>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
