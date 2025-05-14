@@ -12,10 +12,10 @@
         Title="MainWindow" Height="900" MinHeight="900" Width="1440" MinWidth="1440"
         Background="{StaticResource PrimaryBackgroundBrush}">
 
-        <!--  MinHeight="720" MinWidth="1280"-->
+        <!--  minheight="720" minwidth="1280"-->
 
     <Window.Resources>
-        <!--Converter-->
+        <!--converter-->
         <converters:ViewModelToBooleanConverter x:Key="ViewModelToBooleanConverter"/>
     </Window.Resources>
 
@@ -29,7 +29,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- Header -->
+        <!-- header -->
         <Grid Grid.ColumnSpan="2">
             <Border Background="{StaticResource PrimaryBackgroundBrush}" 
                     BorderBrush="{StaticResource BorderBrush}"
@@ -41,7 +41,7 @@
                         <ColumnDefinition Width="220"/>
                     </Grid.ColumnDefinitions>
 
-                    <!-- Logo and Title Section -->
+                    <!-- logo and title section -->
                     <Grid Grid.Column="0">
                         <TextBlock Text="NOMAD" 
                                    Foreground="{StaticResource TextPrimaryBrush}" 
@@ -51,7 +51,7 @@
                                    HorizontalAlignment="Center"/>
                     </Grid>
 
-                    <!-- Page Title Section -->
+                    <!-- page title section -->
                     <StackPanel Grid.Column="1" 
                                 VerticalAlignment="Center"
                                 Margin="20,0,0,0">
@@ -66,7 +66,7 @@
                                    FontSize="12"/>
                     </StackPanel>
 
-                    <!-- Profile Section -->
+                    <!-- profile section -->
                     <StackPanel Grid.Column="2" 
                                 Orientation="Horizontal" 
                                 HorizontalAlignment="Right"
@@ -94,7 +94,7 @@
             </Border>
         </Grid>
 
-        <!-- Navigation Menu -->
+        <!-- navigation menu -->
         <Grid x:Name="NavigationMenu" 
               Width="220" 
               Grid.Row="1">
@@ -108,16 +108,16 @@
                     Grid.Row="1">
                 <StackPanel Grid.Row="1">
                     
-                    <!-- Search Box -->
+                    <!-- search box -->
                     <TextBox x:Name="Searchbox"
                              Style="{StaticResource SearchBoxStyle}"
                              Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
 
-                    <!-- Menu Section -->
+                    <!-- menu section -->
                     <TextBlock Text="Menu" 
                                Style="{StaticResource MenuHeaderStyle}"/>
 
-                    <!--Dashboard Menu Item-->
+                    <!--dashboard menu item-->
                     <RadioButton Style="{StaticResource MenuItemStyle}" 
                                  Content="Dashboard" 
                                  GroupName="MenuItems"
@@ -143,7 +143,7 @@
                         </RadioButton.Tag>
                     </RadioButton>
 
-                    <!--Customers Menu Item-->
+                    <!--customers menu item-->
                     <RadioButton Style="{StaticResource MenuItemStyle}" 
                                  Content="Customers" 
                                  GroupName="MenuItems"
@@ -162,7 +162,7 @@
                         </RadioButton.Tag>
                     </RadioButton>
 
-                    <!--Bikes Menu Item-->
+                    <!--bikes menu item-->
                     <RadioButton Style="{StaticResource MenuItemStyle}" 
                                  Content="Bikes" 
                                  GroupName="MenuItems"

@@ -15,11 +15,11 @@
                 <ResourceDictionary Source="Resources/Styles/FormStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
-            <!-- Converters -->
+            <!-- converters -->
             <BooleanToVisibilityConverter xmlns="clr-namespace:System.Windows.Controls;assembly=PresentationFramework" 
                                         x:Key="BooleanToVisibilityConverter"/>
 
-            <!--Data Templates-->
+            <!--data templates-->
             <DataTemplate DataType="{x:Type viewmodels:DashboardViewModel}">
                 <views:DashboardView/>
             </DataTemplate>

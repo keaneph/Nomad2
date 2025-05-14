@@ -13,14 +13,14 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Header -->
+        <!-- header -->
         <TextBlock Text="Developer Tools"
                   Foreground="#E0E1EE"
                   FontSize="24"
                   FontFamily="{StaticResource RubikBold}"
                   Margin="0,0,0,20"/>
 
-        <!-- Tools Section -->
+        <!-- tools section -->
         <Border Grid.Row="1"
                 Background="#1C1D2C"
                 CornerRadius="8"

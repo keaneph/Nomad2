@@ -11,7 +11,7 @@ namespace Nomad2
         {
             base.OnStartup(e);
 
-            // Initialize database
+            // initialize database
             var dbHelper = new DatabaseHelper();
             dbHelper.InitializeDatabase();
 
