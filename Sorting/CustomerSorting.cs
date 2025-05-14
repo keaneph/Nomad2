@@ -17,12 +17,12 @@ namespace Nomad2.Sorting
         Status
     }
 
-    public class SortOption
+    public class SortOption<T>
     {
         //displayname is used for the XAML UI
         public string DisplayName { get; set; }
         // actual sorting option to be used
-        public CustomerSortOption Option { get; set; }
+        public T Option { get; set; }
         // the direction of sorting (ascending or descending) used by the toggle button in the UI
         public bool IsAscending { get; set; } = true; 
     }

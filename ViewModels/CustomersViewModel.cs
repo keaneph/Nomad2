@@ -29,8 +29,8 @@ namespace Nomad2.ViewModels
         private bool _isDialogOpen;
         private Customer _selectedCustomer;
         private System.Collections.IList _selectedCustomers;
-        private SortOption _currentSortOption;
-        private ObservableCollection<SortOption> _availableSortOptions;
+        private SortOption<CustomerSortOption> _currentSortOption;
+        private ObservableCollection<SortOption<CustomerSortOption>> _availableSortOptions;
         private bool _isAscending = true;
 
         // property for sorting direction with da automatic refresh
@@ -59,16 +59,16 @@ namespace Nomad2.ViewModels
             _customerService = new CustomerService();
             Customers = new ObservableCollection<Customer>();
 
-           
+
             // Initialize sort options
-            AvailableSortOptions = new ObservableCollection<SortOption>
-        {
-            new SortOption { DisplayName = "ID", Option = CustomerSortOption.CustomerId },
-            new SortOption { DisplayName = "Name", Option = CustomerSortOption.Name },
-            new SortOption { DisplayName = "Phone", Option = CustomerSortOption.PhoneNumber },
-            new SortOption { DisplayName = "Address", Option = CustomerSortOption.Address },
-            new SortOption { DisplayName = "Date", Option = CustomerSortOption.RegistrationDate },
-            new SortOption { DisplayName = "Status", Option = CustomerSortOption.Status }
+            AvailableSortOptions = new ObservableCollection<SortOption<CustomerSortOption>>
+{
+            new SortOption<CustomerSortOption> { DisplayName = "ID", Option = CustomerSortOption.CustomerId },
+            new SortOption<CustomerSortOption> { DisplayName = "Name", Option = CustomerSortOption.Name },
+            new SortOption<CustomerSortOption> { DisplayName = "Phone", Option = CustomerSortOption.PhoneNumber },
+            new SortOption<CustomerSortOption> { DisplayName = "Address", Option = CustomerSortOption.Address },
+            new SortOption<CustomerSortOption> { DisplayName = "Date", Option = CustomerSortOption.RegistrationDate },
+            new SortOption<CustomerSortOption> { DisplayName = "Status", Option = CustomerSortOption.Status }
         };
 
             CurrentSortOption = AvailableSortOptions.First();
@@ -132,8 +132,8 @@ namespace Nomad2.ViewModels
             }
         }
 
-        // property for selected customer (for single select)
-        public ObservableCollection<SortOption> AvailableSortOptions
+        // property for available sort options
+        public ObservableCollection<SortOption<CustomerSortOption>> AvailableSortOptions
         {
             get => _availableSortOptions;
             set
@@ -144,7 +144,7 @@ namespace Nomad2.ViewModels
         }
 
         // property for current sort option
-        public SortOption CurrentSortOption
+        public SortOption<CustomerSortOption> CurrentSortOption
         {
             get => _currentSortOption;
             set
@@ -154,7 +154,7 @@ namespace Nomad2.ViewModels
                 LoadCustomers();
             }
         }
-        
+
         // property for search text
         public string SearchText
         {
@@ -396,7 +396,7 @@ namespace Nomad2.ViewModels
         {
             try
             {
-                var sortOption = new SortOption
+                var sortOption = new SortOption<CustomerSortOption>
                 {
                     Option = CurrentSortOption.Option,
                     IsAscending = IsAscending

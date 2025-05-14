@@ -12,7 +12,7 @@ namespace Nomad2.Services
         int PageSize { get; set; }
 
         //retrieves paginated list
-        Task<(List<Customer> customers, int totalCount)> GetCustomersAsync(int page, string searchTerm, SortOption sortOption);
+        Task<(List<Customer> customers, int totalCount)> GetCustomersAsync(int page, string searchTerm, SortOption<CustomerSortOption> sortOption);
 
         // fetches a single customer record by their unique identifier
         Task<Customer> GetCustomerByIdAsync(string id);

@@ -32,26 +32,44 @@
                           FontFamily="{StaticResource RubikSemibold}"
                           Margin="0,0,0,10"/>
 
-                <TextBlock Text="Generate sample customer data for testing purposes."
+                <TextBlock Text="Generate sample data for testing purposes."
                           Foreground="#8183A7"
                           FontFamily="{StaticResource Rubik}"
                           TextWrapping="Wrap"
                           Margin="0,0,0,15"/>
 
-                <Button Command="{Binding SeedDataCommand}"
-                        Style="{StaticResource PrimaryButtonStyle}"
-                        Width="200"
-                        HorizontalAlignment="Left">
-                    <StackPanel Orientation="Horizontal">
-                        <Path Data="{StaticResource AddCustomersIcon}"
-                              Width="16"
-                              Height="16"
-                              Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
-                              Style="{StaticResource PathStyle}"
-                              Margin="0,0,8,0"/>
-                        <TextBlock Text="Generate 100 Customers"/>
-                    </StackPanel>
-                </Button>
+                <StackPanel Orientation="Vertical" Margin="0,0,0,10">
+                    <Button Command="{Binding SeedCustomerDataCommand}"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Width="200"
+                            HorizontalAlignment="Left"
+                            Margin="0,0,0,10">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="{StaticResource AddCustomersIcon}"
+                                  Width="16"
+                                  Height="16"
+                                  Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                  Style="{StaticResource PathStyle}"
+                                  Margin="0,0,8,0"/>
+                            <TextBlock Text="Generate 100 Customers"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Command="{Binding SeedBikeDataCommand}"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Width="200"
+                            HorizontalAlignment="Left">
+                        <StackPanel Orientation="Horizontal">
+                            <Path Data="{StaticResource AddBikesIcon}"
+                                  Width="16"
+                                  Height="16"
+                                  Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                  Style="{StaticResource PathStyle}"
+                                  Margin="0,0,8,0"/>
+                            <TextBlock Text="Generate 50 Bikes"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
             </StackPanel>
         </Border>
     </Grid>

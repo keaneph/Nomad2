@@ -99,9 +99,10 @@ namespace Nomad2.Services
                         CREATE TABLE IF NOT EXISTS bike (
                             bike_id VARCHAR(9) PRIMARY KEY NOT NULL,
                             bike_model VARCHAR(100) NOT NULL,
-                            bike_type VARCHAR(50) NOT NULL,
-                            daily_rate INTEGER(9) NOT NULL,
-                            bike_status VARCHAR(30) NOT NULL
+                            bike_type VARCHAR(30) NOT NULL,
+                            bike_picture VARCHAR(255) NOT NULL,                  
+                            bike_status VARCHAR(30) NOT NULL,
+                            daily_rate INTEGER(9) NOT NULL
                         )";
 
                     // create Rental table

@@ -31,7 +31,7 @@ namespace Nomad2.Services
         public async Task<(List<Customer> customers, int totalCount)> GetCustomersAsync(
             int page = 1,
             string searchTerm = "",
-            SortOption sortOption = null)
+            SortOption<CustomerSortOption> sortOption = null)
         {
             //db check
             using (var connection = _db.GetConnection())

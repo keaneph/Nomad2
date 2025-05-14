@@ -1,0 +1,209 @@
+﻿<Window x:Class="Nomad2.Views.BikeDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="{Binding DialogTitle}"
+        Height="720" 
+        Width="560"
+        WindowStartupLocation="CenterOwner"
+        Background="{StaticResource PrimaryBackgroundBrush}"
+        ResizeMode="NoResize">
+
+    <Border>
+        <Grid Margin="35,25">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- header -->
+            <StackPanel>
+                <TextBlock Text="{Binding DialogTitle}"                    
+                          Foreground="{StaticResource TextPrimaryBrush}"
+                          FontSize="24"
+                          FontFamily="{StaticResource RubikBold}"
+                          Margin="0,0,0,5"/>
+                <TextBlock Text="All fields marked with * are required"
+                          Foreground="{StaticResource TextSecondaryBrush}"
+                          FontSize="12"
+                          FontFamily="{StaticResource RubikSemibold}"
+                          Margin="0,0,0,15"/>
+                <Border Height="1" 
+                        Background="{StaticResource PrimaryBackgroundBrush}" 
+                        Margin="0,0,0,15"/>
+            </StackPanel>
+
+            <!-- form fields -->
+            <StackPanel Grid.Row="1" Margin="0,0,0,15">
+                <!-- Bike ID -->
+                <DockPanel LastChildFill="True" Margin="0,0,0,15">
+                    <TextBlock Text="Bike ID"
+                              DockPanel.Dock="Top"
+                              FontFamily="{StaticResource RubikSemibold}"
+                              Foreground="{StaticResource TextPrimaryBrush}"
+                              Margin="0,0,0,5"/>
+                    <Border Background="{StaticResource ThirdBackgroundBrush}" 
+                            CornerRadius="8"
+                            Padding="15,8"
+                            Height="34">
+                        <TextBlock Text="{Binding Bike.BikeId}"
+                                  Foreground="{StaticResource TextSecondaryBrush}"
+                                  VerticalAlignment="Center"                                 
+                                  FontFamily="{StaticResource RubikSemibold}"/>
+                    </Border>
+                </DockPanel>
+
+                <!-- Bike Model -->
+                <DockPanel LastChildFill="True" Margin="0,0,0,15">
+                    <TextBlock DockPanel.Dock="Top" Margin="0,0,0,5">
+                        <Run Text="Bike Model" 
+                             FontFamily="{StaticResource RubikSemibold}" 
+                             Foreground="{StaticResource TextPrimaryBrush}"/>
+                        <Run Text="*" 
+                             Foreground="{StaticResource RedBrush}"/>
+                    </TextBlock>
+                    <TextBox Text="{Binding Bike.BikeModel, UpdateSourceTrigger=PropertyChanged}"
+                            Style="{StaticResource FormTextBoxStyle}"
+                            Height="34"/>
+                </DockPanel>
+
+                <!-- Bike Type -->
+                <DockPanel LastChildFill="True" Margin="0,0,0,15">
+                    <TextBlock DockPanel.Dock="Top" Margin="0,0,0,5">
+                        <Run Text="Bike Type" 
+                             FontFamily="{StaticResource RubikSemibold}" 
+                             Foreground="{StaticResource TextPrimaryBrush}"/>
+                        <Run Text="*" 
+                             Foreground="{StaticResource RedBrush}"/>
+                    </TextBlock>
+                    <TextBox Text="{Binding Bike.BikeType, UpdateSourceTrigger=PropertyChanged}"
+                            Style="{StaticResource FormTextBoxStyle}"
+                            Height="34"/>
+                </DockPanel>
+
+                <!-- Daily Rate -->
+                <DockPanel LastChildFill="True" Margin="0,0,0,15">
+                    <TextBlock DockPanel.Dock="Top" Margin="0,0,0,5">
+                        <Run Text="Daily Rate" 
+                             FontFamily="{StaticResource RubikSemibold}" 
+                             Foreground="{StaticResource TextPrimaryBrush}"/>
+                        <Run Text="*" 
+                             Foreground="{StaticResource RedBrush}"/>
+                    </TextBlock>
+                    <TextBox Text="{Binding Bike.DailyRate, UpdateSourceTrigger=PropertyChanged}"
+                            Style="{StaticResource FormTextBoxStyle}"
+                            Height="34"/>
+                </DockPanel>
+
+                <!-- Bike Picture -->
+                <DockPanel LastChildFill="True" Margin="0,0,0,15">
+                    <TextBlock DockPanel.Dock="Top" Margin="0,0,0,5">
+                        <Run Text="Bike Picture" 
+                             FontFamily="{StaticResource RubikSemibold}" 
+                             Foreground="{StaticResource TextPrimaryBrush}"/>
+                        <Run Text="*" 
+                             Foreground="{StaticResource RedBrush}"/>
+                    </TextBlock>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Text="{Binding Bike.BikePicture, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource FormTextBoxStyle}"
+                                Height="34"
+                                IsReadOnly="True"/>
+                        <Button Grid.Column="1"
+                                Content="Browse"
+                                Command="{Binding BrowseCommand}"
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Width="100"
+                                Height="39"
+                                Margin="10,0,0,0">
+                            <Button.Tag>
+                                <Viewbox Width="16" Height="16">
+                                    <Grid>
+                                        <Path Data="{StaticResource BrowseIcon}"
+                                              Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                              Style="{StaticResource PathStyle}"/>
+                                    </Grid>
+                                </Viewbox>
+                            </Button.Tag>
+                        </Button>
+                    </Grid>
+                </DockPanel>
+
+                <!-- Bike Status -->
+                <DockPanel LastChildFill="True" Margin="0,0,0,5">
+                    <TextBlock DockPanel.Dock="Top" Margin="0,0,0,5">
+                        <Run Text="Status" 
+                             FontFamily="{StaticResource RubikSemibold}" 
+                             Foreground="{StaticResource TextPrimaryBrush}"/>
+                        <Run Text="*" 
+                             Foreground="{StaticResource RedBrush}"/>
+                    </TextBlock>
+                    <ComboBox Style="{StaticResource BaseComboboxStyle}"
+                             ItemsSource="{Binding StatusOptions}"
+                             SelectedItem="{Binding Bike.BikeStatus}"                          
+                             Margin="-323,0,0,10"/>
+                </DockPanel>
+
+                <!-- Error Message -->
+                <TextBlock Text="{Binding ErrorMessage}"
+                          Foreground="{StaticResource RedBrush}"
+                          FontFamily="{StaticResource RubikSemibold}"
+                          VerticalAlignment="Center"
+                          Margin="0,15,0,0"/>
+            </StackPanel>
+
+            <!-- Bottom Buttons -->
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Cancel Button -->
+                <Button Grid.Column="1"
+                        Content="Cancel"
+                        Command="{Binding CancelCommand}"
+                        Style="{StaticResource CancelButtonStyle}"
+                        Width="120"
+                        Height="35"
+                        Margin="0,0,10,0">
+                    <Button.Tag>
+                        <Viewbox Width="16" Height="16">
+                            <Grid>
+                                <Path Data="{StaticResource CancelIcon}"
+                                      Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                      Style="{StaticResource PathStyle}"/>
+                            </Grid>
+                        </Viewbox>
+                    </Button.Tag>
+                </Button>
+
+                <!-- Save Button -->
+                <Button Grid.Column="2"
+                        Content="Save"
+                        Command="{Binding SaveCommand}"
+                        Style="{StaticResource SaveButtonStyle}"
+                        Width="120"
+                        Height="35">
+                    <Button.Tag>
+                        <Viewbox Width="16" Height="16">
+                            <Grid>
+                                <Path Data="{StaticResource SaveIcon}"
+                                      Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                      Style="{StaticResource PathStyle}"/>
+                            </Grid>
+                        </Viewbox>
+                    </Button.Tag>
+                </Button>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

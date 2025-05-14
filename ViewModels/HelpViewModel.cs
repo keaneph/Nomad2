@@ -8,6 +8,7 @@ namespace Nomad2.ViewModels
     public class HelpViewModel : BaseViewModel
     {
         private readonly ICustomerService _customerService;
+        private readonly IBikeService _bikeService;
 
         public HelpViewModel()
         {
@@ -15,15 +16,25 @@ namespace Nomad2.ViewModels
             Description = "Help and developer tools";
 
             _customerService = new CustomerService();
-            SeedDataCommand = new RelayCommand(async () => await ExecuteSeedData());
+            _bikeService = new BikeService();
+
+            SeedCustomerDataCommand = new RelayCommand(async () => await ExecuteSeedCustomerData());
+            SeedBikeDataCommand = new RelayCommand(async () => await ExecuteSeedBikeData());
         }
 
-        public ICommand SeedDataCommand { get; }
+        public ICommand SeedCustomerDataCommand { get; }
+        public ICommand SeedBikeDataCommand { get; }
 
-        private async Task ExecuteSeedData()
+        private async Task ExecuteSeedCustomerData()
         {
             var seeder = new CustomerDataSeeder(_customerService);
             await seeder.SeedCustomersAsync(100);
+        }
+
+        private async Task ExecuteSeedBikeData()
+        {
+            var seeder = new BikeDataSeeder(_bikeService);
+            await seeder.SeedBikesAsync(50);
         }
     }
 }
