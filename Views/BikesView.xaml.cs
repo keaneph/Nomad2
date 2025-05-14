@@ -12,7 +12,7 @@ namespace Nomad2.Views
 
         private void Grid_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
         {
-            if (DataContext is CustomersViewModel viewModel)
+            if (DataContext is BikesViewModel viewModel)
             {
                 // calculate rows that can fit in the visible area
                 // subtract heights of other elements (top controls, pagination)
