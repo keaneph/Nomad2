@@ -103,7 +103,6 @@ namespace Nomad2.Services
                 }
 
                 // this gets the total count of records
-                //FIXME: resposive cound of records if maximized
                 using (var countCommand = new MySqlCommand("SELECT FOUND_ROWS()", connection))
                 {
                     var totalCount = Convert.ToInt32(await countCommand.ExecuteScalarAsync());
@@ -149,7 +148,6 @@ namespace Nomad2.Services
 
         {
             //using CustomerValidator.cs, will add more later on
-            //FIXME: more validations.
             var (isValid, errorMessage) = CustomerValidator.ValidateCustomer(customer);
             if (!isValid)
             {
@@ -185,7 +183,6 @@ namespace Nomad2.Services
         public async Task<bool> UpdateCustomerAsync(Customer customer)
         {
             //same validaiton
-            //FIXME: add more validation
             var (isValid, errorMessage) = CustomerValidator.ValidateCustomer(customer);
             if (!isValid)
             {
