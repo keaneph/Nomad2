@@ -277,7 +277,7 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
 
-                                                <ContentPresenter Grid.Column="0"
+                                            <ContentPresenter Grid.Column="0"
                                                          Content="{Binding Path=SelectionBoxItem, RelativeSource={RelativeSource AncestorType=ComboBox}}"
                                                          ContentTemplate="{Binding Path=SelectionBoxItemTemplate, RelativeSource={RelativeSource AncestorType=ComboBox}}"
                                                          ContentTemplateSelector="{Binding Path=ItemTemplateSelector, RelativeSource={RelativeSource AncestorType=ComboBox}}"
@@ -363,10 +363,8 @@
         </Setter>
     </Style>
 
-    <Style x:Key="BaseTextBoxStyle" TargetType="TextBox"></Style>
     <Style x:Key="BaseListBoxStyle" TargetType="ListBox"></Style>
     <Style x:Key="BaseDatePickerStyle" TargetType="DatePicker"></Style>
-    <Style x:Key="ActionButtonStyle" TargetType="Button"></Style>
 
 
 </ResourceDictionary>

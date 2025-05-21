@@ -9,18 +9,18 @@ using System.Threading.Tasks;
 
 namespace Nomad2.Services
 {
+    // service class that handles all customer-related database operations
     public class CustomerService : ICustomerService
     {
-        //db instance and pagination fixed size
         private readonly DatabaseHelper _db;
-        private int _pageSize = 12; // default size
+        // default page size of 12 customers per page
+        private int _pageSize = 12;
 
-
-        // dynamic page
+        // property to ensure page size is always at least 1
         public int PageSize
         {
             get => _pageSize;
-            set => _pageSize = Math.Max(1, value); // ensure at least 1
+            set => _pageSize = Math.Max(1, value); 
         }
 
         public CustomerService()
@@ -28,6 +28,7 @@ namespace Nomad2.Services
             _db = new DatabaseHelper();
         }
 
+        // gets all customers without pagination
         public async Task<List<Customer>> GetAllCustomersAsync()
         {
             using (var connection = _db.GetConnection())
@@ -60,12 +61,12 @@ namespace Nomad2.Services
             }
         }
 
+        // gets paginated list of customers with search and sort capabilities
         public async Task<(List<Customer> customers, int totalCount)> GetCustomersAsync(
             int page = 1,
             string searchTerm = "",
             SortOption<CustomerSortOption> sortOption = null)
         {
-            //db check
             using (var connection = _db.GetConnection())
             {
                 await connection.OpenAsync();
@@ -107,17 +108,14 @@ namespace Nomad2.Services
                                 ORDER BY " + orderByColumn + " " + direction + @"
                                 LIMIT @Offset, @PageSize";
 
-                //just commands to prevent injection
                 using (var command = new MySqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@SearchTerm", $"%{searchTerm}%");
                     command.Parameters.AddWithValue("@Offset", offset);
                     command.Parameters.AddWithValue("@PageSize", _pageSize);
 
-                    // executes
                     using (var reader = await command.ExecuteReaderAsync())
                     {
-                        // reads each record and creates Customer objects
                         while (await reader.ReadAsync())
                         {
                             customers.Add(new Customer
@@ -179,7 +177,7 @@ namespace Nomad2.Services
         public async Task<bool> AddCustomerAsync(Customer customer)
 
         {
-            //using CustomerValidator.cs, will add more later on
+            //using CustomerValidator.cs, will add more later on. FIXME
             var (isValid, errorMessage) = CustomerValidator.ValidateCustomer(customer);
             if (!isValid)
             {
@@ -189,7 +187,6 @@ namespace Nomad2.Services
             using (var connection = _db.GetConnection())
             {
                 await connection.OpenAsync();
-                // query to insert customer
                 string query = @"
                     INSERT INTO customer 
                     (customer_id, name, phone_number, address, government_id_picture, customer_status, registration_date) 
@@ -224,7 +221,6 @@ namespace Nomad2.Services
             using (var connection = _db.GetConnection())
             {
                 await connection.OpenAsync();
-                // just simple updates based on the customerid
                 string query = @"
                     UPDATE customer 
                     SET name = @Name, 
@@ -300,6 +296,7 @@ namespace Nomad2.Services
 
                 using (var command = new MySqlCommand(query, connection))
                 {
+                    // retrieves the highest customer_id for auto-generation purposes
                     var result = await command.ExecuteScalarAsync();
                     return result?.ToString();
                 }

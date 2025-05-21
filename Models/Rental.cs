@@ -8,13 +8,13 @@ namespace Nomad2.Models
 {
     public class Rental
     {
-        public string RentalId { get; set; }        // length 9, following your pattern
-        public string CustomerId { get; set; }
-        public string BikeId { get; set; }
-        public DateTime RentalDate { get; set; }
-        public string RentalStatus { get; set; }    // length 30, following your pattern
+        public string RentalId { get; set; }        // length = 9
+        public string CustomerId { get; set; } // foreign key
+        public string BikeId { get; set; } // foreign key
+        public DateTime RentalDate { get; set; } // YYYY-MM-DD
+        public string RentalStatus { get; set; }    // length 30
 
-        // Navigation properties (not in DB, but useful for UI)
+        // navigation properties (not in DB, using in UI)
         public Customer Customer { get; set; }
         public Bike Bike { get; set; }
     }

@@ -12,7 +12,8 @@ using System.Linq;
 
 namespace Nomad2.ViewModels
 {
-    
+
+    // view model for managing customer ops
     public class CustomersViewModel : BaseViewModel, ISearchable
     {
         // service for handling customer-related database operations
@@ -60,7 +61,7 @@ namespace Nomad2.ViewModels
             Customers = new ObservableCollection<Customer>();
 
 
-            // Initialize sort options
+            // initialize sort options
             AvailableSortOptions = new ObservableCollection<SortOption<CustomerSortOption>>
 {
             new SortOption<CustomerSortOption> { DisplayName = "ID", Option = CustomerSortOption.CustomerId },
@@ -73,7 +74,7 @@ namespace Nomad2.ViewModels
 
             CurrentSortOption = AvailableSortOptions.First();
 
-            // Initialize Commands
+            // unitialize Commands
             AddCustomerCommand = new RelayCommand(ExecuteAddCustomer);
             EditCustomerCommand = new RelayCommand<Customer>(ExecuteEditCustomer);
             DeleteCustomerCommand = new RelayCommand<Customer>(ExecuteDeleteCustomer);
@@ -83,7 +84,7 @@ namespace Nomad2.ViewModels
             ViewImageCommand = new RelayCommand<string>(ExecuteViewImage);
             ToggleSortDirectionCommand = new RelayCommand(() => IsAscending = !IsAscending);
 
-            // Load initial data
+            // load initial data
             _ = LoadCustomers();
         }
 

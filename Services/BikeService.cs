@@ -9,22 +9,29 @@ using System.Threading.Tasks;
 
 namespace Nomad2.Services
 {
+    // service class that handles all bike-related database operations
     public class BikeService : IBikeService
     {
+        // database helper instance for managing connections
         private readonly DatabaseHelper _db;
-        private int _pageSize = 12; // default size
+        // number of bikes to display per page, defaults to 12
+        private int _pageSize = 12;
 
+
+        // property to get/set page size with minimum value of 1
         public int PageSize
         {
             get => _pageSize;
             set => _pageSize = Math.Max(1, value);
         }
 
+        // constructor initializes database helper
         public BikeService()
         {
             _db = new DatabaseHelper();
         }
 
+        // retrieves all bikes from database without pagination (i used this for combobox in rental)
         public async Task<List<Bike>> GetAllBikesAsync()
         {
             using (var connection = _db.GetConnection())
@@ -56,6 +63,7 @@ namespace Nomad2.Services
             }
         }
 
+        // gets paginated list of bikes with search and sort capabilities
         public async Task<(List<Bike> bikes, int totalCount)> GetBikesAsync(
             int page = 1,
             string searchTerm = "",
@@ -123,6 +131,7 @@ namespace Nomad2.Services
             }
         }
 
+        // retrieves a single bike by its id
         public async Task<Bike> GetBikeByIdAsync(string id)
         {
             using (var connection = _db.GetConnection())
@@ -153,6 +162,7 @@ namespace Nomad2.Services
             }
         }
 
+        // adds a new bike to the database
         public async Task<bool> AddBikeAsync(Bike bike)
         {
             var (isValid, errorMessage) = BikeValidator.ValidateBike(bike);
@@ -184,6 +194,7 @@ namespace Nomad2.Services
             }
         }
 
+        // updates existing bike information
         public async Task<bool> UpdateBikeAsync(Bike bike)
         {
             var (isValid, errorMessage) = BikeValidator.ValidateBike(bike);
@@ -218,6 +229,7 @@ namespace Nomad2.Services
             }
         }
 
+        // deletes a bike from the database
         public async Task<bool> DeleteBikeAsync(string id)
         {
             using (var connection = _db.GetConnection())
@@ -233,6 +245,8 @@ namespace Nomad2.Services
             }
         }
 
+
+        // removes all bikes from the database
         public async Task<bool> ClearAllBikesAsync()
         {
             using (var connection = _db.GetConnection())
@@ -255,6 +269,8 @@ namespace Nomad2.Services
             }
         }
 
+
+        // gets the id of the last bike in the database
         public async Task<string> GetLastBikeIdAsync()
         {
             using (var connection = _db.GetConnection())

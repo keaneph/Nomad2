@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace Nomad2.Sorting
 {
-
     public enum BikeSortOption
     {
         BikeId,

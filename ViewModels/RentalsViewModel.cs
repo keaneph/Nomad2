@@ -10,17 +10,19 @@ using Nomad2.Views;
 
 namespace Nomad2.ViewModels
 {
+    // view model for managing rental operations and display
     public class RentalsViewModel : BaseViewModel, ISearchable
     {
+        // services for data operations
         private readonly IRentalService _rentalService;
         private readonly ICustomerService _customerService;
         private readonly IBikeService _bikeService;
 
-        // Collections
+        // observable collections for data binding
         private ObservableCollection<Rental> _rentals;
         private ObservableCollection<SortOption<RentalSortOption>> _availableSortOptions;
 
-        // Selected items and current states
+        // state tracking fields
         private Rental _selectedRental;
         private SortOption<RentalSortOption> _currentSortOption;
         private string _searchText;
@@ -28,6 +30,7 @@ namespace Nomad2.ViewModels
         private int _totalPages;
         private bool _isAscending = true;
 
+        // initializes rental management with required services
         public RentalsViewModel(
             IRentalService rentalService,
             ICustomerService customerService,
@@ -42,7 +45,6 @@ namespace Nomad2.ViewModels
 
             Rentals = new ObservableCollection<Rental>();
 
-            // Initialize sort options
             AvailableSortOptions = new ObservableCollection<SortOption<RentalSortOption>>
             {
                 new SortOption<RentalSortOption> { DisplayName = "ID", Option = RentalSortOption.RentalId },
@@ -54,20 +56,20 @@ namespace Nomad2.ViewModels
 
             CurrentSortOption = AvailableSortOptions[0];
 
-            // Initialize commands
             CreateRentalCommand = new RelayCommand(ExecuteCreateRental);
             CompleteRentalCommand = new RelayCommand<Rental>(ExecuteCompleteRental);
             DeleteRentalCommand = new RelayCommand<Rental>(ExecuteDeleteRental);
+            EditRentalCommand = new RelayCommand<Rental>(ExecuteEditRental);
             NextPageCommand = new RelayCommand(ExecuteNextPage, CanExecuteNextPage);
             PreviousPageCommand = new RelayCommand(ExecutePreviousPage, CanExecutePreviousPage);
             ToggleSortDirectionCommand = new RelayCommand(() => IsAscending = !IsAscending);
 
-            // Load initial data
             _ = LoadRentals();
         }
 
         #region Properties
 
+        // collection of rentals for display
         public ObservableCollection<Rental> Rentals
         {
             get => _rentals;
@@ -78,6 +80,7 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // available sorting options
         public ObservableCollection<SortOption<RentalSortOption>> AvailableSortOptions
         {
             get => _availableSortOptions;
@@ -88,6 +91,7 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // current sort option with auto-refresh
         public SortOption<RentalSortOption> CurrentSortOption
         {
             get => _currentSortOption;
@@ -99,6 +103,7 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // search text with auto-refresh
         public string SearchText
         {
             get => _searchText;
@@ -111,6 +116,42 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // handles rental editing and updates
+        private async void ExecuteEditRental(Rental rental)
+        {
+            if (rental != null)
+            {
+                // create a clone of the rental for editing
+                var rentalToEdit = new Rental
+                {
+                    RentalId = rental.RentalId,
+                    CustomerId = rental.CustomerId,
+                    BikeId = rental.BikeId,
+                    RentalDate = rental.RentalDate,
+                    RentalStatus = rental.RentalStatus,
+                    Customer = rental.Customer,
+                    Bike = rental.Bike
+                };
+
+                // opens dialog for editing
+                var dialog = new RentalDialog(rentalToEdit, _customerService, _bikeService, true);
+                if (dialog.ShowDialog() == true)
+                {
+                    try
+                    {
+                        // update rental in database
+                        await _rentalService.UpdateRentalAsync(rentalToEdit);
+                        await LoadRentals(); // Refresh the list
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error updating rental: {ex.Message}",
+                            "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+        }
+        // sort direction with auto-refresh
         public bool IsAscending
         {
             get => _isAscending;
@@ -122,9 +163,11 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // current page information
         public string CurrentPageDisplay =>
             $"Page {_currentPage} of {_totalPages}";
 
+        // currently selected rental
         public Rental SelectedRental
         {
             get => _selectedRental;
@@ -141,6 +184,7 @@ namespace Nomad2.ViewModels
 
         public ICommand CreateRentalCommand { get; }
         public ICommand CompleteRentalCommand { get; }
+        public ICommand EditRentalCommand { get; }
         public ICommand DeleteRentalCommand { get; }
         public ICommand NextPageCommand { get; }
         public ICommand PreviousPageCommand { get; }
@@ -150,6 +194,7 @@ namespace Nomad2.ViewModels
 
         #region Filtering
 
+        // current status filter
         private string _selectedStatusFilter = "All";
         public string SelectedStatusFilter
         {
@@ -162,6 +207,7 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // available status filter options
         public ObservableCollection<string> StatusFilters { get; } = new ObservableCollection<string>
         {
             "All",
@@ -174,6 +220,7 @@ namespace Nomad2.ViewModels
 
         #region Command Methods
 
+        // creates new rental with validation
         private async void ExecuteCreateRental()
         {
             try
@@ -216,6 +263,7 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // marks rental as completed
         private async void ExecuteCompleteRental(Rental rental)
         {
             if (rental != null)
@@ -243,6 +291,7 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // removes rental from database
         private async void ExecuteDeleteRental(Rental rental)
         {
             if (rental != null)
@@ -269,6 +318,7 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // navigation 
         private void ExecuteNextPage()
         {
             if (_currentPage < _totalPages)
@@ -291,6 +341,7 @@ namespace Nomad2.ViewModels
 
         #region Helper Methods
 
+        // loads rentals with current filters and sorting
         private async Task LoadRentals()
         {
             try
@@ -326,6 +377,7 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // checks if next page is available
         private bool CanExecuteNextPage()
         {
             return _currentPage < _totalPages;
@@ -336,6 +388,7 @@ namespace Nomad2.ViewModels
             return _currentPage > 1;
         }
 
+        // generates unique rental id
         private async Task<string> GenerateNewRentalId()
         {
             string lastId = await _rentalService.GetLastRentalIdAsync();
@@ -355,6 +408,7 @@ namespace Nomad2.ViewModels
             return "0000-0001";
         }
 
+        // updates search text and refreshes
         public void UpdateSearch(string searchTerm)
         {
             SearchText = searchTerm;

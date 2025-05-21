@@ -10,28 +10,21 @@ namespace Nomad2.Services
     {
         //gets the page size for pagination
         int PageSize { get; set; }
-
         //retrieves paginated list
         Task<(List<Customer> customers, int totalCount)> GetCustomersAsync(int page, string searchTerm, SortOption<CustomerSortOption> sortOption);
-
         // fetches a single customer record by their unique identifier
         Task<Customer> GetCustomerByIdAsync(string id);
-
         // creates a new customer record in the database, returns true if successful
         Task<bool> AddCustomerAsync(Customer customer);
-
-        // updates an existing customer's information, returns true if successful
+        // updates an existing customers information, returns true if successful
         Task<bool> UpdateCustomerAsync(Customer customer);
-
         // removes a specific customer from the database by their ID, returns true if successful
         Task<bool> DeleteCustomerAsync(string id);
-
         // removes all customer records from the database, returns true if successful
         Task<bool> ClearAllCustomersAsync();
-
         // retrieves the ID of the most recently added customer, used for generating new IDs
         Task<string> GetLastCustomerIdAsync();
-
+        // retrieves all customer without pagination
         Task<List<Customer>> GetAllCustomersAsync();
     }
 }

@@ -11,7 +11,7 @@ namespace Nomad2.Converters
         // converts from boolean to visibility (used when binding from source to target)
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            // checks if value is boolean; checks if true; if true, returns Visible; if false, returns Collapsed
+            // checks if value is boolean; checks if true; if true, returns Visible; if false, returns collapsed
             if (value is bool boolValue)
             {
                 return boolValue ? Visibility.Visible : Visibility.Collapsed;

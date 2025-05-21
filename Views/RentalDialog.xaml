@@ -3,14 +3,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        Title="Rental Details" 
-        Width="500" 
-        Height="600"
+        mc:Ignorable="d"
+        Title="{Binding DialogTitle}"
+        Height="620" 
+        Width="560"
         WindowStartupLocation="CenterOwner"
-        Background="{StaticResource PrimaryBackgroundBrush}">
+        Background="{StaticResource PrimaryBackgroundBrush}"
+        ResizeMode="NoResize">
 
-    <Border Margin="20">
-        <Grid>
+    <Border>
+        <Grid Margin="35,25">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
@@ -18,30 +20,51 @@
             </Grid.RowDefinitions>
 
             <!-- Header -->
-            <TextBlock Grid.Row="0"
-                       Text="Create New Rental"
-                       FontSize="24"
-                       FontWeight="Bold"
-                       Margin="0,0,0,20"
-                       Foreground="#E0E1EE"/>
+            <StackPanel>
+                <TextBlock Text="{Binding DialogTitle}"                    
+                          Foreground="{StaticResource TextPrimaryBrush}"
+                          FontSize="24"
+                          FontFamily="{StaticResource RubikBold}"
+                          Margin="0,0,0,5"/>
+                <TextBlock Text="All fields marked with * are required"
+                          Foreground="{StaticResource TextSecondaryBrush}"
+                          FontSize="12"
+                          FontFamily="{StaticResource RubikSemibold}"
+                          Margin="0,0,0,15"/>
+                <Border Height="1" 
+                        Background="{StaticResource PrimaryBackgroundBrush}" 
+                        Margin="0,0,0,15"/>
+            </StackPanel>
 
-            <!-- Main Content -->
-            <StackPanel Grid.Row="1" Margin="15">
+            <!-- Form Fields -->
+            <StackPanel Grid.Row="1" Margin="0,0,0,15">
                 <!-- Rental ID -->
-                <StackPanel>
+                <DockPanel LastChildFill="True" Margin="0,0,0,15">
                     <TextBlock Text="Rental ID"
-                             FontWeight="SemiBold"
-                             Foreground="#9A9CA5"/>
-                    <TextBox Text="{Binding RentalId, Mode=OneWay}"
-                             IsReadOnly="True"
-                             Style="{StaticResource BaseTextBoxStyle}"/>
-                </StackPanel>
+                             DockPanel.Dock="Top"
+                             FontFamily="{StaticResource RubikSemibold}"
+                             Foreground="{StaticResource TextPrimaryBrush}"
+                             Margin="0,0,0,5"/>
+                    <Border Background="{StaticResource ThirdBackgroundBrush}" 
+                            CornerRadius="8"
+                            Padding="15,8"
+                            Height="34">
+                        <TextBlock Text="{Binding RentalId}"
+                                 Foreground="{StaticResource TextSecondaryBrush}"
+                                 VerticalAlignment="Center"                                 
+                                 FontFamily="{StaticResource RubikSemibold}"/>
+                    </Border>
+                </DockPanel>
 
                 <!-- Customer Selection -->
-                <StackPanel>
-                    <TextBlock Text="Customer"
-                             FontWeight="SemiBold"
-                             Foreground="#9A9CA5"/>
+                <DockPanel LastChildFill="True" Margin="0,0,0,15">
+                    <TextBlock DockPanel.Dock="Top" Margin="0,0,0,5">
+                        <Run Text="Customer" 
+                             FontFamily="{StaticResource RubikSemibold}" 
+                             Foreground="{StaticResource TextPrimaryBrush}"/>
+                        <Run Text="*" 
+                             Foreground="{StaticResource RedBrush}"/>
+                    </TextBlock>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -49,47 +72,64 @@
                         </Grid.ColumnDefinitions>
 
                         <TextBox Text="{Binding CustomerSearch, UpdateSourceTrigger=PropertyChanged}"
-                                Style="{StaticResource BaseTextBoxStyle}"
-                                ToolTip="Search customer by ID or name..."/>
+                                Style="{StaticResource FormTextBoxStyle}"
+                                Height="34"/>
 
                         <Button Grid.Column="1"
-                                Margin="5,0,0,0"
-                                Style="{StaticResource ActionButtonStyle}"
-                                Command="{Binding ShowAvailableCustomersCommand}">
-                            Available
+                                Content="{Binding CustomerButtonText}"
+                                Command="{Binding ToggleCustomerListCommand}"
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Width="100"
+                                Height="39"
+                                Margin="10,0,0,0">
+                            <Button.Tag>
+                                <Viewbox Width="16" Height="16">
+                                    <Grid>
+                                        <Path Data="{StaticResource BrowseIcon}"
+                                              Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                              Style="{StaticResource PathStyle}"/>
+                                    </Grid>
+                                </Viewbox>
+                            </Button.Tag>
                         </Button>
                     </Grid>
+                </DockPanel>
 
-                    <!-- Customer Search Results -->
-                    <ListBox ItemsSource="{Binding CustomerSearchResults}"
-                             SelectedItem="{Binding SelectedCustomer, Mode=TwoWay}"
-                             MaxHeight="100"
-                             Margin="0,5,0,0"
-                             Style="{StaticResource BaseListBoxStyle}"
-                             Visibility="{Binding IsCustomerSearchVisible, 
-                                        Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel>
-                                    <TextBlock>
-                                        <Run Text="{Binding CustomerId}" Foreground="#9A9CA5"/>
-                                        <Run Text=" - "/>
-                                        <Run Text="{Binding Name}" Foreground="#E0E1EE"/>
-                                    </TextBlock>
-                                    <TextBlock Text="{Binding PhoneNumber}"
-                                             Foreground="#9A9CA5"
-                                             FontSize="12"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </StackPanel>
+                <!-- Customer Search Results -->
+                <ListBox ItemsSource="{Binding CustomerSearchResults}"
+                         SelectedItem="{Binding SelectedCustomer, Mode=TwoWay}"
+                         MaxHeight="100"
+                         Margin="0,0,0,15"
+                         Style="{StaticResource BaseListBoxStyle}"
+                         Visibility="{Binding IsCustomerSearchVisible, 
+                                    Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock>
+                                    <Run Text="{Binding CustomerId}" 
+                                         Foreground="{StaticResource TextSecondaryBrush}"/>
+                                    <Run Text=" - "/>
+                                    <Run Text="{Binding Name}" 
+                                         Foreground="{StaticResource TextPrimaryBrush}"/>
+                                </TextBlock>
+                                <TextBlock Text="{Binding PhoneNumber}"
+                                         Foreground="{StaticResource TextSecondaryBrush}"
+                                         FontSize="12"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
 
                 <!-- Bike Selection -->
-                <StackPanel>
-                    <TextBlock Text="Bike"
-                             FontWeight="SemiBold"
-                             Foreground="#9A9CA5"/>
+                <DockPanel LastChildFill="True" Margin="0,0,0,15">
+                    <TextBlock DockPanel.Dock="Top" Margin="0,0,0,5">
+                        <Run Text="Bike" 
+                             FontFamily="{StaticResource RubikSemibold}" 
+                             Foreground="{StaticResource TextPrimaryBrush}"/>
+                        <Run Text="*" 
+                             Foreground="{StaticResource RedBrush}"/>
+                    </TextBlock>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -97,86 +137,141 @@
                         </Grid.ColumnDefinitions>
 
                         <TextBox Text="{Binding BikeSearch, UpdateSourceTrigger=PropertyChanged}"
-                                Style="{StaticResource BaseTextBoxStyle}"
-                                ToolTip="Search bike by ID or model..."/>
+                                Style="{StaticResource FormTextBoxStyle}"
+                                Height="34"/>
 
                         <Button Grid.Column="1"
-                                Margin="5,0,0,0"
-                                Style="{StaticResource ActionButtonStyle}"
-                                Command="{Binding ShowAvailableBikesCommand}">
-                            Available
+                                Content="{Binding BikeButtonText}"
+                                Command="{Binding ToggleBikeListCommand}"
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Width="100"
+                                Height="39"
+                                Margin="10,0,0,0">
+                            <Button.Tag>
+                                <Viewbox Width="16" Height="16">
+                                    <Grid>
+                                        <Path Data="{StaticResource BrowseIcon}"
+                                              Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                              Style="{StaticResource PathStyle}"/>
+                                    </Grid>
+                                </Viewbox>
+                            </Button.Tag>
                         </Button>
                     </Grid>
+                </DockPanel>
 
-                    <!-- Bike Search Results -->
-                    <ListBox ItemsSource="{Binding BikeSearchResults}"
-                             SelectedItem="{Binding SelectedBike, Mode=TwoWay}"
-                             MaxHeight="100"
-                             Margin="0,5,0,0"
-                             Style="{StaticResource BaseListBoxStyle}"
-                             Visibility="{Binding IsBikeSearchVisible, 
-                                        Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel>
-                                    <TextBlock>
-                                        <Run Text="{Binding BikeId}" Foreground="#9A9CA5"/>
-                                        <Run Text=" - "/>
-                                        <Run Text="{Binding BikeModel}" Foreground="#E0E1EE"/>
-                                    </TextBlock>
-                                    <TextBlock>
-                                        <Run Text="Rate: $" Foreground="#9A9CA5"/>
-                                        <Run Text="{Binding DailyRate}" Foreground="#E0E1EE"/>
-                                        <Run Text="/day" Foreground="#9A9CA5"/>
-                                    </TextBlock>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </StackPanel>
+                <!-- Bike Search Results -->
+                <ListBox ItemsSource="{Binding BikeSearchResults}"
+                         SelectedItem="{Binding SelectedBike, Mode=TwoWay}"
+                         MaxHeight="100"
+                         Margin="0,0,0,15"
+                         Style="{StaticResource BaseListBoxStyle}"
+                         Visibility="{Binding IsBikeSearchVisible, 
+                                    Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock>
+                                    <Run Text="{Binding BikeId}" 
+                                         Foreground="{StaticResource TextSecondaryBrush}"/>
+                                    <Run Text=" - "/>
+                                    <Run Text="{Binding BikeModel}" 
+                                         Foreground="{StaticResource TextPrimaryBrush}"/>
+                                </TextBlock>
+                                <TextBlock>
+                                    <Run Text="Rate: $" 
+                                         Foreground="{StaticResource TextSecondaryBrush}"/>
+                                    <Run Text="{Binding DailyRate}" 
+                                         Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    <Run Text="/day" 
+                                         Foreground="{StaticResource TextSecondaryBrush}"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
 
                 <!-- Rental Date -->
-                <StackPanel>
-                    <TextBlock Text="Rental Date"
-                             FontWeight="SemiBold"
-                             Foreground="#9A9CA5"/>
+                <DockPanel LastChildFill="True" Margin="0,0,0,15">
+                    <TextBlock DockPanel.Dock="Top" Margin="0,0,0,5">
+                        <Run Text="Rental Date" 
+                             FontFamily="{StaticResource RubikSemibold}" 
+                             Foreground="{StaticResource TextPrimaryBrush}"/>
+                        <Run Text="*" 
+                             Foreground="{StaticResource RedBrush}"/>
+                    </TextBlock>
                     <DatePicker SelectedDate="{Binding RentalDate}"
-                              Style="{StaticResource BaseDatePickerStyle}"/>
-                </StackPanel>
+                              Style="{StaticResource FormDatePickerStyle}"
+                              Height="35"/>
+                </DockPanel>
 
                 <!-- Status -->
-                <StackPanel>
-                    <TextBlock Text="Status"
-                             FontWeight="SemiBold"
-                             Foreground="#9A9CA5"/>
+                <DockPanel LastChildFill="True" Margin="0,0,0,5">
+                    <TextBlock DockPanel.Dock="Top" Margin="0,0,0,5">
+                        <Run Text="Status" 
+                             FontFamily="{StaticResource RubikSemibold}" 
+                             Foreground="{StaticResource TextPrimaryBrush}"/>
+                        <Run Text="*" 
+                             Foreground="{StaticResource RedBrush}"/>
+                    </TextBlock>
                     <ComboBox ItemsSource="{Binding AvailableStatuses}"
                             SelectedItem="{Binding RentalStatus}"
-                            Style="{StaticResource BaseComboboxStyle}"/>
-                </StackPanel>
+                            Style="{StaticResource BaseComboboxStyle}"
+                              Margin="-323,0,0,10"/>
+                </DockPanel>
 
-                <Button Content="Debug State"
-                        Command="{Binding DebugStateCommand}"
-                        Style="{StaticResource ActionButtonStyle}"
-                        Width="100"
-                        Margin="0,0,10,0"/>
-                        </StackPanel>
+                <TextBlock Text="{Binding ErrorMessage}"
+                           Foreground="{StaticResource RedBrush}"
+                           FontFamily="{StaticResource RubikSemibold}"
+                           VerticalAlignment="Center"
+                           Margin="0,15,0,0"/>
+            </StackPanel>
 
-            <!-- Action Buttons -->
-            <StackPanel Grid.Row="2"
-                        Orientation="Horizontal"
-                        HorizontalAlignment="Right"
-                        Margin="0,20,0,0">
-                <Button Content="Cancel"
+            <!-- Bottom Section -->
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Cancel Button -->
+                <Button Grid.Column="1"
+                        Content="Cancel"
                         Command="{Binding CancelCommand}"
                         Style="{StaticResource CancelButtonStyle}"
-                        Width="100"
-                        Margin="0,0,10,0"/>
+                        Width="120"
+                        Height="35"
+                        Margin="0,0,10,0">
+                    <Button.Tag>
+                        <Viewbox Width="16" Height="16">
+                            <Grid>
+                                <Path Data="{StaticResource CancelIcon}"
+                                      Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                      Style="{StaticResource PathStyle}"/>
+                            </Grid>
+                        </Viewbox>
+                    </Button.Tag>
+                </Button>
 
-                <Button Content="Save"
+                <!-- Save Button -->
+                <Button Grid.Column="2"
+                        Content="Save"
                         Command="{Binding SaveCommand}"
-                        Style="{StaticResource PrimaryButtonStyle}"
-                        Width="100"/>
-            </StackPanel>
+                        Style="{StaticResource SaveButtonStyle}"
+                        Width="120"
+                        Height="35">
+                    <Button.Tag>
+                        <Viewbox Width="16" Height="16">
+                            <Grid>
+                                <Path Data="{StaticResource SaveIcon}"
+                                      Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                      Style="{StaticResource PathStyle}"/>
+                            </Grid>
+                        </Viewbox>
+                    </Button.Tag>
+                </Button>
+            </Grid>
         </Grid>
     </Border>
 </Window>

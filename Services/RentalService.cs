@@ -4,11 +4,14 @@ using Nomad2.Models;
 using Nomad2.Services;
 using Nomad2.Sorting;
 
+// rental service class that implements the rental interface
 public class RentalService : IRentalService
 {
+    // database helper and default page size
     private readonly DatabaseHelper _db;
-    private int _pageSize = 12; // following your pattern
+    private int _pageSize = 12;
 
+    // ensures page size is at least 1
     public int PageSize
     {
         get => _pageSize;
@@ -20,6 +23,8 @@ public class RentalService : IRentalService
         _db = new DatabaseHelper();
     }
 
+
+    // get rentals with pagination, search, and sort
     public async Task<(List<Rental> rentals, int totalCount)> GetRentalsAsync(
         int page = 1,
         string searchTerm = "",
@@ -32,7 +37,7 @@ public class RentalService : IRentalService
             var offset = (page - 1) * _pageSize;
             var rentals = new List<Rental>();
 
-            // Determine sort column
+            // determine sort column based on user selection
             string orderByColumn = sortOption?.Option switch
             {
                 RentalSortOption.RentalId => "r.rental_id",
@@ -47,7 +52,7 @@ public class RentalService : IRentalService
 
             string direction = sortOption?.IsAscending == true ? "ASC" : "DESC";
 
-            // JOIN query to get related customer and bike data
+            //join query to get rental data with customer and bike info
             string query = @"
                 SELECT SQL_CALC_FOUND_ROWS 
                     r.*, 
@@ -81,12 +86,13 @@ public class RentalService : IRentalService
                     {
                         var rental = new Rental
                         {
+                            // read results and create rental objects with related data
                             RentalId = reader.GetString("rental_id"),
                             CustomerId = reader.GetString("customer_id"),
                             BikeId = reader.GetString("bike_id"),
                             RentalDate = reader.GetDateTime("rental_date"),
                             RentalStatus = reader.GetString("rental_status"),
-                            // Initialize navigation properties
+                            // initialize navigation properties
                             Customer = new Customer
                             {
                                 CustomerId = reader.GetString("customer_id"),
@@ -113,6 +119,7 @@ public class RentalService : IRentalService
         }
     }
 
+    // get specific rental by id including customer and bike details
     public async Task<Rental> GetRentalByIdAsync(string id)
     {
         using (var connection = _db.GetConnection())
@@ -160,6 +167,7 @@ public class RentalService : IRentalService
         }
     }
 
+    // add new rental record to database
     public async Task<bool> AddRentalAsync(Rental rental)
     {
         using (var connection = _db.GetConnection())
@@ -184,6 +192,7 @@ public class RentalService : IRentalService
         }
     }
 
+    // update existing rental information
     public async Task<bool> UpdateRentalAsync(Rental rental)
     {
         using (var connection = _db.GetConnection())
@@ -210,6 +219,7 @@ public class RentalService : IRentalService
         }
     }
 
+    // delete rental record from database
     public async Task<bool> DeleteRentalAsync(string id)
     {
         using (var connection = _db.GetConnection())
@@ -225,6 +235,7 @@ public class RentalService : IRentalService
         }
     }
 
+    // get last rental id for auto-generation
     public async Task<string> GetLastRentalIdAsync()
     {
         using (var connection = _db.GetConnection())
@@ -240,6 +251,7 @@ public class RentalService : IRentalService
         }
     }
 
+    // get all active rentals for a specific customer
     public async Task<List<Rental>> GetActiveRentalsByCustomerAsync(string customerId)
     {
         using (var connection = _db.GetConnection())
@@ -291,6 +303,7 @@ public class RentalService : IRentalService
         }
     }
 
+    // get all active rentals for a specific bike
     public async Task<List<Rental>> GetActiveRentalsByBikeAsync(string bikeId)
     {
         using (var connection = _db.GetConnection())
@@ -310,8 +323,32 @@ public class RentalService : IRentalService
             using (var command = new MySqlCommand(query, connection))
             {
                 command.Parameters.AddWithValue("@BikeId", bikeId);
-                // Similar implementation as GetActiveRentalsByCustomerAsync
-                // ... (same reader logic)
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        rentals.Add(new Rental
+                        {
+                            RentalId = reader.GetString("rental_id"),
+                            CustomerId = reader.GetString("customer_id"),
+                            BikeId = reader.GetString("bike_id"),
+                            RentalDate = reader.GetDateTime("rental_date"),
+                            RentalStatus = reader.GetString("rental_status"),
+                            Customer = new Customer
+                            {
+                                CustomerId = reader.GetString("customer_id"),
+                                Name = reader.GetString("customer_name"),
+                                PhoneNumber = reader.GetString("phone_number")
+                            },
+                            Bike = new Bike
+                            {
+                                BikeId = reader.GetString("bike_id"),
+                                BikeModel = reader.GetString("bike_model"),
+                                DailyRate = reader.GetInt32("daily_rate")
+                            }
+                        });
+                    }
+                }
             }
             return rentals;
         }
@@ -323,7 +360,7 @@ public class RentalService : IRentalService
         {
             await connection.OpenAsync();
 
-            // Check if customer has any active rentals
+            // check if customer has any active rentals
             string query = @"
                 SELECT COUNT(*) 
                 FROM rentals 
@@ -335,8 +372,8 @@ public class RentalService : IRentalService
                 command.Parameters.AddWithValue("@CustomerId", customerId);
                 int activeRentals = Convert.ToInt32(await command.ExecuteScalarAsync());
 
-                // You can set your own business rules here
-                // For example, maximum 3 active rentals per customer
+                // FIXME set business rules here
+                // example, maximum 3 active rentals per customer
                 return activeRentals < 3;
             }
         }
@@ -360,7 +397,7 @@ public class RentalService : IRentalService
                 command.Parameters.AddWithValue("@BikeId", bikeId);
                 int activeRentals = Convert.ToInt32(await command.ExecuteScalarAsync());
 
-                // A bike can only be rented once at a time
+                // a bike can only be rented once at a time
                 return activeRentals == 0;
             }
         }

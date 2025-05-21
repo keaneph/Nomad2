@@ -1,94 +1,104 @@
-﻿using Microsoft.Win32;
+﻿// view model for the bike add/edit dialog window
+using Microsoft.Win32;
 using Nomad2.Models;
 using Nomad2.Validators;
-using System;
+using Nomad2.ViewModels;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
-namespace Nomad2.ViewModels
+public class BikeDialogViewModel : BaseViewModel
 {
-    public class BikeDialogViewModel : BaseViewModel
+    // private fields to store bike data and dialog state
+    private readonly Bike _bike;
+    private readonly Action<bool> _closeCallback;
+    private string _errorMessage;
+    private readonly bool _isEdit;
+
+    // constructor initializes the dialog with bike data and determines if its edit or add mode
+    public BikeDialogViewModel(Bike bike, bool isEdit, Action<bool> closeCallback)
     {
-        private readonly Bike _bike;
-        private readonly Action<bool> _closeCallback;
-        private string _errorMessage;
-        private readonly bool _isEdit;
+        // null checks for required parameters
+        _bike = bike ?? throw new ArgumentNullException(nameof(bike));
+        _closeCallback = closeCallback ?? throw new ArgumentNullException(nameof(closeCallback));
+        _isEdit = isEdit;
 
-        public BikeDialogViewModel(Bike bike, bool isEdit, Action<bool> closeCallback)
+        // initialize commands for user interactions
+        SaveCommand = new RelayCommand(ExecuteSave, CanExecuteSave);
+        CancelCommand = new RelayCommand(ExecuteCancel);
+        BrowseCommand = new RelayCommand(ExecuteBrowse);
+
+        // initialize dropdown options for bike status
+        StatusOptions = new ObservableCollection<string>
         {
-            _bike = bike ?? throw new ArgumentNullException(nameof(bike));
-            _closeCallback = closeCallback ?? throw new ArgumentNullException(nameof(closeCallback));
-            _isEdit = isEdit;
+            "Available",
+            "Rented",
+            "Under Maintenance"
+        };
+    }
 
-            SaveCommand = new RelayCommand(ExecuteSave, CanExecuteSave);
-            CancelCommand = new RelayCommand(ExecuteCancel);
-            BrowseCommand = new RelayCommand(ExecuteBrowse);
+    // properties for binding to the view
+    public string DialogTitle => _isEdit ? "Edit Bike" : "Add Bike";
+    public Bike Bike => _bike;
+    public ObservableCollection<string> StatusOptions { get; }
 
-            StatusOptions = new ObservableCollection<string>
-            {
-                "Available",
-                "Rented",
-                "Under Maintenance"
-            };
+    // error message property with notification
+    public string ErrorMessage
+    {
+        get => _errorMessage;
+        set
+        {
+            _errorMessage = value;
+            OnPropertyChanged();
+        }
+    }
+
+    // command properties for button bindings
+    public ICommand SaveCommand { get; }
+    public ICommand CancelCommand { get; }
+    public ICommand BrowseCommand { get; }
+
+    // saves the bike data and closes dialog
+    private void ExecuteSave()
+    {
+        if (CanExecuteSave())
+        {
+            _closeCallback(true);
+        }
+    }
+
+    // cancels the operation and closes dialog
+    private void ExecuteCancel()
+    {
+        _closeCallback(false);
+    }
+
+    // opens file dialog for selecting bike picture
+    private void ExecuteBrowse()
+    {
+        var openFileDialog = new OpenFileDialog
+        {
+            Filter = "Image files (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg|All files (*.*)|*.*",
+            Title = "Select Bike Picture"
+        };
+
+        if (openFileDialog.ShowDialog() == true)
+        {
+            Bike.BikePicture = openFileDialog.FileName;
+            OnPropertyChanged(nameof(Bike));
+        }
+    }
+
+    // validates bike data before saving
+    private bool CanExecuteSave()
+    {
+        var (isValid, errorMessage) = BikeValidator.ValidateBike(_bike);
+        if (!isValid)
+        {
+            ErrorMessage = errorMessage;
+            return false;
         }
 
-        public string DialogTitle => _isEdit ? "Edit Bike" : "Add Bike";
-        public Bike Bike => _bike;
-        public ObservableCollection<string> StatusOptions { get; }
-
-        public string ErrorMessage
-        {
-            get => _errorMessage;
-            set
-            {
-                _errorMessage = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public ICommand SaveCommand { get; }
-        public ICommand CancelCommand { get; }
-        public ICommand BrowseCommand { get; }
-
-        private void ExecuteSave()
-        {
-            if (CanExecuteSave())
-            {
-                _closeCallback(true);
-            }
-        }
-
-        private void ExecuteCancel()
-        {
-            _closeCallback(false);
-        }
-
-        private void ExecuteBrowse()
-        {
-            var openFileDialog = new OpenFileDialog
-            {
-                Filter = "Image files (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg|All files (*.*)|*.*",
-                Title = "Select Bike Picture"
-            };
-
-            if (openFileDialog.ShowDialog() == true)
-            {
-                Bike.BikePicture = openFileDialog.FileName;
-                OnPropertyChanged(nameof(Bike));
-            }
-        }
-
-        private bool CanExecuteSave()
-        {
-            var (isValid, errorMessage) = BikeValidator.ValidateBike(_bike);
-            if (!isValid)
-            {
-                ErrorMessage = errorMessage;
-                return false;
-            }
-
-            ErrorMessage = string.Empty;
-            return true;
-        }
+        ErrorMessage = string.Empty;
+        return true;
     }
 }

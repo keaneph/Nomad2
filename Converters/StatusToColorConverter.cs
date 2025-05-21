@@ -2,27 +2,34 @@
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows;
 
 namespace Nomad2.Converters
 {
+    // this converter class changes text status into corresponding colors for visual representation
     public class StatusToColorConverter : IValueConverter
     {
+        // converts a status string into a color brush
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            // checks if the input value can be treated as a string
             if (value is string status)
             {
+                // uses switch expression to match status with corresponding colors
                 return status.ToLower() switch
                 {
-                    "active" => new SolidColorBrush(Color.FromRgb(46, 204, 113)),    // Green
-                    "completed" => new SolidColorBrush(Color.FromRgb(52, 152, 219)),  // Blue
-                    "overdue" => new SolidColorBrush(Color.FromRgb(231, 76, 60)),     // Red
-                    _ => new SolidColorBrush(Color.FromRgb(149, 165, 166))            // Gray (default)
+                    "active" => Application.Current.Resources["GreenBrush"],   
+                    "completed" => Application.Current.Resources["PurpleBrush"], 
+                    "overdue" => Application.Current.Resources["RedBrush"],      
+                    _ => Application.Current.Resources["TextSecondaryBrush"]        
                 };
             }
 
-            return new SolidColorBrush(Color.FromRgb(149, 165, 166)); // Default gray
+            // returns default color if the value is not a string
+            return Application.Current.Resources["TextSecondaryBrush"];
         }
 
+        // convert back method is not implemented as it's not needed for this one-way conversion
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();

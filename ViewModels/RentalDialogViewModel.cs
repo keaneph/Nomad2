@@ -10,14 +10,18 @@ using System.Windows.Input;
 
 namespace Nomad2.ViewModels
 {
+    // view model for managing rental ops
     public class RentalDialogViewModel : BaseViewModel
+
+    // services and core dependencies
     {
         private readonly ICustomerService _customerService;
         private readonly IBikeService _bikeService;
         private readonly Window _dialog;
         private readonly Rental _rental;
+        private readonly bool _isEdit;
 
-        // Properties for binding
+        // search and selection state tracking
         private string _customerSearch;
         private string _bikeSearch;
         private Customer _selectedCustomer;
@@ -27,42 +31,59 @@ namespace Nomad2.ViewModels
         private bool _isCustomerSearchVisible;
         private bool _isBikeSearchVisible;
 
+        // initializes rental dialog with required services and dat
         public RentalDialogViewModel(
                 Rental rental,
                 ICustomerService customerService,
                 IBikeService bikeService,
-                Window dialog)
+                Window dialog,
+                bool isEdit = false)
         {
             _rental = rental;
             _customerService = customerService;
             _bikeService = bikeService;
             _dialog = dialog;
+            _isEdit = isEdit;
 
-            // Initialize commands
-            ShowAvailableCustomersCommand = new RelayCommand(async () => await ShowAvailableCustomers());
-            ShowAvailableBikesCommand = new RelayCommand(async () =>
-            {
-                MessageBox.Show("ShowAvailableBikesCommand executed");
-                await ShowAvailableBikes();
-            });
+            // initialize commands
+            ToggleCustomerListCommand = new RelayCommand(ToggleCustomerList);
+            ToggleBikeListCommand = new RelayCommand(ToggleBikeList);
             SaveCommand = new RelayCommand(Save, CanSave);
             CancelCommand = new RelayCommand(Cancel);
-            DebugStateCommand = new RelayCommand(DebugState);
 
-            // Initialize collections
+            // initialize collections and properties
             CustomerSearchResults = new ObservableCollection<Customer>();
             BikeSearchResults = new ObservableCollection<Bike>();
             AvailableStatuses = new ObservableCollection<string> { "Active", "Completed", "Overdue" };
 
-            // Initialize properties
             RentalId = rental.RentalId;
-            RentalDate = DateTime.Now; // Set to current date and time
-            RentalStatus = "Active"; // Set default status
+            RentalDate = rental.RentalDate;
+            RentalStatus = rental.RentalStatus;
+
+            // if editing, set the initial values
+            if (_isEdit && rental.Customer != null && rental.Bike != null)
+            {
+                SelectedCustomer = rental.Customer;
+                CustomerSearch = $"{rental.Customer.CustomerId} - {rental.Customer.Name}";
+
+                SelectedBike = rental.Bike;
+                BikeSearch = $"{rental.Bike.BikeId} - {rental.Bike.BikeModel}";
+            }
+            else
+            {
+                RentalDate = DateTime.Now;
+                RentalStatus = "Active";
+            }
         }
+
+        // indicates if dialog is in edit or add mode
+        public string DialogTitle => _isEdit ? "Edit Rental" : "Add Rental";
 
         #region Properties
 
         private string _rentalId;
+
+        // rental identifier for database
         public string RentalId
         {
             get => _rentalId;
@@ -73,6 +94,7 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // customer search input with auto-update
         public string CustomerSearch
         {
             get => _customerSearch;
@@ -84,6 +106,7 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // bike search input with auto-update
         public string BikeSearch
         {
             get => _bikeSearch;
@@ -95,6 +118,7 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // selected customer with validation
         public Customer SelectedCustomer
         {
             get => _selectedCustomer;
@@ -106,7 +130,7 @@ namespace Nomad2.ViewModels
                 {
                     IsCustomerSearchVisible = false;
                     CustomerSearch = $"{value.CustomerId} - {value.Name}";
-                    // Store the selection permanently
+                    // store the selection permanently
                     _rental.CustomerId = value.CustomerId;
                     _rental.Customer = value;
                 }
@@ -114,6 +138,7 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // selected bike with validation
         public Bike SelectedBike
         {
             get => _selectedBike;
@@ -125,7 +150,7 @@ namespace Nomad2.ViewModels
                 {
                     IsBikeSearchVisible = false;
                     BikeSearch = $"{value.BikeId} - {value.BikeModel}";
-                    // Store the selection permanently
+                    // store the selection permanently
                     _rental.BikeId = value.BikeId;
                     _rental.Bike = value;
                 }
@@ -133,16 +158,7 @@ namespace Nomad2.ViewModels
             }
         }
 
-        private void DebugState()
-        {
-            MessageBox.Show($"Current State:\n" +
-                           $"Customer: {_selectedCustomer != null} ({_selectedCustomer?.CustomerId})\n" +
-                           $"Bike: {_selectedBike != null} ({_selectedBike?.BikeId})\n" +
-                           $"Status: {RentalStatus}\n" +
-                           $"Date Valid: {RentalDate >= DateTime.Today}\n" +
-                           $"RentalId: {RentalId}");
-        }
-
+        // rental date with validation
         public DateTime RentalDate
         {
             get => _rentalDate;
@@ -150,10 +166,12 @@ namespace Nomad2.ViewModels
             {
                 _rentalDate = value;
                 OnPropertyChanged();
-                (SaveCommand as RelayCommand)?.RaiseCanExecuteChanged();  // Add this line
+                (SaveCommand as RelayCommand)?.RaiseCanExecuteChanged();  
             }
         }
 
+
+        // current status of rental
         public string RentalStatus
         {
             get => _rentalStatus;
@@ -165,6 +183,7 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // controls customer search visibility
         public bool IsCustomerSearchVisible
         {
             get => _isCustomerSearchVisible;
@@ -175,6 +194,7 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // controls bike search visibility
         public bool IsBikeSearchVisible
         {
             get => _isBikeSearchVisible;
@@ -185,6 +205,7 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // collections for search results and status options
         public ObservableCollection<Customer> CustomerSearchResults { get; }
         public ObservableCollection<Bike> BikeSearchResults { get; }
         public ObservableCollection<string> AvailableStatuses { get; }
@@ -194,9 +215,8 @@ namespace Nomad2.ViewModels
 
         #region Commands
 
-        public ICommand DebugStateCommand { get; }
-        public ICommand ShowAvailableCustomersCommand { get; }
-        public ICommand ShowAvailableBikesCommand { get; }
+        public ICommand ToggleCustomerListCommand { get; }
+        public ICommand ToggleBikeListCommand { get; }
         public ICommand SaveCommand { get; }
         public ICommand CancelCommand { get; }
 
@@ -204,6 +224,8 @@ namespace Nomad2.ViewModels
 
         #region Methods
 
+
+        // searches customers based on input
         private async Task SearchCustomers()
         {
             if (string.IsNullOrWhiteSpace(CustomerSearch))
@@ -229,6 +251,7 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // searches bikes based on input
         private async Task SearchBikes()
         {
             if (string.IsNullOrWhiteSpace(BikeSearch))
@@ -254,6 +277,8 @@ namespace Nomad2.ViewModels
             }
         }
 
+
+        // validates rental data before saving
         private bool CanSave()
         {
             bool customerValid = _rental.CustomerId != null && _rental.Customer != null;
@@ -265,13 +290,10 @@ namespace Nomad2.ViewModels
             return customerValid && bikeValid && statusValid && dateValid && idValid;
         }
 
+
+        // saves rental and closes dialog
         private void Save()
         {
-            // We don't need to set these again because we already set them when selecting
-            // _rental.CustomerId = SelectedCustomer.CustomerId;  // Remove this line
-            // _rental.BikeId = SelectedBike.BikeId;            // Remove this line
-
-            // These should already be set, but let's make sure
             _rental.RentalDate = RentalDate;
             _rental.RentalStatus = RentalStatus;
 
@@ -279,6 +301,8 @@ namespace Nomad2.ViewModels
             _dialog.Close();
         }
 
+
+        // cancels operation and closes dialog
         private void Cancel()
         {
             _dialog.DialogResult = false;
@@ -287,6 +311,8 @@ namespace Nomad2.ViewModels
 
         #endregion
 
+
+        // loads and displays active customers
         private async Task ShowAvailableCustomers()
         {
             try
@@ -308,6 +334,8 @@ namespace Nomad2.ViewModels
             }
         }
 
+
+        // loads and displays available bikes
         private async Task ShowAvailableBikes()
         {
             try
@@ -328,5 +356,98 @@ namespace Nomad2.ViewModels
                 MessageBox.Show($"Error loading bikes: {ex.Message}");
             }
         }
+
+
+        // text for customer browse button
+        private string _customerButtonText = "Browse";
+        public string CustomerButtonText
+        {
+            get => _customerButtonText;
+            set
+            {
+                _customerButtonText = value;
+                OnPropertyChanged();
+            }
+        }
+
+        // text for bike browse button
+
+        private string _bikeButtonText = "Browse";
+        public string BikeButtonText
+        {
+            get => _bikeButtonText;
+            set
+            {
+                _bikeButtonText = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private async void ToggleCustomerList()
+        {
+            if (IsCustomerSearchVisible)
+            {
+                // if list is visible, hide it
+                IsCustomerSearchVisible = false;
+                CustomerButtonText = "Browse";
+                CustomerSearchResults.Clear();
+            }
+            else
+            {
+                // if list is hidden, show it and load data
+                try
+                {
+                    var customers = await _customerService.GetAllCustomersAsync();
+
+                    CustomerSearchResults.Clear();
+                    foreach (var customer in customers.Where(c =>
+                        c.CustomerStatus.Equals("Active", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        CustomerSearchResults.Add(customer);
+                    }
+
+                    IsCustomerSearchVisible = CustomerSearchResults.Any();
+                    CustomerButtonText = "Close";
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error loading customers: {ex.Message}");
+                }
+            }
+        }
+
+        private async void ToggleBikeList()
+        {
+            if (IsBikeSearchVisible)
+            {
+                // If list is visible, hide it
+                IsBikeSearchVisible = false;
+                BikeButtonText = "Browse";
+                BikeSearchResults.Clear();
+            }
+            else
+            {
+                // If list is hidden, show it and load data
+                try
+                {
+                    var bikes = await _bikeService.GetAllBikesAsync();
+
+                    BikeSearchResults.Clear();
+                    foreach (var bike in bikes.Where(b =>
+                        b.BikeStatus.Equals("Available", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        BikeSearchResults.Add(bike);
+                    }
+
+                    IsBikeSearchVisible = BikeSearchResults.Any();
+                    BikeButtonText = "Close";
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error loading bikes: {ex.Message}");
+                }
+            }
+        }
+
     }
 }

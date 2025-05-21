@@ -12,12 +12,13 @@ using Microsoft.Win32;
 
 namespace Nomad2.ViewModels
 {
+    // view model for managing bike inventory and operations
     public class BikesViewModel : BaseViewModel, ISearchable
     {
-        // service for handling bike-related database operations
+        // service for database operations
         private readonly IBikeService _bikeService;
 
-        // observable collection to store and display bikes
+        // collection of bikes for display
         private ObservableCollection<Bike> _bikes;
 
         // fields for search, pagination, and sorting
@@ -57,7 +58,7 @@ namespace Nomad2.ViewModels
             _bikeService = new BikeService();
             Bikes = new ObservableCollection<Bike>();
 
-            // Initialize sort options
+            // initializes bike management and commands
             AvailableSortOptions = new ObservableCollection<SortOption<BikeSortOption>>
 {
             new SortOption<BikeSortOption> { DisplayName = "ID", Option = BikeSortOption.BikeId },
@@ -69,7 +70,6 @@ namespace Nomad2.ViewModels
 
             CurrentSortOption = AvailableSortOptions.First();
 
-            // Initialize Commands
             AddBikeCommand = new RelayCommand(ExecuteAddBike);
             EditBikeCommand = new RelayCommand<Bike>(ExecuteEditBike);
             DeleteBikeCommand = new RelayCommand<Bike>(ExecuteDeleteBike);
@@ -79,12 +79,12 @@ namespace Nomad2.ViewModels
             ViewImageCommand = new RelayCommand<string>(ExecuteViewImage);
             ToggleSortDirectionCommand = new RelayCommand(() => IsAscending = !IsAscending);
 
-            // Load initial data
             _ = LoadBikes();
         }
 
         #region Properties
 
+        // displays bike image in popup window
         private void ExecuteViewImage(string imagePath)
         {
             if (!string.IsNullOrEmpty(imagePath))
@@ -204,6 +204,7 @@ namespace Nomad2.ViewModels
 
         #region Command Methods
 
+        // creates and adds new bike to database
         private async void ExecuteAddBike()
         {
             var newBike = new Bike
@@ -227,6 +228,7 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // updates existing bike information
         private async void ExecuteEditBike(Bike bike)
         {
             if (bike != null)
@@ -247,6 +249,7 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // single delete for bikes
         private async void ExecuteDeleteBike(Bike bike)
         {
             if (SelectedBikes != null && SelectedBikes.Count > 0)
@@ -298,6 +301,7 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // deletes all bikes
         private async void ExecuteClear()
         {
             var result = MessageBox.Show(
@@ -342,6 +346,7 @@ namespace Nomad2.ViewModels
             }
         }
 
+        // pagination
         private void ExecuteNextPage()
         {
             if (_currentPage < _totalPages)
@@ -364,6 +369,7 @@ namespace Nomad2.ViewModels
 
         #region Helper Methods
 
+        // loads bikes with current filters and sorting
         private async Task LoadBikes()
         {
             try
@@ -402,6 +408,7 @@ namespace Nomad2.ViewModels
             return _currentPage > 1;
         }
 
+        // generates next available bike id
         private async Task<string> GenerateNewBikeId()
         {
             string lastId = await _bikeService.GetLastBikeIdAsync();

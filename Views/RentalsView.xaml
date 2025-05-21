@@ -75,6 +75,8 @@
                       Style="{StaticResource BaseComboboxStyle}"/>
         </StackPanel>
 
+        
+        <!--FIX ME MAJORN UI UPD NEEDED-->
         <!-- Cards Container -->
         <ScrollViewer Grid.Row="2"
                       VerticalScrollBarVisibility="Auto">
@@ -109,8 +111,8 @@
                                     </Grid.ColumnDefinitions>
 
                                     <TextBlock Text="{Binding RentalId}"
-                                             FontWeight="SemiBold"
-                                             Foreground="#E0E1EE"/>
+                                                 FontWeight="SemiBold"
+                                                 Foreground="#E0E1EE"/>
 
                                     <Border Grid.Column="1"
                                             Padding="8,4"
@@ -125,26 +127,26 @@
 
                                 <!-- Customer Info -->
                                 <StackPanel Grid.Row="1" 
-                                          Margin="0,10,0,0">
+                                            Margin="0,10,0,0">
                                     <TextBlock Text="Customer"
-                                             Foreground="#9A9CA5"
-                                             FontSize="12"/>
+                                               Foreground="#9A9CA5"
+                                               FontSize="12"/>
                                     <TextBlock Text="{Binding Customer.Name}"
-                                             Foreground="#E0E1EE"
-                                             FontWeight="SemiBold"/>
+                                               Foreground="#E0E1EE"
+                                               FontWeight="SemiBold"/>
                                     <TextBlock Text="{Binding Customer.PhoneNumber}"
-                                             Foreground="#9A9CA5"/>
+                                               Foreground="#9A9CA5"/>
                                 </StackPanel>
 
                                 <!-- Bike Info -->
                                 <StackPanel Grid.Row="2" 
-                                          Margin="0,10,0,0">
+                                            Margin="0,10,0,0">
                                     <TextBlock Text="Bike"
-                                             Foreground="#9A9CA5"
-                                             FontSize="12"/>
+                                               Foreground="#9A9CA5"
+                                               FontSize="12"/>        
                                     <TextBlock Text="{Binding Bike.BikeModel}"
-                                             Foreground="#E0E1EE"
-                                             FontWeight="SemiBold"/>
+                                               Foreground="#E0E1EE"
+                                               FontWeight="SemiBold"/>
                                     <TextBlock>
                                         <Run Text="Rate: $" Foreground="#9A9CA5"/>
                                         <Run Text="{Binding Bike.DailyRate}" 
@@ -154,34 +156,60 @@
                                 </StackPanel>
 
                                 <!-- Action Buttons -->
-                                <StackPanel Grid.Row="3"
-                                          Orientation="Horizontal"
-                                          Margin="0,15,0,0"
-                                          HorizontalAlignment="Right">
-                                    <Button Command="{Binding DataContext.CompleteRentalCommand, 
-                                            RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                            CommandParameter="{Binding}"
-                                            Style="{StaticResource ActionButtonStyle}"
-                                            Visibility="{Binding RentalStatus, 
-                                            Converter={StaticResource ActiveToVisibilityConverter}}">
-                                        Complete
-                                    </Button>
+                                <Grid Grid.Row="3" Margin="0,15,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
 
-                                    <Button Command="{Binding DataContext.DeleteRentalCommand,
+                                    <!-- Complete Button - Left side -->
+                                    <Button Grid.Column="0"
+                                            Content="Complete"
+                                            Command="{Binding DataContext.CompleteRentalCommand, 
                                             RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                             CommandParameter="{Binding}"
-                                            Style="{StaticResource DeleteButtonStyle}"
-                                            Margin="8,0,0,0">
-                                        <Button.Tag>
-                                            <Viewbox Width="16" Height="16">
-                                                <Path Data="{StaticResource DeleteIcon}"
-                                                      Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, 
-                                                      Path=Foreground}"
-                                                      Style="{StaticResource PathStyle}"/>
-                                            </Viewbox>
-                                        </Button.Tag>
-                                    </Button>
-                                </StackPanel>
+                                            Style="{StaticResource CompleteButtonStyle}"
+                                            Visibility="{Binding RentalStatus, 
+                                            Converter={StaticResource ActiveToVisibilityConverter}}"/>
+
+                                    <!-- Edit and Delete Buttons - Right side -->
+                                    <StackPanel Grid.Column="2"
+                                                Orientation="Horizontal">
+                                        <!-- Edit Button -->
+                                        <Button Command="{Binding DataContext.EditRentalCommand,
+                                                RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                CommandParameter="{Binding}"
+                                                Style="{StaticResource EditButtonStyle}">
+                                            <Button.Tag>
+                                                <Viewbox Width="16" 
+                                                         Height="16">
+                                                        <Path Data="{StaticResource EditIcon}"
+                                                        Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, 
+                                                        Path=Foreground}"
+                                                        Style="{StaticResource PathStyle}"/>
+                                                </Viewbox>
+                                            </Button.Tag>
+                                        </Button>
+
+                                        <!-- Delete Button -->
+                                        <Button Command="{Binding DataContext.DeleteRentalCommand,
+                                                RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                CommandParameter="{Binding}"
+                                                Style="{StaticResource DeleteButtonStyle}"
+                                                Margin="8,0,0,0">
+                                            <Button.Tag>
+                                                <Viewbox Width="16" 
+                                                         Height="16">
+                                                    <Path Data="{StaticResource DeleteIcon}"
+                                                          Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, 
+                                                          Path=Foreground}"
+                                                          Style="{StaticResource PathStyle}"/>
+                                                </Viewbox>
+                                            </Button.Tag>
+                                        </Button>
+                                    </StackPanel>
+                                </Grid>
                             </Grid>
                         </Border>
                     </DataTemplate>

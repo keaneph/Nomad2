@@ -154,3 +154,56 @@ namespace Nomad2.ViewModels
 
     }
 }
+
+// to all that will contribteute to this project:
+
+// service classes (BikeService, CustomerService)
+// these are classes that handle business logic and data operations
+// they act as a middle layer between da UI and database
+// example: BikeService handles all bike-related operations like adding/updating/deleting bikes/fetching bike data
+
+// interfaces (IBikeService)
+// like a contract that defines what methods a class must implement
+// helps with dependency injection and testing
+// example: IBikeService ensures any bike service must have methods like GetBikeByIdAsync, AddBikeAsync, etc.
+
+
+// public async Task<Bike> GetBikeByIdAsync(string id)
+// async: tells C# this method can run asynchronously
+// Task: Represents work being done in the background
+// await: Waits for async operation without blocking the main thread
+// good for database operations that might take time
+// keeps your app responsive while waiting for data
+
+
+// string searchTerm = "";
+// SortOption<BikeSortOption> sortOption = null;
+// allows filtering data based on user input
+// flexible sorting options (ascending/descending)
+// works across multiple fields (id, name, status, etc.)
+
+
+// public class StatusToColorConverter : IValueConverter
+// transforms data for UI display
+// example: Converts status text to colors
+// helps with UI presentation
+
+// Create (Add)
+// Read (Get)
+// Update
+// Delete
+// Each service implements these basic operations
+
+// var (isValid, errorMessage) = BikeValidator.ValidateBike(bike);
+// checks data before database operations
+// ensures data integrity
+// provides error messages
+// this forms a typical modern application structure where:
+
+// UI calls service methods
+// services handle business logic
+// services communicate with database
+// async operations keep everything responsive
+// interfaces make code maintainable
+// converters help with UI presentation
+// validation ensures data quality
