@@ -18,5 +18,6 @@ namespace Nomad2.Services
         Task<bool> DeleteBikeAsync(string id);
         Task<bool> ClearAllBikesAsync();
         Task<string> GetLastBikeIdAsync();
+        Task<List<Bike>> GetAllBikesAsync();
     }
 }

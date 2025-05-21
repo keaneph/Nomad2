@@ -4,12 +4,225 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:Nomad2.Views"
-             mc:Ignorable="d">
-    <Grid Background="#0F1022">
-        <TextBlock Text="Rentals View"
-                  Foreground="White"
-                  FontSize="24"
-                  HorizontalAlignment="Center"
-                  VerticalAlignment="Center"/>
+             mc:Ignorable="d"
+             Background="{StaticResource PrimaryBackgroundBrush}">
+
+    <Grid Margin="20,0,20,20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Top Controls -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Sort Controls -->
+            <StackPanel Grid.Column="0" 
+                        Orientation="Horizontal">
+                <ComboBox Width="120"
+                          Style="{StaticResource BaseComboboxStyle}"
+                          ItemsSource="{Binding AvailableSortOptions}"
+                          SelectedItem="{Binding CurrentSortOption}"
+                          DisplayMemberPath="DisplayName"/>
+
+                <Button Command="{Binding ToggleSortDirectionCommand}"
+                        Style="{StaticResource ToggleSortButtonStyle}">
+                    <Button.Tag>
+                        <Viewbox Width="16" Height="16">
+                            <Path Data="{StaticResource SortIcon}"
+                                  Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, 
+                                  Path=Foreground}"
+                                  Style="{StaticResource PathStyle}"/>
+                        </Viewbox>
+                    </Button.Tag>
+                </Button>
+            </StackPanel>
+
+            <!-- Create Rental Button -->
+            <Button Grid.Column="2"
+                    Command="{Binding CreateRentalCommand}"
+                    Style="{StaticResource PrimaryButtonStyle}">
+                <Button.Tag>
+                    <Viewbox Width="16" Height="16">
+                        <Path Data="{StaticResource AddCustomersIcon}"
+                              Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, 
+                              Path=Foreground}"
+                              Style="{StaticResource PathStyle}"/>
+                    </Viewbox>
+                </Button.Tag>
+                New Rental
+            </Button>
+        </Grid>
+
+        <!-- Filter Controls -->
+        <StackPanel Grid.Row="1" 
+                    Orientation="Horizontal"
+                    Margin="0,10">
+            <TextBlock Text="Status: "
+                       VerticalAlignment="Center"
+                       Margin="0,0,10,0"
+                       Foreground="#E0E1EE"/>
+            <ComboBox ItemsSource="{Binding StatusFilters}"
+                      SelectedItem="{Binding SelectedStatusFilter}"
+                      Width="120"
+                      Style="{StaticResource BaseComboboxStyle}"/>
+        </StackPanel>
+
+        <!-- Cards Container -->
+        <ScrollViewer Grid.Row="2"
+                      VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding Rentals}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Width="300"
+                                Margin="10"
+                                Padding="15"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Background="#2A2D3E"
+                                BorderBrush="#373B4D">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Rental ID and Status -->
+                                <Grid Grid.Row="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Text="{Binding RentalId}"
+                                             FontWeight="SemiBold"
+                                             Foreground="#E0E1EE"/>
+
+                                    <Border Grid.Column="1"
+                                            Padding="8,4"
+                                            CornerRadius="4"
+                                            Background="{Binding RentalStatus, 
+                                            Converter={StaticResource StatusToColorConverter}}">
+                                        <TextBlock Text="{Binding RentalStatus}"
+                                                 Foreground="White"
+                                                 FontSize="12"/>
+                                    </Border>
+                                </Grid>
+
+                                <!-- Customer Info -->
+                                <StackPanel Grid.Row="1" 
+                                          Margin="0,10,0,0">
+                                    <TextBlock Text="Customer"
+                                             Foreground="#9A9CA5"
+                                             FontSize="12"/>
+                                    <TextBlock Text="{Binding Customer.Name}"
+                                             Foreground="#E0E1EE"
+                                             FontWeight="SemiBold"/>
+                                    <TextBlock Text="{Binding Customer.PhoneNumber}"
+                                             Foreground="#9A9CA5"/>
+                                </StackPanel>
+
+                                <!-- Bike Info -->
+                                <StackPanel Grid.Row="2" 
+                                          Margin="0,10,0,0">
+                                    <TextBlock Text="Bike"
+                                             Foreground="#9A9CA5"
+                                             FontSize="12"/>
+                                    <TextBlock Text="{Binding Bike.BikeModel}"
+                                             Foreground="#E0E1EE"
+                                             FontWeight="SemiBold"/>
+                                    <TextBlock>
+                                        <Run Text="Rate: $" Foreground="#9A9CA5"/>
+                                        <Run Text="{Binding Bike.DailyRate}" 
+                                             Foreground="#E0E1EE"/>
+                                        <Run Text="/day" Foreground="#9A9CA5"/>
+                                    </TextBlock>
+                                </StackPanel>
+
+                                <!-- Action Buttons -->
+                                <StackPanel Grid.Row="3"
+                                          Orientation="Horizontal"
+                                          Margin="0,15,0,0"
+                                          HorizontalAlignment="Right">
+                                    <Button Command="{Binding DataContext.CompleteRentalCommand, 
+                                            RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                            CommandParameter="{Binding}"
+                                            Style="{StaticResource ActionButtonStyle}"
+                                            Visibility="{Binding RentalStatus, 
+                                            Converter={StaticResource ActiveToVisibilityConverter}}">
+                                        Complete
+                                    </Button>
+
+                                    <Button Command="{Binding DataContext.DeleteRentalCommand,
+                                            RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                            CommandParameter="{Binding}"
+                                            Style="{StaticResource DeleteButtonStyle}"
+                                            Margin="8,0,0,0">
+                                        <Button.Tag>
+                                            <Viewbox Width="16" Height="16">
+                                                <Path Data="{StaticResource DeleteIcon}"
+                                                      Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, 
+                                                      Path=Foreground}"
+                                                      Style="{StaticResource PathStyle}"/>
+                                            </Viewbox>
+                                        </Button.Tag>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <!-- Pagination -->
+        <StackPanel Grid.Row="3" 
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Margin="0,20,0,0">
+            <Button Command="{Binding PreviousPageCommand}"
+                    Style="{StaticResource PaginationButtonStyle}">
+                <Button.Tag>
+                    <Viewbox Width="16" Height="16">
+                        <Path Data="{StaticResource ArrowLeftIcon}"
+                              Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, 
+                              Path=Foreground}"
+                              Style="{StaticResource PathStyle}"/>
+                    </Viewbox>
+                </Button.Tag>
+            </Button>
+
+            <TextBlock Text="{Binding CurrentPageDisplay}"
+                       FontFamily="{StaticResource RubikSemibold}"
+                       Foreground="#E0E1EE"
+                       VerticalAlignment="Center"
+                       Margin="20,0"/>
+
+            <Button Command="{Binding NextPageCommand}"
+                    Style="{StaticResource PaginationButtonStyle}">
+                <Button.Tag>
+                    <Viewbox Width="16" Height="16">
+                        <Path Data="{StaticResource ArrowRightIcon}"
+                              Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, 
+                              Path=Foreground}"
+                              Style="{StaticResource PathStyle}"/>
+                    </Viewbox>
+                </Button.Tag>
+            </Button>
+        </StackPanel>
     </Grid>
 </UserControl>

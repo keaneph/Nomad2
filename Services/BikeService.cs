@@ -25,6 +25,37 @@ namespace Nomad2.Services
             _db = new DatabaseHelper();
         }
 
+        public async Task<List<Bike>> GetAllBikesAsync()
+        {
+            using (var connection = _db.GetConnection())
+            {
+                await connection.OpenAsync();
+                var bikes = new List<Bike>();
+
+                string query = "SELECT * FROM bike";
+
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            bikes.Add(new Bike
+                            {
+                                BikeId = reader.GetString("bike_id"),
+                                BikeModel = reader.GetString("bike_model"),
+                                BikeType = reader.GetString("bike_type"),
+                                DailyRate = reader.GetInt32("daily_rate"),
+                                BikePicture = reader.GetString("bike_picture"),
+                                BikeStatus = reader.GetString("bike_status")
+                            });
+                        }
+                    }
+                }
+                return bikes;
+            }
+        }
+
         public async Task<(List<Bike> bikes, int totalCount)> GetBikesAsync(
             int page = 1,
             string searchTerm = "",

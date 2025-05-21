@@ -19,6 +19,10 @@
             <BooleanToVisibilityConverter xmlns="clr-namespace:System.Windows.Controls;assembly=PresentationFramework" 
                                         x:Key="BooleanToVisibilityConverter"/>
 
+            <converters:StatusToColorConverter x:Key="StatusToColorConverter"/>
+            <converters:ActiveToVisibilityConverter x:Key="ActiveToVisibilityConverter"/>
+
+
             <!--data templates-->
             <DataTemplate DataType="{x:Type viewmodels:DashboardViewModel}">
                 <views:DashboardView/>

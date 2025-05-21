@@ -31,6 +31,11 @@ namespace Nomad2.ViewModels
             return _canExecute == null || _canExecute();
         }
 
+        public void RaiseCanExecuteChanged()
+        {
+            CommandManager.InvalidateRequerySuggested();
+        }
+
         public void Execute(object parameter)
         {
             _execute();
@@ -58,6 +63,11 @@ namespace Nomad2.ViewModels
         public bool CanExecute(object parameter)
         {
             return _canExecute == null || _canExecute((T)parameter);
+        }
+
+        public void RaiseCanExecuteChanged()
+        {
+            CommandManager.InvalidateRequerySuggested();
         }
 
         public void Execute(object parameter)

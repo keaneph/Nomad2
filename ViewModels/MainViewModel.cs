@@ -117,12 +117,25 @@ namespace Nomad2.ViewModels
         private void OnCurrentViewChanged(string viewName)
         {
             var previousView = CurrentView;
+
+            // Create services only when needed for RentalsViewModel
+            IRentalService rentalService = null;
+            ICustomerService customerService = null;
+            IBikeService bikeService = null;
+
+            if (viewName == "Rentals")
+            {
+                rentalService = new RentalService();
+                customerService = new CustomerService();
+                bikeService = new BikeService();
+            }
+
             CurrentView = viewName switch
             {
                 "Dashboard" => new DashboardViewModel(),
                 "Customers" => new CustomersViewModel(),
                 "Bikes" => new BikesViewModel(),
-                "Rentals" => new RentalsViewModel(),
+                "Rentals" => new RentalsViewModel(rentalService, customerService, bikeService),
                 "Payments" => new PaymentsViewModel(),
                 "Returns" => new ReturnsViewModel(),
                 "About" => new AboutViewModel(),

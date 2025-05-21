@@ -363,4 +363,10 @@
         </Setter>
     </Style>
 
+    <Style x:Key="BaseTextBoxStyle" TargetType="TextBox"></Style>
+    <Style x:Key="BaseListBoxStyle" TargetType="ListBox"></Style>
+    <Style x:Key="BaseDatePickerStyle" TargetType="DatePicker"></Style>
+    <Style x:Key="ActionButtonStyle" TargetType="Button"></Style>
+
+
 </ResourceDictionary>

@@ -31,5 +31,7 @@ namespace Nomad2.Services
 
         // retrieves the ID of the most recently added customer, used for generating new IDs
         Task<string> GetLastCustomerIdAsync();
+
+        Task<List<Customer>> GetAllCustomersAsync();
     }
 }

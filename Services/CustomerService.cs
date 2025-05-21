@@ -28,6 +28,38 @@ namespace Nomad2.Services
             _db = new DatabaseHelper();
         }
 
+        public async Task<List<Customer>> GetAllCustomersAsync()
+        {
+            using (var connection = _db.GetConnection())
+            {
+                await connection.OpenAsync();
+                var customers = new List<Customer>();
+
+                string query = "SELECT * FROM customer";
+
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            customers.Add(new Customer
+                            {
+                                CustomerId = reader.GetString("customer_id"),
+                                Name = reader.GetString("name"),
+                                PhoneNumber = reader.GetString("phone_number"),
+                                Address = reader.GetString("address"),
+                                GovernmentIdPicture = reader.GetString("government_id_picture"),
+                                CustomerStatus = reader.GetString("customer_status"),
+                                RegistrationDate = reader.GetDateTime("registration_date")
+                            });
+                        }
+                    }
+                }
+                return customers;
+            }
+        }
+
         public async Task<(List<Customer> customers, int totalCount)> GetCustomersAsync(
             int page = 1,
             string searchTerm = "",
