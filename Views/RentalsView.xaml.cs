@@ -35,18 +35,18 @@ namespace Nomad2.Views
                 // calculate available height for cards
                 double availableHeight = grid.ActualHeight - 140; // adjust this value based on top and bottom controls
 
-                // Calculate columns for UniformGrid
+                // calculate columns for UniformGrid
                 int columns;
-                if (grid.ActualWidth < 1200) // Minimized or small window
+                if (grid.ActualWidth < 1200) // minimized or small window
                 {
                     columns = 3; // 2 rows x 3 columns = 6 cards
                 }
-                else // Maximized or large window
+                else // maximized or large window
                 {
                     columns = Math.Max(1, (int)(grid.ActualWidth / 350)); // 330 card + margin
                 }
 
-                // Find UniformGrid in ItemsControl
+                // find UniformGrid in ItemsControl
                 UniformGrid? uniformGrid = FindUniformGrid(rentalsItemsControl);
                 if (uniformGrid != null)
                 {
@@ -61,8 +61,15 @@ namespace Nomad2.Views
                 if (DataContext is RentalsViewModel viewModel)
                 {
                     viewModel.UpdatePageSize(itemsPerPage);
+                    UpdatePaginationButtons(viewModel);
                 }
             }
+        }
+
+        private void UpdatePaginationButtons(RentalsViewModel viewModel)
+        {
+            // force the commands to re-evaluate their CanExecute state
+            CommandManager.InvalidateRequerySuggested();
         }
 
         private UniformGrid? FindUniformGrid(ItemsControl itemsControl)

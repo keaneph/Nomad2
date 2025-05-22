@@ -415,6 +415,10 @@ namespace Nomad2.ViewModels
 
                 _totalPages = (int)Math.Ceiling(totalCount / (double)_rentalService.PageSize);
                 OnPropertyChanged(nameof(CurrentPageDisplay));
+                
+                // raise CanExecuteChanged for pagination commands
+                (NextPageCommand as RelayCommand)?.RaiseCanExecuteChanged();
+                (PreviousPageCommand as RelayCommand)?.RaiseCanExecuteChanged();
             }
             catch (Exception ex)
             {
