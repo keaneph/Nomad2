@@ -9,7 +9,7 @@ public class RentalService : IRentalService
 {
     // database helper and default page size
     private readonly DatabaseHelper _db;
-    private int _pageSize = 12;
+    private int _pageSize = 4;
 
     // ensures page size is at least 1
     public int PageSize

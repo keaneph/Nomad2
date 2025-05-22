@@ -460,6 +460,15 @@ namespace Nomad2.ViewModels
             SearchText = searchTerm;
         }
 
-        #endregion
+        // updates the page size and reloads rentals if it changes
+        public void UpdatePageSize(int newSize)
+        {
+            if (_rentalService.PageSize != newSize)
+            {
+                _rentalService.PageSize = newSize;
+                _ = LoadRentals(); // using _ = to handle the async call
+            }
+        }
     }
+   #endregion
 }

@@ -7,9 +7,8 @@
              mc:Ignorable="d"
              Background="{StaticResource PrimaryBackgroundBrush}">
 
-    <Grid Margin="20,0,20,20">
+    <Grid Margin="20,0,20,20"  SizeChanged="Grid_SizeChanged">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
@@ -25,70 +24,64 @@
 
             <!-- Sort Controls -->
             <StackPanel Grid.Column="0" 
-                        Orientation="Horizontal">
+                Orientation="Horizontal">
                 <ComboBox Width="120"
-                          Style="{StaticResource BaseComboboxStyle}"
-                          ItemsSource="{Binding AvailableSortOptions}"
-                          SelectedItem="{Binding CurrentSortOption}"
-                          DisplayMemberPath="DisplayName"/>
+                  Style="{StaticResource BaseComboboxStyle}"
+                  ItemsSource="{Binding AvailableSortOptions}"
+                  SelectedItem="{Binding CurrentSortOption}"
+                  DisplayMemberPath="DisplayName"/>
 
                 <Button Command="{Binding ToggleSortDirectionCommand}"
-                        Style="{StaticResource ToggleSortButtonStyle}">
+                Style="{StaticResource ToggleSortButtonStyle}">
                     <Button.Tag>
                         <Viewbox Width="16" Height="16">
                             <Path Data="{StaticResource SortIcon}"
-                                  Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, 
-                                  Path=Foreground}"
-                                  Style="{StaticResource PathStyle}"/>
+                          Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, 
+                          Path=Foreground}"
+                          Style="{StaticResource PathStyle}"/>
                         </Viewbox>
                     </Button.Tag>
                 </Button>
+
+                <ComboBox Width="120"
+                  Margin="8,0,0,0"
+                  Style="{StaticResource BaseComboboxStyle}"
+                  ItemsSource="{Binding StatusFilters}"
+                  SelectedItem="{Binding SelectedStatusFilter}"/>
             </StackPanel>
 
             <!-- Create Rental Button -->
             <Button Grid.Column="2"
-                    Command="{Binding CreateRentalCommand}"
-                    Style="{StaticResource PrimaryButtonStyle}">
+            Command="{Binding CreateRentalCommand}"
+            Style="{StaticResource PrimaryButtonStyle}">
                 <Button.Tag>
                     <Viewbox Width="16" Height="16">
                         <Path Data="{StaticResource AddCustomersIcon}"
-                              Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, 
-                              Path=Foreground}"
-                              Style="{StaticResource PathStyle}"/>
+                      Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, 
+                      Path=Foreground}"
+                      Style="{StaticResource PathStyle}"/>
                     </Viewbox>
                 </Button.Tag>
                 New Rental
             </Button>
         </Grid>
 
-        <!-- Filter Controls -->
-        <StackPanel Grid.Row="1" 
-                    Orientation="Horizontal"
-                    Margin="0,10">
-            <TextBlock Text="Status: "
-                       VerticalAlignment="Center"
-                       Margin="0,0,10,0"
-                       Foreground="#E0E1EE"/>
-            <ComboBox ItemsSource="{Binding StatusFilters}"
-                      SelectedItem="{Binding SelectedStatusFilter}"
-                      Width="120"
-                      Style="{StaticResource BaseComboboxStyle}"/>
-        </StackPanel>
-
-        
         <!--FIX ME MAJORN UI UPD NEEDED-->
         <!-- Cards Container -->
-        <ScrollViewer Grid.Row="2"
-                      VerticalScrollBarVisibility="Auto">
-            <ItemsControl ItemsSource="{Binding Rentals}">
+        <Border Grid.Row="1"
+                BorderThickness="1.5"
+                BorderBrush="{StaticResource BorderBrush}">
+            <ItemsControl x:Name="rentalsItemsControl" ItemsSource="{Binding Rentals}"
+                  Margin="10">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel/>
+                        <UniformGrid x:Name="rentalsUniformGrid" Columns="3" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Width="300"
+                        <Border Width="330"
+                                Height="220"
                                 Margin="10"
                                 Padding="15"
                                 BorderThickness="1"
@@ -215,7 +208,7 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-        </ScrollViewer>
+        </Border>
 
 
 
