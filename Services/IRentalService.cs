@@ -37,5 +37,6 @@ namespace Nomad2.Services
         Task<bool> IsCustomerEligibleForRental(string customerId);
         // checks if a bike is available to be rented
         Task<bool> IsBikeAvailableForRental(string bikeId);
+        Task<bool> ClearAllRentalsAsync();
     }
 }

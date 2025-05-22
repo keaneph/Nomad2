@@ -217,40 +217,63 @@
             </ItemsControl>
         </ScrollViewer>
 
+
+
         <!-- Pagination -->
-        <StackPanel Grid.Row="3" 
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Center"
-                    Margin="0,20,0,0">
-            <Button Command="{Binding PreviousPageCommand}"
-                    Style="{StaticResource PaginationButtonStyle}">
+        <Grid Grid.Row="3" Margin="0,20,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Clear button -->
+            <Button Grid.Column="0"
+                    Command="{Binding ClearCommand}"
+                    Style="{StaticResource ClearButtonStyle}">
                 <Button.Tag>
                     <Viewbox Width="16" Height="16">
-                        <Path Data="{StaticResource ArrowLeftIcon}"
-                              Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, 
-                              Path=Foreground}"
-                              Style="{StaticResource PathStyle}"/>
+                        <Grid>
+                            <Path Data="{StaticResource ClearIcon}"
+                                  Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                  Style="{StaticResource PathStyle}"/>
+                        </Grid>
                     </Viewbox>
                 </Button.Tag>
             </Button>
 
-            <TextBlock Text="{Binding CurrentPageDisplay}"
-                       FontFamily="{StaticResource RubikSemibold}"
-                       Foreground="#E0E1EE"
-                       VerticalAlignment="Center"
-                       Margin="20,0"/>
+            <!-- Pagination -->
+            <StackPanel Grid.Column="1" 
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        Margin="-120,0,0,0">
+                <Button Command="{Binding PreviousPageCommand}"
+                        Style="{StaticResource PaginationButtonStyle}">
+                    <Button.Tag>
+                        <Viewbox Width="16" Height="16">
+                            <Path Data="{StaticResource ArrowLeftIcon}"
+                                  Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                  Style="{StaticResource PathStyle}"/>
+                        </Viewbox>
+                    </Button.Tag>
+                </Button>
 
-            <Button Command="{Binding NextPageCommand}"
-                    Style="{StaticResource PaginationButtonStyle}">
-                <Button.Tag>
-                    <Viewbox Width="16" Height="16">
-                        <Path Data="{StaticResource ArrowRightIcon}"
-                              Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, 
-                              Path=Foreground}"
-                              Style="{StaticResource PathStyle}"/>
-                    </Viewbox>
-                </Button.Tag>
-            </Button>
-        </StackPanel>
+                <TextBlock Text="{Binding CurrentPageDisplay}"
+                           FontFamily="{StaticResource RubikSemibold}"
+                           Foreground="#E0E1EE"
+                           VerticalAlignment="Center"
+                           Margin="20,0"/>
+
+                <Button Command="{Binding NextPageCommand}"
+                        Style="{StaticResource PaginationButtonStyle}">
+                    <Button.Tag>
+                        <Viewbox Width="16" Height="16">
+                            <Path Data="{StaticResource ArrowRightIcon}"
+                                  Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                  Style="{StaticResource PathStyle}"/>
+                        </Viewbox>
+                    </Button.Tag>
+                </Button>
+            </StackPanel>
+        </Grid>
     </Grid>
 </UserControl>

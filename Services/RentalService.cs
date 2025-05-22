@@ -235,6 +235,29 @@ public class RentalService : IRentalService
         }
     }
 
+    // clear all rental records from database
+    public async Task<bool> ClearAllRentalsAsync()
+    {
+        using (var connection = _db.GetConnection())
+        {
+            await connection.OpenAsync();
+            string query = "DELETE FROM rentals";
+
+            using (var command = new MySqlCommand(query, connection))
+            {
+                try
+                {
+                    await command.ExecuteNonQueryAsync();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+        }
+    }
+
     // get last rental id for auto-generation
     public async Task<string> GetLastRentalIdAsync()
     {

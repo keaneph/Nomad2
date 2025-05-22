@@ -63,6 +63,7 @@ namespace Nomad2.ViewModels
             NextPageCommand = new RelayCommand(ExecuteNextPage, CanExecuteNextPage);
             PreviousPageCommand = new RelayCommand(ExecutePreviousPage, CanExecutePreviousPage);
             ToggleSortDirectionCommand = new RelayCommand(() => IsAscending = !IsAscending);
+            ClearCommand = new RelayCommand(() => ExecuteClear());
 
             _ = LoadRentals();
         }
@@ -189,6 +190,7 @@ namespace Nomad2.ViewModels
         public ICommand NextPageCommand { get; }
         public ICommand PreviousPageCommand { get; }
         public ICommand ToggleSortDirectionCommand { get; }
+        public ICommand ClearCommand { get; }
 
         #endregion
 
@@ -314,6 +316,50 @@ namespace Nomad2.ViewModels
                         MessageBox.Show($"Error deleting rental: {ex.Message}",
                             "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
+                }
+            }
+        }
+
+        private async void ExecuteClear()
+        {
+            var result = MessageBox.Show(
+                "Are you sure you want to delete ALL rentals? This action cannot be undone.",
+                "Confirm Delete All",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    bool success = await _rentalService.ClearAllRentalsAsync();
+
+                    if (success)
+                    {
+                        Rentals.Clear();
+                        _currentPage = 1;
+                        _totalPages = 0;
+                        OnPropertyChanged(nameof(CurrentPageDisplay));
+
+                        MessageBox.Show("All rentals have been deleted successfully.",
+                            "Success",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Failed to delete all rentals.",
+                            "Error",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"An error occurred: {ex.Message}",
+                        "Error",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
                 }
             }
         }
