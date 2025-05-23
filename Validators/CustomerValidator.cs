@@ -31,8 +31,8 @@ namespace Nomad2.Validators
                 return (false, "Phone number is required");
             if (customer.PhoneNumber.Length > 30)
                 return (false, "Phone number cannot exceed 30 characters");
-            if (!Regex.IsMatch(customer.PhoneNumber, @"^[0-9\+\-$$$$\s]+$"))
-                return (false, "Phone number can only contain numbers, +, -, (), and spaces");
+            if (!Regex.IsMatch(customer.PhoneNumber, @"^[0-9+]+$"))
+                return (false, "Phone number can only contain numbers and +");
 
             // validate Address (VARCHAR(200))
             if (string.IsNullOrWhiteSpace(customer.Address))
