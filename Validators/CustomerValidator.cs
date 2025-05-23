@@ -39,6 +39,8 @@ namespace Nomad2.Validators
                 return (false, "Address is required");
             if (customer.Address.Length > 200)
                 return (false, "Address cannot exceed 200 characters");
+            if (!Regex.IsMatch(customer.Address, @"^[a-zA-Z0-9\s\-']+$"))
+                return (false, "Address can only contain letters, numbers, spaces, hyphens, and apostrophes");
 
             // validate GovernmentIdPicture (VARCHAR(255))
             if (string.IsNullOrWhiteSpace(customer.GovernmentIdPicture))
