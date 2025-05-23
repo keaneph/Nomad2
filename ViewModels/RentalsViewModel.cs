@@ -238,26 +238,6 @@ namespace Nomad2.ViewModels
                 var dialog = new RentalDialog(newRental, _customerService, _bikeService, _rentalService);
                 if (dialog.ShowDialog() == true)
                 {
-                    // validate bike availability
-                    if (!await _rentalService.IsBikeAvailableForRental(newRental.BikeId))
-                    {
-                        MessageBox.Show("This bike is currently unavailable.",
-                            "Unavailable", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        return;
-                    }
-
-                    // Validate customer eligibility
-                    if (!await _rentalService.IsCustomerEligibleForRental(newRental.CustomerId))
-                    {
-                        MessageBox.Show(
-                            "This customer already has 3 active rentals and cannot rent more bikes.",
-                            "Rental Limit Reached",
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Warning
-                        );
-                        return;
-                    }
-
                     await _rentalService.AddRentalAsync(newRental);
                     await LoadRentals();
                 }

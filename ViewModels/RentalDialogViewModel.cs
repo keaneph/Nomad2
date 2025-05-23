@@ -330,6 +330,50 @@ namespace Nomad2.ViewModels
                 _rental.RentalDate = RentalDate;
                 _rental.RentalStatus = RentalStatus;
 
+                // validate customer eligibility for new rentals
+                if (!_isEdit && !await _rentalService.IsCustomerEligibleForRental(_rental.CustomerId))
+                {
+                    MessageBox.Show(
+                        "This customer already has 3 active rentals and cannot rent more bikes.",
+                        "Rental Limit Reached",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning
+                    );
+                    return;
+                }
+
+                // validate customer eligibility when editing and changing customers
+                if (_isEdit && _originalCustomerId != _rental.CustomerId)
+                {
+                    // get active rentals for the new customer
+                    var activeRentals = await _rentalService.GetActiveRentalsByCustomerAsync(_rental.CustomerId);
+                    if (activeRentals.Count >= 3)
+                    {
+                        MessageBox.Show(
+                            "This customer already has 3 active rentals and cannot rent more bikes.",
+                            "Rental Limit Reached",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Warning
+                        );
+                        return;
+                    }
+                }
+
+                // validate bike availability - only for new rentals or when changing bikes
+                if (!_isEdit || (_isEdit && _originalBikeId != _rental.BikeId))
+                {
+                    if (!await _rentalService.IsBikeAvailableForRental(_rental.BikeId))
+                    {
+                        MessageBox.Show(
+                            "This bike is currently unavailable.",
+                            "Unavailable",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Warning
+                        );
+                        return;
+                    }
+                }
+
                 // 1. update the rental in the database first
                 if (_isEdit)
                 {

@@ -279,6 +279,26 @@ namespace Nomad2.Services
                             }
                         }
 
+                        // check if trying to set status to Inactive while having active rentals
+                        if (customer.CustomerStatus == "Inactive")
+                        {
+                            string checkRentalsQuery = @"
+                                SELECT COUNT(*) 
+                                FROM rentals 
+                                WHERE customer_id = @CustomerId 
+                                AND rental_status = 'Active'";
+
+                            using (var checkCommand = new MySqlCommand(checkRentalsQuery, connection, transaction))
+                            {
+                                checkCommand.Parameters.AddWithValue("@CustomerId", customer.CustomerId);
+                                int activeRentals = Convert.ToInt32(await checkCommand.ExecuteScalarAsync());
+                                if (activeRentals > 0)
+                                {
+                                    throw new InvalidOperationException("Cannot set customer status to Inactive while they have active rentals");
+                                }
+                            }
+                        }
+
                         string query = @"
                             UPDATE customer 
                             SET name = @Name, 
