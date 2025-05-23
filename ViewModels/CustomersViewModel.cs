@@ -34,7 +34,7 @@ namespace Nomad2.ViewModels
         private ObservableCollection<SortOption<CustomerSortOption>> _availableSortOptions;
         private bool _isAscending = true;
 
-        // property for sorting direction with da automatic refresh
+        // property for sorting direction with automatic refresh
         public bool IsAscending
         {
             get => _isAscending;
@@ -45,6 +45,32 @@ namespace Nomad2.ViewModels
                 LoadCustomers(); // refresh when sort direction changes
             }
         }
+
+        #region Filtering
+
+        // current status filter
+        private string _selectedStatusFilter = "All";
+        public string SelectedStatusFilter
+        {
+            get => _selectedStatusFilter;
+            set
+            {
+                _selectedStatusFilter = value;
+                OnPropertyChanged();
+                LoadCustomers();
+            }
+        }
+
+        // available status filter options
+        public ObservableCollection<string> StatusFilters { get; } = new ObservableCollection<string>
+        {
+            "All",
+            "Active",
+            "Inactive",
+            "Blacklisted"
+        };
+
+        #endregion
 
         // commands for UI interactions
         public ICommand ToggleSortDirectionCommand { get; }
@@ -406,10 +432,16 @@ namespace Nomad2.ViewModels
                 var (customers, totalCount) = await _customerService.GetCustomersAsync(
                     _currentPage, SearchText, sortOption);
 
+                // Apply status filter if not "All"
+                if (SelectedStatusFilter != "All")
+                {
+                    customers = customers.Where(c => c.CustomerStatus == SelectedStatusFilter).ToList();
+                }
+
                 Customers.Clear();
                 foreach (var customer in customers)
                 {
-                    Customers.Add(customer);    
+                    Customers.Add(customer);
                 }
 
                 _totalPages = (int)Math.Ceiling(totalCount / (double)_customerService.PageSize);

@@ -59,8 +59,8 @@ namespace Nomad2.Validators
                 return (false, "Bike status is required");
             if (bike.BikeStatus.Length > 30)
                 return (false, "Bike status cannot exceed 30 characters");
-            // Since we're using a dropdown for status, we should validate against allowed values
-            if (!new[] { "Available", "Rented", "Under Maintenance" }.Contains(bike.BikeStatus))
+            // since were using a dropdown for status, we should validate against allowed values
+            if (!new[] { "Available", "Rented", "Maintenance" }.Contains(bike.BikeStatus))
                 return (false, "Invalid bike status");
 
             return (true, string.Empty);

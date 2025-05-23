@@ -87,7 +87,7 @@ namespace Nomad2.Services
                             phone_number VARCHAR(30) NOT NULL,
                             address VARCHAR(200) NOT NULL,
                             government_id_picture VARCHAR(255) NOT NULL,
-                            customer_status VARCHAR(30) NOT NULL CHECK (customer_status IN ('Active', 'Inactive', 'Blocked')),
+                            customer_status VARCHAR(30) NOT NULL CHECK (customer_status IN ('Active', 'Inactive', 'Blacklisted')),
                             registration_date DATE NOT NULL,
                             CONSTRAINT UQ_customer_phone UNIQUE (phone_number)
                         )";
@@ -99,7 +99,7 @@ namespace Nomad2.Services
                             bike_model VARCHAR(100) NOT NULL,
                             bike_type VARCHAR(30) NOT NULL,
                             bike_picture VARCHAR(255) NOT NULL,                  
-                            bike_status VARCHAR(30) NOT NULL CHECK (bike_status IN ('Available', 'Rented', 'Maintenance', 'Retired')),
+                            bike_status VARCHAR(30) NOT NULL CHECK (bike_status IN ('Available', 'Rented', 'Maintenance')),
                             daily_rate INTEGER(9) NOT NULL CHECK (daily_rate > 0)
                         )";
 

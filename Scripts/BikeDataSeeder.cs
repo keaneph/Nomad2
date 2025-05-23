@@ -31,7 +31,7 @@ namespace Nomad2.Scripts
 
         private static readonly string[] BikeStatuses = new[]
         {
-            "Available", "Rented", "Under Maintenance"
+            "Available", "Rented", "Maintenance"
         };
 
         public BikeDataSeeder(IBikeService bikeService)

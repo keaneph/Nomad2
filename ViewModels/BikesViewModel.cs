@@ -45,6 +45,32 @@ namespace Nomad2.ViewModels
             }
         }
 
+        #region Filtering
+
+        // current status filter
+        private string _selectedStatusFilter = "All";
+        public string SelectedStatusFilter
+        {
+            get => _selectedStatusFilter;
+            set
+            {
+                _selectedStatusFilter = value;
+                OnPropertyChanged();
+                LoadBikes();
+            }
+        }
+
+        // available status filter options
+        public ObservableCollection<string> StatusFilters { get; } = new ObservableCollection<string>
+        {
+            "All",
+            "Available",
+            "Rented",
+            "Maintenance"
+        };
+
+        #endregion
+
         // commands for UI interactions
         public ICommand ToggleSortDirectionCommand { get; }
         public ICommand ViewImageCommand { get; }
@@ -382,6 +408,12 @@ namespace Nomad2.ViewModels
 
                 var (bikes, totalCount) = await _bikeService.GetBikesAsync(
                     _currentPage, SearchText, sortOption);
+
+                // Apply status filter if not "All"
+                if (SelectedStatusFilter != "All")
+                {
+                    bikes = bikes.Where(b => b.BikeStatus == SelectedStatusFilter).ToList();
+                }
 
                 Bikes.Clear();
                 foreach (var bike in bikes)

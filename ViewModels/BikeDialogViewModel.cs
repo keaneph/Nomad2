@@ -32,7 +32,7 @@ public class BikeDialogViewModel : BaseViewModel
         {
             "Available",
             "Rented",
-            "Under Maintenance"
+            "Maintenance"
         };
     }
 
