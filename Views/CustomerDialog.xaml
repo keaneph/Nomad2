@@ -119,6 +119,8 @@
                         <TextBox Text="{Binding Customer.GovernmentIdPicture, UpdateSourceTrigger=PropertyChanged}"
                                 Style="{StaticResource FormTextBoxStyle}"
                                 Height="34"
+                                Background="{StaticResource ThirdBackgroundBrush}"
+                                Foreground="{StaticResource TextSecondaryBrush}"
                                 IsReadOnly="True"/>
                         <!-- browse button -->
                         <Button Grid.Column="1"
