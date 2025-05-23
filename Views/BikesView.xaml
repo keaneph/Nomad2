@@ -106,7 +106,7 @@
                                   Binding="{Binding BikeType}"
                                   Width="0.9*"/>
                 <DataGridTextColumn Header="Daily Rate" 
-                                  Binding="{Binding DailyRate, StringFormat=₱{0:N2}}"
+                                  Binding="{Binding DailyRate, StringFormat=₱{0:N0}}"
                                   Width="0.8*"/>
                 <DataGridTextColumn Header="Status" 
                                   Binding="{Binding BikeStatus}"
