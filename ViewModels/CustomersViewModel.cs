@@ -274,14 +274,33 @@ namespace Nomad2.ViewModels
         {
             if (customer != null)
             {
-                var dialog = new CustomerDialog(customer, true);
+                // create a copy of the customer object
+                var customerCopy = new Customer
+                {
+                    CustomerId = customer.CustomerId,
+                    Name = customer.Name,
+                    PhoneNumber = customer.PhoneNumber,
+                    Address = customer.Address,
+                    GovernmentIdPicture = customer.GovernmentIdPicture,
+                    CustomerStatus = customer.CustomerStatus,
+                    RegistrationDate = customer.RegistrationDate
+                };
+
+                var dialog = new CustomerDialog(customerCopy, true);
                 if (dialog.ShowDialog() == true)
                 {
                     try
                     {
                         // update customer in database
-                        await _customerService.UpdateCustomerAsync(customer);
-                        await LoadCustomers(); // Refresh the list to show updated data
+                        await _customerService.UpdateCustomerAsync(customerCopy);
+                        // only update the original customer object if the database update was successful
+                        customer.Name = customerCopy.Name;
+                        customer.PhoneNumber = customerCopy.PhoneNumber;
+                        customer.Address = customerCopy.Address;
+                        customer.GovernmentIdPicture = customerCopy.GovernmentIdPicture;
+                        customer.CustomerStatus = customerCopy.CustomerStatus;
+                        customer.RegistrationDate = customerCopy.RegistrationDate;
+                        await LoadCustomers(); // refresh the list to show updated data
                     }
                     catch (Exception ex)
                     {
@@ -432,7 +451,7 @@ namespace Nomad2.ViewModels
                 var (customers, totalCount) = await _customerService.GetCustomersAsync(
                     _currentPage, SearchText, sortOption);
 
-                // Apply status filter if not "All"
+                // apply status filter if not "All"
                 if (SelectedStatusFilter != "All")
                 {
                     customers = customers.Where(c => c.CustomerStatus == SelectedStatusFilter).ToList();
