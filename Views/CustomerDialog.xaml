@@ -144,20 +144,17 @@
                     </Grid>
                 </DockPanel>
 
-                <!-- customer status -->
+                <!-- Customer Status -->
                 <DockPanel LastChildFill="True" Margin="0,0,0,5">
                     <TextBlock DockPanel.Dock="Top" Margin="0,0,0,5">
-                        <Run Text="Status" 
+                        <Run Text="Blacklisted" 
                              FontFamily="{StaticResource RubikSemibold}" 
                              Foreground="{StaticResource TextPrimaryBrush}"/>
-                        <Run Text="*" 
-                             Foreground="{StaticResource RedBrush}"/>
                     </TextBlock>
-                    <ComboBox Style="{StaticResource BaseComboboxStyle}"
-                              ItemsSource="{Binding StatusOptions}"
-                              SelectedItem="{Binding Customer.CustomerStatus}"
-                              HorizontalAlignment="Left"
-                              Margin="0,0,0,10"/>
+                    <CheckBox IsChecked="{Binding IsBlacklisted}"
+                             Content="Customer is blacklisted"
+                             Style="{StaticResource BaseCheckboxStyle}"
+                             Margin="0,0,0,10"/>
                 </DockPanel>
 
                 <!-- Registration Date -->

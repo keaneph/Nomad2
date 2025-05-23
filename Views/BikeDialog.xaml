@@ -141,19 +141,14 @@
                 <!-- Bike Status -->
                 <DockPanel LastChildFill="True" Margin="0,0,0,5">
                     <TextBlock DockPanel.Dock="Top" Margin="0,0,0,5">
-                        <Run Text="Status" 
+                        <Run Text="Maintenance" 
                              FontFamily="{StaticResource RubikSemibold}" 
                              Foreground="{StaticResource TextPrimaryBrush}"/>
-                        <Run Text="*" 
-                             Foreground="{StaticResource RedBrush}"/>
                     </TextBlock>
-                    <Grid>
-                        <ComboBox Style="{StaticResource BaseComboboxStyle}"
-                                 ItemsSource="{Binding StatusOptions}"
-                                 SelectedItem="{Binding Bike.BikeStatus}"
-                                 HorizontalAlignment="Left"
-                                 Margin="0,0,0,10"/>
-                    </Grid>
+                    <CheckBox IsChecked="{Binding IsInMaintenance}"
+                             Content="Bike is in maintenance"
+                             Style="{StaticResource BaseCheckboxStyle}"
+                             Margin="0,0,0,10"/>
                 </DockPanel>
 
                 <!-- Error Message -->

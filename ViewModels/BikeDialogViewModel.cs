@@ -5,6 +5,7 @@ using Nomad2.Validators;
 using Nomad2.ViewModels;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using System.Windows;
 
 public class BikeDialogViewModel : BaseViewModel
 {
@@ -13,6 +14,8 @@ public class BikeDialogViewModel : BaseViewModel
     private readonly Action<bool> _closeCallback;
     private string _errorMessage;
     private readonly bool _isEdit;
+    private bool _isInMaintenance;
+    private readonly bool _hasActiveRentals;
 
     // constructor initializes the dialog with bike data and determines if its edit or add mode
     public BikeDialogViewModel(Bike bike, bool isEdit, Action<bool> closeCallback)
@@ -34,12 +37,42 @@ public class BikeDialogViewModel : BaseViewModel
             "Rented",
             "Maintenance"
         };
+
+        // initialize maintenance status
+        _isInMaintenance = _bike.BikeStatus == "Maintenance";
+
+        // check if bike has active rentals
+        _hasActiveRentals = _bike.BikeStatus == "Rented";
     }
 
     // properties for binding to the view
     public string DialogTitle => _isEdit ? "Edit Bike" : "Add Bike";
     public Bike Bike => _bike;
     public ObservableCollection<string> StatusOptions { get; }
+
+    public bool IsInMaintenance
+    {
+        get => _isInMaintenance;
+        set
+        {
+            if (_hasActiveRentals && value)
+            {
+                MessageBox.Show(
+                    "Cannot put a bike in maintenance while it has active rentals",
+                    "Invalid Operation",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning
+                );
+                return;
+            }
+
+            _isInMaintenance = value;
+            OnPropertyChanged();
+            UpdateBikeStatus();
+        }
+    }
+
+    public bool HasActiveRentals => _hasActiveRentals;
 
     // error message property with notification
     public string ErrorMessage
@@ -100,5 +133,19 @@ public class BikeDialogViewModel : BaseViewModel
 
         ErrorMessage = string.Empty;
         return true;
+    }
+
+    private void UpdateBikeStatus()
+    {
+        if (_isInMaintenance)
+        {
+            _bike.BikeStatus = "Maintenance";
+        }
+        else
+        {
+            // if not in maintenance, status depends on rentals
+            // this will be handled by the service layer when saving
+            _bike.BikeStatus = "Available";
+        }
     }
 }

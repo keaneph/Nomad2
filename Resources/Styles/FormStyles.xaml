@@ -120,4 +120,47 @@
         </Setter>
     </Style>
 
+    <!-- Base Checkbox Style -->
+    <Style x:Key="BaseCheckboxStyle" TargetType="CheckBox">
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+        <Setter Property="FontFamily" Value="{StaticResource RubikSemibold}"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Margin" Value="0,0,0,10"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <!-- Checkbox Box -->
+                        <Border x:Name="CheckBoxBorder"
+                                Width="20"
+                                Height="20"
+                                Background="{StaticResource FourthBackgroundBrush}"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="1.5"
+                                CornerRadius="4"
+                                Margin="0,0,8,0"/>
+
+                        <!-- Content -->
+                        <ContentPresenter Grid.Column="1"
+                                        VerticalAlignment="Center"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="CheckBoxBorder" Value="{StaticResource ThirdBackgroundBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter Property="Background" TargetName="CheckBoxBorder" Value="{StaticResource PurpleGradientBackground}"/>
+                            <Setter Property="BorderBrush" TargetName="CheckBoxBorder" Value="{StaticResource PurpleGradientBorder}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>
