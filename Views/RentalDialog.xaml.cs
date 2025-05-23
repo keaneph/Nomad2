@@ -8,10 +8,10 @@ namespace Nomad2.Views
     // dialog window for creating and editing rentals
     public partial class RentalDialog : Window
     {
-        public RentalDialog(Rental rental, ICustomerService customerService, IBikeService bikeService, bool isEdit = false)
+        public RentalDialog(Rental rental, ICustomerService customerService, IBikeService bikeService, IRentalService rentalService, bool isEdit = false)
         {
             InitializeComponent();
-            DataContext = new RentalDialogViewModel(rental, customerService, bikeService, this, isEdit);
+            DataContext = new RentalDialogViewModel(rental, customerService, bikeService, rentalService, this, isEdit);
         }
     }
 }

@@ -31,10 +31,16 @@ namespace Nomad2.ViewModels
             // initialize status options
             StatusOptions = new ObservableCollection<string>
             {
-                "Active",
                 "Inactive",
+                "Active",
                 "Blacklisted"
             };
+
+            // Set default status to Inactive when adding a new customer
+            if (!_isEdit)
+            {
+                _customer.CustomerStatus = "Inactive";
+            }
         }
 
         // props for ui binding

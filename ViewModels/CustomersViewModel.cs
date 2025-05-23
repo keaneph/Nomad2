@@ -65,8 +65,8 @@ namespace Nomad2.ViewModels
         public ObservableCollection<string> StatusFilters { get; } = new ObservableCollection<string>
         {
             "All",
-            "Active",
             "Inactive",
+            "Active",
             "Blacklisted"
         };
 

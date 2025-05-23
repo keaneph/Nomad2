@@ -58,6 +58,10 @@ public class RentalService : IRentalService
                     r.*, 
                     c.name as customer_name, 
                     c.phone_number,
+                    c.address,
+                    c.government_id_picture,
+                    c.customer_status,
+                    c.registration_date,
                     b.bike_model,
                     b.daily_rate
                 FROM rentals r
@@ -97,7 +101,11 @@ public class RentalService : IRentalService
                             {
                                 CustomerId = reader.GetString("customer_id"),
                                 Name = reader.GetString("customer_name"),
-                                PhoneNumber = reader.GetString("phone_number")
+                                PhoneNumber = reader.GetString("phone_number"),
+                                Address = reader.GetString("address"),
+                                GovernmentIdPicture = reader.GetString("government_id_picture"),
+                                CustomerStatus = reader.GetString("customer_status"),
+                                RegistrationDate = reader.GetDateTime("registration_date")
                             },
                             Bike = new Bike
                             {
@@ -126,7 +134,8 @@ public class RentalService : IRentalService
         {
             await connection.OpenAsync();
             string query = @"
-                SELECT r.*, c.name as customer_name, c.phone_number, 
+                SELECT r.*, c.name as customer_name, c.phone_number, c.address, 
+                       c.government_id_picture, c.customer_status, c.registration_date,
                        b.bike_model, b.daily_rate
                 FROM rentals r
                 LEFT JOIN customer c ON r.customer_id = c.customer_id
@@ -151,7 +160,11 @@ public class RentalService : IRentalService
                             {
                                 CustomerId = reader.GetString("customer_id"),
                                 Name = reader.GetString("customer_name"),
-                                PhoneNumber = reader.GetString("phone_number")
+                                PhoneNumber = reader.GetString("phone_number"),
+                                Address = reader.GetString("address"),
+                                GovernmentIdPicture = reader.GetString("government_id_picture"),
+                                CustomerStatus = reader.GetString("customer_status"),
+                                RegistrationDate = reader.GetDateTime("registration_date")
                             },
                             Bike = new Bike
                             {
@@ -249,23 +262,41 @@ public class RentalService : IRentalService
         using (var connection = _db.GetConnection())
         {
             await connection.OpenAsync();
-            string query = @"
-                UPDATE rentals 
-                SET customer_id = @CustomerId,
-                    bike_id = @BikeId,
-                    rental_date = @RentalDate,
-                    rental_status = @RentalStatus
-                WHERE rental_id = @RentalId";
-
-            using (var command = new MySqlCommand(query, connection))
+            using (var transaction = await connection.BeginTransactionAsync())
             {
-                command.Parameters.AddWithValue("@RentalId", rental.RentalId);
-                command.Parameters.AddWithValue("@CustomerId", rental.CustomerId);
-                command.Parameters.AddWithValue("@BikeId", rental.BikeId);
-                command.Parameters.AddWithValue("@RentalDate", rental.RentalDate);
-                command.Parameters.AddWithValue("@RentalStatus", rental.RentalStatus);
+                try
+                {
+                    string query = @"
+                        UPDATE rentals 
+                        SET customer_id = @CustomerId,
+                            bike_id = @BikeId,
+                            rental_date = @RentalDate,
+                            rental_status = @RentalStatus
+                        WHERE rental_id = @RentalId";
 
-                return await command.ExecuteNonQueryAsync() > 0;
+                    using (var command = new MySqlCommand(query, connection, transaction))
+                    {
+                        command.Parameters.AddWithValue("@RentalId", rental.RentalId);
+                        command.Parameters.AddWithValue("@CustomerId", rental.CustomerId);
+                        command.Parameters.AddWithValue("@BikeId", rental.BikeId);
+                        command.Parameters.AddWithValue("@RentalDate", rental.RentalDate);
+                        command.Parameters.AddWithValue("@RentalStatus", rental.RentalStatus);
+
+                        int rowsAffected = await command.ExecuteNonQueryAsync();
+                        if (rowsAffected == 0)
+                        {
+                            throw new InvalidOperationException("Rental not found");
+                        }
+                    }
+
+                    await transaction.CommitAsync();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    await transaction.RollbackAsync();
+                    throw;
+                }
             }
         }
     }
@@ -355,18 +386,86 @@ public class RentalService : IRentalService
         using (var connection = _db.GetConnection())
         {
             await connection.OpenAsync();
-            string query = "DELETE FROM rentals";
-
-            using (var command = new MySqlCommand(query, connection))
+            using (var transaction = await connection.BeginTransactionAsync())
             {
                 try
                 {
-                    await command.ExecuteNonQueryAsync();
+                    // First get all active rentals to update bike and customer statuses
+                    string getActiveRentalsQuery = @"
+                        SELECT DISTINCT r.customer_id, r.bike_id
+                        FROM rentals r
+                        WHERE r.rental_status = 'Active'";
+
+                    var activeRentals = new List<(string CustomerId, string BikeId)>();
+                    using (var command = new MySqlCommand(getActiveRentalsQuery, connection, transaction))
+                    {
+                        using (var reader = await command.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                activeRentals.Add((
+                                    reader.GetString("customer_id"),
+                                    reader.GetString("bike_id")
+                                ));
+                            }
+                        }
+                    }
+
+                    // Update all bikes to Available
+                    foreach (var rental in activeRentals)
+                    {
+                        string updateBikeQuery = @"
+                            UPDATE bike 
+                            SET bike_status = 'Available' 
+                            WHERE bike_id = @BikeId";
+
+                        using (var command = new MySqlCommand(updateBikeQuery, connection, transaction))
+                        {
+                            command.Parameters.AddWithValue("@BikeId", rental.BikeId);
+                            await command.ExecuteNonQueryAsync();
+                        }
+                    }
+
+                    // Update all customers to Inactive
+                    foreach (var rental in activeRentals)
+                    {
+                        string updateCustomerQuery = @"
+                            UPDATE customer 
+                            SET customer_status = 'Inactive' 
+                            WHERE customer_id = @CustomerId";
+
+                        using (var command = new MySqlCommand(updateCustomerQuery, connection, transaction))
+                        {
+                            command.Parameters.AddWithValue("@CustomerId", rental.CustomerId);
+                            await command.ExecuteNonQueryAsync();
+                        }
+                    }
+
+                    // Finally delete all rentals
+                    string deleteQuery = "DELETE FROM rentals";
+                    using (var command = new MySqlCommand(deleteQuery, connection, transaction))
+                    {
+                        await command.ExecuteNonQueryAsync();
+                    }
+
+                    await transaction.CommitAsync();
                     return true;
+                }
+                catch (MySqlException ex)
+                {
+                    await transaction.RollbackAsync();
+                    switch (ex.Number)
+                    {
+                        case 1451: // cannot delete or update a parent row
+                            throw new InvalidOperationException("Cannot clear rentals because some have associated payments or returns", ex);
+                        default:
+                            throw new Exception("Database error occurred while clearing rentals", ex);
+                    }
                 }
                 catch (Exception)
                 {
-                    return false;
+                    await transaction.RollbackAsync();
+                    throw;
                 }
             }
         }
@@ -398,6 +497,7 @@ public class RentalService : IRentalService
 
             string query = @"
                 SELECT r.*, c.name as customer_name, c.phone_number,
+                       c.address, c.government_id_picture, c.customer_status, c.registration_date,
                        b.bike_model, b.daily_rate
                 FROM rentals r
                 LEFT JOIN customer c ON r.customer_id = c.customer_id
@@ -424,7 +524,11 @@ public class RentalService : IRentalService
                             {
                                 CustomerId = reader.GetString("customer_id"),
                                 Name = reader.GetString("customer_name"),
-                                PhoneNumber = reader.GetString("phone_number")
+                                PhoneNumber = reader.GetString("phone_number"),
+                                Address = reader.GetString("address"),
+                                GovernmentIdPicture = reader.GetString("government_id_picture"),
+                                CustomerStatus = reader.GetString("customer_status"),
+                                RegistrationDate = reader.GetDateTime("registration_date")
                             },
                             Bike = new Bike
                             {
@@ -450,6 +554,7 @@ public class RentalService : IRentalService
 
             string query = @"
                 SELECT r.*, c.name as customer_name, c.phone_number,
+                       c.address, c.government_id_picture, c.customer_status, c.registration_date,
                        b.bike_model, b.daily_rate
                 FROM rentals r
                 LEFT JOIN customer c ON r.customer_id = c.customer_id
@@ -475,7 +580,11 @@ public class RentalService : IRentalService
                             {
                                 CustomerId = reader.GetString("customer_id"),
                                 Name = reader.GetString("customer_name"),
-                                PhoneNumber = reader.GetString("phone_number")
+                                PhoneNumber = reader.GetString("phone_number"),
+                                Address = reader.GetString("address"),
+                                GovernmentIdPicture = reader.GetString("government_id_picture"),
+                                CustomerStatus = reader.GetString("customer_status"),
+                                RegistrationDate = reader.GetDateTime("registration_date")
                             },
                             Bike = new Bike
                             {

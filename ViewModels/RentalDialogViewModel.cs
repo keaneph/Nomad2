@@ -17,10 +17,13 @@ namespace Nomad2.ViewModels
         // services and core dependencies
         private readonly ICustomerService _customerService;
         private readonly IBikeService _bikeService;
+        private readonly IRentalService _rentalService;
         private readonly Window _dialog;
         private readonly Rental _rental;
         private readonly bool _isEdit;
         private string _errorMessage;
+        private string _originalBikeId;
+        private string _originalCustomerId;
 
         // search and selection state tracking
         private string _customerSearch;
@@ -37,14 +40,29 @@ namespace Nomad2.ViewModels
                 Rental rental,
                 ICustomerService customerService,
                 IBikeService bikeService,
+                IRentalService rentalService,
                 Window dialog,
                 bool isEdit = false)
         {
             _rental = rental;
             _customerService = customerService;
             _bikeService = bikeService;
+            _rentalService = rentalService;
             _dialog = dialog;
             _isEdit = isEdit;
+
+            // Store original IDs if editing
+            if (_isEdit)
+            {
+                if (rental.Bike != null)
+                {
+                    _originalBikeId = rental.BikeId;
+                }
+                if (rental.Customer != null)
+                {
+                    _originalCustomerId = rental.CustomerId;
+                }
+            }
 
             // initialize commands
             ToggleCustomerListCommand = new RelayCommand(ToggleCustomerList);
@@ -305,13 +323,73 @@ namespace Nomad2.ViewModels
         }
 
         // saves rental and closes dialog
-        private void Save()
+        private async void Save()
         {
-            _rental.RentalDate = RentalDate;
-            _rental.RentalStatus = RentalStatus;
+            try
+            {
+                _rental.RentalDate = RentalDate;
+                _rental.RentalStatus = RentalStatus;
 
-            _dialog.DialogResult = true;
-            _dialog.Close();
+                // 1. update the rental in the database first
+                if (_isEdit)
+                {
+                    await _rentalService.UpdateRentalAsync(_rental);
+                }
+
+                // 2. update bike statuses (existing logic)
+                if (_isEdit && _rental.Bike != null && _originalBikeId != _rental.BikeId)
+                {
+                    var originalBike = await _bikeService.GetBikeByIdAsync(_originalBikeId);
+                    if (originalBike != null)
+                    {
+                        originalBike.BikeStatus = "Available";
+                        await _bikeService.UpdateBikeAsync(originalBike);
+                    }
+                    _rental.Bike.BikeStatus = "Rented";
+                    await _bikeService.UpdateBikeAsync(_rental.Bike);
+                }
+                else if (!_isEdit && _rental.Bike != null)
+                {
+                    _rental.Bike.BikeStatus = "Rented";
+                    await _bikeService.UpdateBikeAsync(_rental.Bike);
+                }
+
+                // 3. update customer status
+                if (_isEdit)
+                {
+                    // get the original customer if we're editing
+                    var originalCustomer = await _customerService.GetCustomerByIdAsync(_originalCustomerId);
+                    
+                    // if were changing customers
+                    if (originalCustomer != null && originalCustomer.CustomerId != _rental.Customer.CustomerId)
+                    {
+                        // check if original customer has any other active rentals
+                        // this check happens AFTER the rental update, so it won't count the rental we just changed
+                        var activeRentals = await _rentalService.GetActiveRentalsByCustomerAsync(originalCustomer.CustomerId);
+                        if (!activeRentals.Any())
+                        {
+                            // If no other active rentals, set status to Inactive
+                            originalCustomer.CustomerStatus = "Inactive";
+                            await _customerService.UpdateCustomerAsync(originalCustomer);
+                        }
+                    }
+                }
+
+                // set the current customer to Active
+                if (_rental.Customer != null)
+                {
+                    _rental.Customer.CustomerStatus = "Active";
+                    await _customerService.UpdateCustomerAsync(_rental.Customer);
+                }
+
+                _dialog.DialogResult = true;
+                _dialog.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error saving rental: {ex.Message}",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         // cancels operation and closes dialog
@@ -332,7 +410,8 @@ namespace Nomad2.ViewModels
 
                 CustomerSearchResults.Clear();
                 foreach (var customer in customers.Where(c =>
-                    c.CustomerStatus.Equals("Active", StringComparison.OrdinalIgnoreCase)))
+                    c.CustomerStatus.Equals("Active", StringComparison.OrdinalIgnoreCase) ||
+                    c.CustomerStatus.Equals("Inactive", StringComparison.OrdinalIgnoreCase)))
                 {
                     CustomerSearchResults.Add(customer);
                 }
@@ -409,7 +488,8 @@ namespace Nomad2.ViewModels
 
                     CustomerSearchResults.Clear();
                     foreach (var customer in customers.Where(c =>
-                        c.CustomerStatus.Equals("Active", StringComparison.OrdinalIgnoreCase)))
+                        c.CustomerStatus.Equals("Active", StringComparison.OrdinalIgnoreCase) ||
+                        c.CustomerStatus.Equals("Inactive", StringComparison.OrdinalIgnoreCase)))
                     {
                         CustomerSearchResults.Add(customer);
                     }
@@ -428,14 +508,14 @@ namespace Nomad2.ViewModels
         {
             if (IsBikeSearchVisible)
             {
-                // If list is visible, hide it
+                // if list is visible, hide it
                 IsBikeSearchVisible = false;
                 BikeButtonText = "Browse";
                 BikeSearchResults.Clear();
             }
             else
             {
-                // If list is hidden, show it and load data
+                // if list is hidden, show it and load data
                 try
                 {
                     var bikes = await _bikeService.GetAllBikesAsync();

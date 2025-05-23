@@ -135,14 +135,14 @@ namespace Nomad2.ViewModels
                 };
 
                 // opens dialog for editing
-                var dialog = new RentalDialog(rentalToEdit, _customerService, _bikeService, true);
+                var dialog = new RentalDialog(rentalToEdit, _customerService, _bikeService, _rentalService, true);
                 if (dialog.ShowDialog() == true)
                 {
                     try
                     {
                         // update rental in database
                         await _rentalService.UpdateRentalAsync(rentalToEdit);
-                        await LoadRentals(); // Refresh the list
+                        await LoadRentals(); // refresh the list
                     }
                     catch (Exception ex)
                     {
@@ -234,11 +234,11 @@ namespace Nomad2.ViewModels
                     RentalStatus = "Active"
                 };
 
-                // Open dialog for new rental
-                var dialog = new RentalDialog(newRental, _customerService, _bikeService);
+                // open dialog for new rental
+                var dialog = new RentalDialog(newRental, _customerService, _bikeService, _rentalService);
                 if (dialog.ShowDialog() == true)
                 {
-                    // Validate bike availability
+                    // validate bike availability
                     if (!await _rentalService.IsBikeAvailableForRental(newRental.BikeId))
                     {
                         MessageBox.Show("This bike is currently unavailable.",
@@ -249,8 +249,12 @@ namespace Nomad2.ViewModels
                     // Validate customer eligibility
                     if (!await _rentalService.IsCustomerEligibleForRental(newRental.CustomerId))
                     {
-                        MessageBox.Show("This customer has reached their rental limit.",
-                            "Ineligible", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        MessageBox.Show(
+                            "This customer already has 3 active rentals and cannot rent more bikes.",
+                            "Rental Limit Reached",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Warning
+                        );
                         return;
                     }
 
@@ -282,6 +286,17 @@ namespace Nomad2.ViewModels
                     {
                         rental.RentalStatus = "Completed";
                         await _rentalService.UpdateRentalAsync(rental);
+                        // check if customer has any more active rentals
+                        var activeRentals = await _rentalService.GetActiveRentalsByCustomerAsync(rental.CustomerId);
+                        if (activeRentals.Count == 0)
+                        {
+                            var customer = await _customerService.GetCustomerByIdAsync(rental.CustomerId);
+                            if (customer != null)
+                            {
+                                customer.CustomerStatus = "Inactive";
+                                await _customerService.UpdateCustomerAsync(customer);
+                            }
+                        }
                         await LoadRentals();
                     }
                     catch (Exception ex)
@@ -309,6 +324,17 @@ namespace Nomad2.ViewModels
                     try
                     {
                         await _rentalService.DeleteRentalAsync(rental.RentalId);
+                        // check if customer has any more active rentals
+                        var activeRentals = await _rentalService.GetActiveRentalsByCustomerAsync(rental.CustomerId);
+                        if (activeRentals.Count == 0)
+                        {
+                            var customer = await _customerService.GetCustomerByIdAsync(rental.CustomerId);
+                            if (customer != null)
+                            {
+                                customer.CustomerStatus = "Inactive";
+                                await _customerService.UpdateCustomerAsync(customer);
+                            }
+                        }
                         await LoadRentals();
                     }
                     catch (Exception ex)
@@ -332,27 +358,19 @@ namespace Nomad2.ViewModels
             {
                 try
                 {
-                    bool success = await _rentalService.ClearAllRentalsAsync();
-
-                    if (success)
-                    {
-                        Rentals.Clear();
-                        _currentPage = 1;
-                        _totalPages = 0;
-                        OnPropertyChanged(nameof(CurrentPageDisplay));
-
-                        MessageBox.Show("All rentals have been deleted successfully.",
-                            "Success",
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Information);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Failed to delete all rentals.",
-                            "Error",
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Error);
-                    }
+                    await _rentalService.ClearAllRentalsAsync();
+                    await LoadRentals(); // refresh the list after clearing
+                    MessageBox.Show("All rentals have been deleted successfully.",
+                        "Success",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    MessageBox.Show(ex.Message,
+                        "Error",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
                 }
                 catch (Exception ex)
                 {
