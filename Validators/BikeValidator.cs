@@ -21,12 +21,16 @@ namespace Nomad2.Validators
                 return (false, "Bike model is required");
             if (bike.BikeModel.Length > 100)
                 return (false, "Bike model cannot exceed 100 characters");
+            if (!Regex.IsMatch(bike.BikeModel, @"^[a-zA-Z0-9\s\-']+$"))
+                return (false, "Bike model can only contain letters, numbers, spaces, hyphens, and apostrophes");
 
             // validate BikeType (VARCHAR(30))
             if (string.IsNullOrWhiteSpace(bike.BikeType))
                 return (false, "Bike type is required");
             if (bike.BikeType.Length > 30)
                 return (false, "Bike type cannot exceed 30 characters");
+            if (!Regex.IsMatch(bike.BikeType, @"^[a-zA-Z\s\-']+$"))
+                return (false, "Bike type can only contain letters, spaces, hyphens, and apostrophes");
 
             // validate DailyRate
             if (bike.DailyRate <= 0)
@@ -39,6 +43,16 @@ namespace Nomad2.Validators
                 return (false, "Bike picture is required");
             if (bike.BikePicture.Length > 255)
                 return (false, "Bike picture path cannot exceed 255 characters");
+
+            // validate file extension
+            string[] allowedExtensions = { ".png", ".jpeg", ".jpg" };
+            string extension = System.IO.Path.GetExtension(bike.BikePicture).ToLower();
+            if (!allowedExtensions.Contains(extension))
+                return (false, "Bike picture must be a PNG, JPEG, or JPG file");
+
+            // validate if file exists
+            if (!System.IO.File.Exists(bike.BikePicture))
+                return (false, "Government ID picture file does not exist");
 
             // validate BikeStatus (VARCHAR(30))
             if (string.IsNullOrWhiteSpace(bike.BikeStatus))
