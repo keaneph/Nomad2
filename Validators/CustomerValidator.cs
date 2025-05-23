@@ -45,11 +45,18 @@ namespace Nomad2.Validators
             // validate GovernmentIdPicture (VARCHAR(255))
             if (string.IsNullOrWhiteSpace(customer.GovernmentIdPicture))
                 return (false, "Government ID picture is required");
-            // not sure how to validate the image path but i dont think image path will exceed 255 characters
-            // this is just a placeholder
-            // might include actual image validation in the future
             if (customer.GovernmentIdPicture.Length > 255)
                 return (false, "Government ID picture path cannot exceed 255 characters");
+
+            // validate file extension
+            string[] allowedExtensions = { ".png", ".jpeg", ".jpg" };
+            string extension = System.IO.Path.GetExtension(customer.GovernmentIdPicture).ToLower();
+            if (!allowedExtensions.Contains(extension))
+                return (false, "Government ID picture must be a PNG, JPEG, or JPG file");
+
+            // validate if file exists
+            if (!System.IO.File.Exists(customer.GovernmentIdPicture))
+                return (false, "Government ID picture file does not exist");
 
             // validate CustomerStatus (VARCHAR(30))
             if (string.IsNullOrWhiteSpace(customer.CustomerStatus))
