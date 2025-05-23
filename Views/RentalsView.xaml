@@ -53,16 +53,16 @@
             <!-- Create Rental Button -->
             <Button Grid.Column="2"
             Command="{Binding CreateRentalCommand}"
-            Style="{StaticResource PrimaryButtonStyle}">
+            Style="{StaticResource PrimaryButtonStyle}" Click="Button_Click">
                 <Button.Tag>
                     <Viewbox Width="16" Height="16">
-                        <Path Data="{StaticResource AddCustomersIcon}"
+                        <Path Data="{StaticResource AddRentalIcon}"
                       Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, 
                       Path=Foreground}"
                       Style="{StaticResource PathStyle}"/>
                     </Viewbox>
                 </Button.Tag>
-                New Rental
+                Add Rental
             </Button>
         </Grid>
 

@@ -97,5 +97,10 @@ namespace Nomad2.Views
             }
             return null;
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
