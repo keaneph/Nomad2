@@ -173,21 +173,72 @@ public class RentalService : IRentalService
         using (var connection = _db.GetConnection())
         {
             await connection.OpenAsync();
-            string query = @"
-                INSERT INTO rentals 
-                (rental_id, customer_id, bike_id, rental_date, rental_status) 
-                VALUES 
-                (@RentalId, @CustomerId, @BikeId, @RentalDate, @RentalStatus)";
-
-            using (var command = new MySqlCommand(query, connection))
+            using (var transaction = await connection.BeginTransactionAsync())
             {
-                command.Parameters.AddWithValue("@RentalId", rental.RentalId);
-                command.Parameters.AddWithValue("@CustomerId", rental.CustomerId);
-                command.Parameters.AddWithValue("@BikeId", rental.BikeId);
-                command.Parameters.AddWithValue("@RentalDate", rental.RentalDate);
-                command.Parameters.AddWithValue("@RentalStatus", rental.RentalStatus);
+                try
+                {
+                    // check if customer exists and is eligible
+                    if (!await IsCustomerEligibleForRental(rental.CustomerId))
+                    {
+                        throw new InvalidOperationException("Customer is not eligible for rental (may have too many active rentals)");
+                    }
 
-                return await command.ExecuteNonQueryAsync() > 0;
+                    // check if bike is available
+                    if (!await IsBikeAvailableForRental(rental.BikeId))
+                    {
+                        throw new InvalidOperationException("Bike is not available for rental");
+                    }
+
+                    string query = @"
+                        INSERT INTO rentals 
+                        (rental_id, customer_id, bike_id, rental_date, rental_status) 
+                        VALUES 
+                        (@RentalId, @CustomerId, @BikeId, @RentalDate, @RentalStatus)";
+
+                    using (var command = new MySqlCommand(query, connection, transaction))
+                    {
+                        command.Parameters.AddWithValue("@RentalId", rental.RentalId);
+                        command.Parameters.AddWithValue("@CustomerId", rental.CustomerId);
+                        command.Parameters.AddWithValue("@BikeId", rental.BikeId);
+                        command.Parameters.AddWithValue("@RentalDate", rental.RentalDate);
+                        command.Parameters.AddWithValue("@RentalStatus", rental.RentalStatus);
+
+                        await command.ExecuteNonQueryAsync();
+                    }
+
+                    // update bike status to 'Rented'
+                    string updateBikeQuery = @"
+                        UPDATE bike 
+                        SET bike_status = 'Rented' 
+                        WHERE bike_id = @BikeId";
+
+                    using (var command = new MySqlCommand(updateBikeQuery, connection, transaction))
+                    {
+                        command.Parameters.AddWithValue("@BikeId", rental.BikeId);
+                        await command.ExecuteNonQueryAsync();
+                    }
+
+                    await transaction.CommitAsync();
+                    return true;
+                }
+                catch (MySqlException ex)
+                {
+                    await transaction.RollbackAsync();
+                    switch (ex.Number)
+                    {
+                        case 1452: // foreign key constraint violation
+                            throw new InvalidOperationException("Invalid customer or bike reference", ex);
+                        case 1062: // duplicate entry
+                            throw new InvalidOperationException("Rental ID already exists", ex);
+                        default:
+                            throw new Exception("Database error occurred while adding rental", ex);
+                    }
+                }
+                catch (Exception)
+                {
+                    await transaction.RollbackAsync();
+                    throw;
+                }
             }
         }
     }
@@ -225,12 +276,75 @@ public class RentalService : IRentalService
         using (var connection = _db.GetConnection())
         {
             await connection.OpenAsync();
-            string query = "DELETE FROM rentals WHERE rental_id = @Id";
-
-            using (var command = new MySqlCommand(query, connection))
+            using (var transaction = await connection.BeginTransactionAsync())
             {
-                command.Parameters.AddWithValue("@Id", id);
-                return await command.ExecuteNonQueryAsync() > 0;
+                try
+                {
+                    // first get the rental to check its status and get the bike ID
+                    string getRentalQuery = "SELECT rental_status, bike_id FROM rentals WHERE rental_id = @Id";
+                    string rentalStatus = null;
+                    string bikeId = null;
+
+                    using (var command = new MySqlCommand(getRentalQuery, connection, transaction))
+                    {
+                        command.Parameters.AddWithValue("@Id", id);
+                        using (var reader = await command.ExecuteReaderAsync())
+                        {
+                            if (await reader.ReadAsync())
+                            {
+                                rentalStatus = reader.GetString("rental_status");
+                                bikeId = reader.GetString("bike_id");
+                            }
+                        }
+                    }
+
+                    if (rentalStatus == null)
+                    {
+                        throw new InvalidOperationException("Rental not found");
+                    }
+
+                    // delete the rental
+                    string deleteQuery = "DELETE FROM rentals WHERE rental_id = @Id";
+                    using (var command = new MySqlCommand(deleteQuery, connection, transaction))
+                    {
+                        command.Parameters.AddWithValue("@Id", id);
+                        await command.ExecuteNonQueryAsync();
+                    }
+
+                    // if the rental was active, update the bike status back to available
+                    if (rentalStatus == "Active" && bikeId != null)
+                    {
+                        string updateBikeQuery = @"
+                            UPDATE bike 
+                            SET bike_status = 'Available' 
+                            WHERE bike_id = @BikeId";
+
+                        using (var command = new MySqlCommand(updateBikeQuery, connection, transaction))
+                        {
+                            command.Parameters.AddWithValue("@BikeId", bikeId);
+                            await command.ExecuteNonQueryAsync();
+                        }
+                    }
+
+                    await transaction.CommitAsync();
+                    return true;
+                }
+                catch (MySqlException ex)
+                {
+                    await transaction.RollbackAsync();
+                    switch (ex.Number)
+                    {
+                        case 1451: // cannot delete or update a parent row
+                            throw new InvalidOperationException("Cannot delete rental because it has associated payments or returns", ex);
+                        default:
+                            throw new Exception("Database error occurred while deleting rental", ex);
+                    }
+                }
+                catch (Exception)
+                {
+                    await transaction.RollbackAsync();
+                    throw;
+                }
             }
         }
     }
@@ -408,7 +522,7 @@ public class RentalService : IRentalService
         {
             await connection.OpenAsync();
 
-            // Check if bike is already rented
+            // check if bike is already rented
             string query = @"
                 SELECT COUNT(*) 
                 FROM rentals 

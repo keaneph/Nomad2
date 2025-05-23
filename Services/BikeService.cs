@@ -174,22 +174,49 @@ namespace Nomad2.Services
             using (var connection = _db.GetConnection())
             {
                 await connection.OpenAsync();
-                string query = @"
-                    INSERT INTO bike 
-                    (bike_id, bike_model, bike_type, daily_rate, bike_picture, bike_status) 
-                    VALUES 
-                    (@BikeId, @BikeModel, @BikeType, @DailyRate, @BikePicture, @BikeStatus)";
-
-                using (var command = new MySqlCommand(query, connection))
+                using (var transaction = await connection.BeginTransactionAsync())
                 {
-                    command.Parameters.AddWithValue("@BikeId", bike.BikeId);
-                    command.Parameters.AddWithValue("@BikeModel", bike.BikeModel);
-                    command.Parameters.AddWithValue("@BikeType", bike.BikeType);
-                    command.Parameters.AddWithValue("@DailyRate", bike.DailyRate);
-                    command.Parameters.AddWithValue("@BikePicture", bike.BikePicture);
-                    command.Parameters.AddWithValue("@BikeStatus", bike.BikeStatus);
+                    try
+                    {
+                        string query = @"
+                            INSERT INTO bike 
+                            (bike_id, bike_model, bike_type, daily_rate, bike_picture, bike_status) 
+                            VALUES 
+                            (@BikeId, @BikeModel, @BikeType, @DailyRate, @BikePicture, @BikeStatus)";
 
-                    return await command.ExecuteNonQueryAsync() > 0;
+                        using (var command = new MySqlCommand(query, connection, transaction))
+                        {
+                            command.Parameters.AddWithValue("@BikeId", bike.BikeId);
+                            command.Parameters.AddWithValue("@BikeModel", bike.BikeModel);
+                            command.Parameters.AddWithValue("@BikeType", bike.BikeType);
+                            command.Parameters.AddWithValue("@DailyRate", bike.DailyRate);
+                            command.Parameters.AddWithValue("@BikePicture", bike.BikePicture);
+                            command.Parameters.AddWithValue("@BikeStatus", bike.BikeStatus);
+
+                            await command.ExecuteNonQueryAsync();
+                        }
+
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    catch (MySqlException ex)
+                    {
+                        await transaction.RollbackAsync();
+                        switch (ex.Number)
+                        {
+                            case 1062: // duplicate entry
+                                throw new InvalidOperationException("Bike ID already exists", ex);
+                            case 3819: // check constraint violation
+                                throw new InvalidOperationException("Invalid bike status or daily rate value", ex);
+                            default:
+                                throw new Exception("Database error occurred while adding bike", ex);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        await transaction.RollbackAsync();
+                        throw;
+                    }
                 }
             }
         }
@@ -206,25 +233,74 @@ namespace Nomad2.Services
             using (var connection = _db.GetConnection())
             {
                 await connection.OpenAsync();
-                string query = @"
-                    UPDATE bike 
-                    SET bike_model = @BikeModel, 
-                        bike_type = @BikeType, 
-                        daily_rate = @DailyRate, 
-                        bike_picture = @BikePicture, 
-                        bike_status = @BikeStatus
-                    WHERE bike_id = @BikeId";
-
-                using (var command = new MySqlCommand(query, connection))
+                using (var transaction = await connection.BeginTransactionAsync())
                 {
-                    command.Parameters.AddWithValue("@BikeId", bike.BikeId);
-                    command.Parameters.AddWithValue("@BikeModel", bike.BikeModel);
-                    command.Parameters.AddWithValue("@BikeType", bike.BikeType);
-                    command.Parameters.AddWithValue("@DailyRate", bike.DailyRate);
-                    command.Parameters.AddWithValue("@BikePicture", bike.BikePicture);
-                    command.Parameters.AddWithValue("@BikeStatus", bike.BikeStatus);
+                    try
+                    {
+                        // check if bike is currently rented
+                        if (bike.BikeStatus == "Available")
+                        {
+                            string checkRentalQuery = @"
+                                SELECT COUNT(*) 
+                                FROM rentals 
+                                WHERE bike_id = @BikeId 
+                                AND rental_status = 'Active'";
 
-                    return await command.ExecuteNonQueryAsync() > 0;
+                            using (var checkCommand = new MySqlCommand(checkRentalQuery, connection, transaction))
+                            {
+                                checkCommand.Parameters.AddWithValue("@BikeId", bike.BikeId);
+                                int activeRentals = Convert.ToInt32(await checkCommand.ExecuteScalarAsync());
+                                if (activeRentals > 0)
+                                {
+                                    throw new InvalidOperationException("Cannot set bike status to Available while it has active rentals");
+                                }
+                            }
+                        }
+
+                        string query = @"
+                            UPDATE bike 
+                            SET bike_model = @BikeModel, 
+                                bike_type = @BikeType, 
+                                daily_rate = @DailyRate, 
+                                bike_picture = @BikePicture, 
+                                bike_status = @BikeStatus
+                            WHERE bike_id = @BikeId";
+
+                        using (var command = new MySqlCommand(query, connection, transaction))
+                        {
+                            command.Parameters.AddWithValue("@BikeId", bike.BikeId);
+                            command.Parameters.AddWithValue("@BikeModel", bike.BikeModel);
+                            command.Parameters.AddWithValue("@BikeType", bike.BikeType);
+                            command.Parameters.AddWithValue("@DailyRate", bike.DailyRate);
+                            command.Parameters.AddWithValue("@BikePicture", bike.BikePicture);
+                            command.Parameters.AddWithValue("@BikeStatus", bike.BikeStatus);
+
+                            int rowsAffected = await command.ExecuteNonQueryAsync();
+                            if (rowsAffected == 0)
+                            {
+                                throw new InvalidOperationException("Bike not found");
+                            }
+                        }
+
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    catch (MySqlException ex)
+                    {
+                        await transaction.RollbackAsync();
+                        switch (ex.Number)
+                        {
+                            case 3819: // check constraint violation
+                                throw new InvalidOperationException("Invalid bike status or daily rate value", ex);
+                            default:
+                                throw new Exception("Database error occurred while updating bike", ex);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        await transaction.RollbackAsync();
+                        throw;
+                    }
                 }
             }
         }
@@ -235,12 +311,57 @@ namespace Nomad2.Services
             using (var connection = _db.GetConnection())
             {
                 await connection.OpenAsync();
-                string query = "DELETE FROM bike WHERE bike_id = @Id";
-
-                using (var command = new MySqlCommand(query, connection))
+                using (var transaction = await connection.BeginTransactionAsync())
                 {
-                    command.Parameters.AddWithValue("@Id", id);
-                    return await command.ExecuteNonQueryAsync() > 0;
+                    try
+                    {
+                        // check if bike has any active rentals
+                        string checkRentalsQuery = @"
+                            SELECT COUNT(*) 
+                            FROM rentals 
+                            WHERE bike_id = @BikeId 
+                            AND rental_status = 'Active'";
+
+                        using (var checkCommand = new MySqlCommand(checkRentalsQuery, connection, transaction))
+                        {
+                            checkCommand.Parameters.AddWithValue("@BikeId", id);
+                            int activeRentals = Convert.ToInt32(await checkCommand.ExecuteScalarAsync());
+                            if (activeRentals > 0)
+                            {
+                                throw new InvalidOperationException("Cannot delete bike with active rentals");
+                            }
+                        }
+
+                        string query = "DELETE FROM bike WHERE bike_id = @Id";
+                        using (var command = new MySqlCommand(query, connection, transaction))
+                        {
+                            command.Parameters.AddWithValue("@Id", id);
+                            int rowsAffected = await command.ExecuteNonQueryAsync();
+                            if (rowsAffected == 0)
+                            {
+                                throw new InvalidOperationException("Bike not found");
+                            }
+                        }
+
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    catch (MySqlException ex)
+                    {
+                        await transaction.RollbackAsync();
+                        switch (ex.Number)
+                        {
+                            case 1451: // cannot delete or update a parent row
+                                throw new InvalidOperationException("Cannot delete bike because it has associated records", ex);
+                            default:
+                                throw new Exception("Database error occurred while deleting bike", ex);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        await transaction.RollbackAsync();
+                        throw;
+                    }
                 }
             }
         }

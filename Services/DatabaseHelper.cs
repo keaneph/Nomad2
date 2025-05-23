@@ -80,7 +80,6 @@ namespace Nomad2.Services
                     connection.Open();
 
                     // create Customer table
-                    //prim key is customer_id
                     string createCustomerTable = @"
                         CREATE TABLE IF NOT EXISTS customer (
                             customer_id VARCHAR(9) PRIMARY KEY NOT NULL,
@@ -88,35 +87,36 @@ namespace Nomad2.Services
                             phone_number VARCHAR(30) NOT NULL,
                             address VARCHAR(200) NOT NULL,
                             government_id_picture VARCHAR(255) NOT NULL,
-                            customer_status VARCHAR(30) NOT NULL,
-                            registration_date DATE NOT NULL
+                            customer_status VARCHAR(30) NOT NULL CHECK (customer_status IN ('Active', 'Inactive', 'Blocked')),
+                            registration_date DATE NOT NULL,
+                            CONSTRAINT UQ_customer_phone UNIQUE (phone_number)
                         )";
 
                     // create Bike table
-                    //prim key is bike_id
-                    //debating whether to use int or decimal for the daily rate; int is more simple.
                     string createBikeTable = @"
                         CREATE TABLE IF NOT EXISTS bike (
                             bike_id VARCHAR(9) PRIMARY KEY NOT NULL,
                             bike_model VARCHAR(100) NOT NULL,
                             bike_type VARCHAR(30) NOT NULL,
                             bike_picture VARCHAR(255) NOT NULL,                  
-                            bike_status VARCHAR(30) NOT NULL,
-                            daily_rate INTEGER(9) NOT NULL
+                            bike_status VARCHAR(30) NOT NULL CHECK (bike_status IN ('Available', 'Rented', 'Maintenance', 'Retired')),
+                            daily_rate INTEGER(9) NOT NULL CHECK (daily_rate > 0)
                         )";
 
                     // create Rental table
-                    //prim key is rental_id. wanted to use this for the payment and return tables too.
-                    //sir said to not use it and just use bike and customer id
                     string createRentalTable = @"
                         CREATE TABLE IF NOT EXISTS rentals (
                             rental_id VARCHAR(9) PRIMARY KEY NOT NULL,
                             customer_id VARCHAR(9) NOT NULL,
                             bike_id VARCHAR(9) NOT NULL,
                             rental_date DATE NOT NULL,
-                            rental_status VARCHAR(30) NOT NULL,
-                            FOREIGN KEY (customer_id) REFERENCES customer(customer_id),
-                            FOREIGN KEY (bike_id) REFERENCES bike(bike_id)
+                            rental_status VARCHAR(30) NOT NULL CHECK (rental_status IN ('Active', 'Completed', 'Cancelled')),
+                            FOREIGN KEY (customer_id) REFERENCES customer(customer_id) 
+                                ON DELETE RESTRICT 
+                                ON UPDATE CASCADE,
+                            FOREIGN KEY (bike_id) REFERENCES bike(bike_id) 
+                                ON DELETE RESTRICT 
+                                ON UPDATE CASCADE
                         )";
 
                     // create Payment table
@@ -125,12 +125,16 @@ namespace Nomad2.Services
                             payment_id VARCHAR(9) PRIMARY KEY NOT NULL,
                             customer_id VARCHAR(9) NOT NULL,
                             bike_id VARCHAR(9) NOT NULL,
-                            amount_to_pay INT(9) NOT NULL,
-                            amount_paid INT(9) NOT NULL,
+                            amount_to_pay INT(9) NOT NULL CHECK (amount_to_pay >= 0),
+                            amount_paid INT(9) NOT NULL CHECK (amount_paid >= 0),
                             payment_date DATE NOT NULL,
-                            payment_status VARCHAR(30) NOT NULL,
-                            FOREIGN KEY (customer_id) REFERENCES customer(customer_id),
-                            FOREIGN KEY (bike_id) REFERENCES bike(bike_id)
+                            payment_status VARCHAR(30) NOT NULL CHECK (payment_status IN ('Pending', 'Paid', 'Failed', 'Refunded')),
+                            FOREIGN KEY (customer_id) REFERENCES customer(customer_id) 
+                                ON DELETE RESTRICT 
+                                ON UPDATE CASCADE,
+                            FOREIGN KEY (bike_id) REFERENCES bike(bike_id) 
+                                ON DELETE RESTRICT 
+                                ON UPDATE CASCADE
                         )";
 
                     // create Return table
@@ -140,8 +144,12 @@ namespace Nomad2.Services
                             customer_id VARCHAR(9) NOT NULL,
                             bike_id VARCHAR(9) NOT NULL,
                             return_date DATE NOT NULL,
-                            FOREIGN KEY (customer_id) REFERENCES customer(customer_id),
-                            FOREIGN KEY (bike_id) REFERENCES bike(bike_id)
+                            FOREIGN KEY (customer_id) REFERENCES customer(customer_id) 
+                                ON DELETE RESTRICT 
+                                ON UPDATE CASCADE,
+                            FOREIGN KEY (bike_id) REFERENCES bike(bike_id) 
+                                ON DELETE RESTRICT 
+                                ON UPDATE CASCADE
                         )";
 
                     // execute all create table commands

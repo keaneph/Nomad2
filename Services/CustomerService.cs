@@ -175,9 +175,7 @@ namespace Nomad2.Services
 
         //adding customer to db
         public async Task<bool> AddCustomerAsync(Customer customer)
-
         {
-            //using CustomerValidator.cs, will add more later on. FIXME
             var (isValid, errorMessage) = CustomerValidator.ValidateCustomer(customer);
             if (!isValid)
             {
@@ -187,23 +185,62 @@ namespace Nomad2.Services
             using (var connection = _db.GetConnection())
             {
                 await connection.OpenAsync();
-                string query = @"
-                    INSERT INTO customer 
-                    (customer_id, name, phone_number, address, government_id_picture, customer_status, registration_date) 
-                    VALUES 
-                    (@CustomerId, @Name, @PhoneNumber, @Address, @GovernmentIdPicture, @CustomerStatus, @RegistrationDate)";
-
-                using (var command = new MySqlCommand(query, connection))
+                using (var transaction = await connection.BeginTransactionAsync())
                 {
-                    command.Parameters.AddWithValue("@CustomerId", customer.CustomerId);
-                    command.Parameters.AddWithValue("@Name", customer.Name);
-                    command.Parameters.AddWithValue("@PhoneNumber", customer.PhoneNumber);
-                    command.Parameters.AddWithValue("@Address", customer.Address);
-                    command.Parameters.AddWithValue("@GovernmentIdPicture", customer.GovernmentIdPicture);
-                    command.Parameters.AddWithValue("@CustomerStatus", customer.CustomerStatus);
-                    command.Parameters.AddWithValue("@RegistrationDate", customer.RegistrationDate);
+                    try
+                    {
+                        // check if phone number already exists
+                        string checkPhoneQuery = "SELECT COUNT(*) FROM customer WHERE phone_number = @PhoneNumber";
+                        using (var checkCommand = new MySqlCommand(checkPhoneQuery, connection, transaction))
+                        {
+                            checkCommand.Parameters.AddWithValue("@PhoneNumber", customer.PhoneNumber);
+                            int count = Convert.ToInt32(await checkCommand.ExecuteScalarAsync());
+                            if (count > 0)
+                            {
+                                throw new InvalidOperationException("Phone number already exists");
+                            }
+                        }
 
-                    return await command.ExecuteNonQueryAsync() > 0;
+                        string query = @"
+                            INSERT INTO customer 
+                            (customer_id, name, phone_number, address, government_id_picture, customer_status, registration_date) 
+                            VALUES 
+                            (@CustomerId, @Name, @PhoneNumber, @Address, @GovernmentIdPicture, @CustomerStatus, @RegistrationDate)";
+
+                        using (var command = new MySqlCommand(query, connection, transaction))
+                        {
+                            command.Parameters.AddWithValue("@CustomerId", customer.CustomerId);
+                            command.Parameters.AddWithValue("@Name", customer.Name);
+                            command.Parameters.AddWithValue("@PhoneNumber", customer.PhoneNumber);
+                            command.Parameters.AddWithValue("@Address", customer.Address);
+                            command.Parameters.AddWithValue("@GovernmentIdPicture", customer.GovernmentIdPicture);
+                            command.Parameters.AddWithValue("@CustomerStatus", customer.CustomerStatus);
+                            command.Parameters.AddWithValue("@RegistrationDate", customer.RegistrationDate);
+
+                            await command.ExecuteNonQueryAsync();
+                        }
+
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    catch (MySqlException ex)
+                    {
+                        await transaction.RollbackAsync();
+                        switch (ex.Number)
+                        {
+                            case 1062: // duplicate entry
+                                throw new InvalidOperationException("Customer ID or phone number already exists", ex);
+                            case 3819: // check constraint violation
+                                throw new InvalidOperationException("Invalid customer status value", ex);
+                            default:
+                                throw new Exception("Database error occurred while adding customer", ex);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        await transaction.RollbackAsync();
+                        throw;
+                    }
                 }
             }
         }
@@ -211,7 +248,6 @@ namespace Nomad2.Services
         //for the edit part (update)
         public async Task<bool> UpdateCustomerAsync(Customer customer)
         {
-            //same validaiton
             var (isValid, errorMessage) = CustomerValidator.ValidateCustomer(customer);
             if (!isValid)
             {
@@ -221,27 +257,76 @@ namespace Nomad2.Services
             using (var connection = _db.GetConnection())
             {
                 await connection.OpenAsync();
-                string query = @"
-                    UPDATE customer 
-                    SET name = @Name, 
-                        phone_number = @PhoneNumber, 
-                        address = @Address, 
-                        government_id_picture = @GovernmentIdPicture, 
-                        customer_status = @CustomerStatus, 
-                        registration_date = @RegistrationDate
-                    WHERE customer_id = @CustomerId";
-
-                using (var command = new MySqlCommand(query, connection))
+                using (var transaction = await connection.BeginTransactionAsync())
                 {
-                    command.Parameters.AddWithValue("@CustomerId", customer.CustomerId);
-                    command.Parameters.AddWithValue("@Name", customer.Name);
-                    command.Parameters.AddWithValue("@PhoneNumber", customer.PhoneNumber);
-                    command.Parameters.AddWithValue("@Address", customer.Address);
-                    command.Parameters.AddWithValue("@GovernmentIdPicture", customer.GovernmentIdPicture);
-                    command.Parameters.AddWithValue("@CustomerStatus", customer.CustomerStatus);
-                    command.Parameters.AddWithValue("@RegistrationDate", customer.RegistrationDate);
+                    try
+                    {
+                        // check if phone number already exists for other customers
+                        string checkPhoneQuery = @"
+                            SELECT COUNT(*) 
+                            FROM customer 
+                            WHERE phone_number = @PhoneNumber 
+                            AND customer_id != @CustomerId";
 
-                    return await command.ExecuteNonQueryAsync() > 0;
+                        using (var checkCommand = new MySqlCommand(checkPhoneQuery, connection, transaction))
+                        {
+                            checkCommand.Parameters.AddWithValue("@PhoneNumber", customer.PhoneNumber);
+                            checkCommand.Parameters.AddWithValue("@CustomerId", customer.CustomerId);
+                            int count = Convert.ToInt32(await checkCommand.ExecuteScalarAsync());
+                            if (count > 0)
+                            {
+                                throw new InvalidOperationException("Phone number already exists for another customer");
+                            }
+                        }
+
+                        string query = @"
+                            UPDATE customer 
+                            SET name = @Name, 
+                                phone_number = @PhoneNumber, 
+                                address = @Address, 
+                                government_id_picture = @GovernmentIdPicture, 
+                                customer_status = @CustomerStatus, 
+                                registration_date = @RegistrationDate
+                            WHERE customer_id = @CustomerId";
+
+                        using (var command = new MySqlCommand(query, connection, transaction))
+                        {
+                            command.Parameters.AddWithValue("@CustomerId", customer.CustomerId);
+                            command.Parameters.AddWithValue("@Name", customer.Name);
+                            command.Parameters.AddWithValue("@PhoneNumber", customer.PhoneNumber);
+                            command.Parameters.AddWithValue("@Address", customer.Address);
+                            command.Parameters.AddWithValue("@GovernmentIdPicture", customer.GovernmentIdPicture);
+                            command.Parameters.AddWithValue("@CustomerStatus", customer.CustomerStatus);
+                            command.Parameters.AddWithValue("@RegistrationDate", customer.RegistrationDate);
+
+                            int rowsAffected = await command.ExecuteNonQueryAsync();
+                            if (rowsAffected == 0)
+                            {
+                                throw new InvalidOperationException("Customer not found");
+                            }
+                        }
+
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    catch (MySqlException ex)
+                    {
+                        await transaction.RollbackAsync();
+                        switch (ex.Number)
+                        {
+                            case 1062: // duplicate entry
+                                throw new InvalidOperationException("Phone number already exists", ex);
+                            case 3819: // check constraint violation
+                                throw new InvalidOperationException("Invalid customer status value", ex);
+                            default:
+                                throw new Exception("Database error occurred while updating customer", ex);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        await transaction.RollbackAsync();
+                        throw;
+                    }
                 }
             }
         }
@@ -252,12 +337,57 @@ namespace Nomad2.Services
             using (var connection = _db.GetConnection())
             {
                 await connection.OpenAsync();
-                string query = "DELETE FROM customer WHERE customer_id = @Id";
-
-                using (var command = new MySqlCommand(query, connection))
+                using (var transaction = await connection.BeginTransactionAsync())
                 {
-                    command.Parameters.AddWithValue("@Id", id);
-                    return await command.ExecuteNonQueryAsync() > 0;
+                    try
+                    {
+                        // check if customer has any active rentals
+                        string checkRentalsQuery = @"
+                            SELECT COUNT(*) 
+                            FROM rentals 
+                            WHERE customer_id = @CustomerId 
+                            AND rental_status = 'Active'";
+
+                        using (var checkCommand = new MySqlCommand(checkRentalsQuery, connection, transaction))
+                        {
+                            checkCommand.Parameters.AddWithValue("@CustomerId", id);
+                            int activeRentals = Convert.ToInt32(await checkCommand.ExecuteScalarAsync());
+                            if (activeRentals > 0)
+                            {
+                                throw new InvalidOperationException("Cannot delete customer with active rentals");
+                            }
+                        }
+
+                        string query = "DELETE FROM customer WHERE customer_id = @Id";
+                        using (var command = new MySqlCommand(query, connection, transaction))
+                        {
+                            command.Parameters.AddWithValue("@Id", id);
+                            int rowsAffected = await command.ExecuteNonQueryAsync();
+                            if (rowsAffected == 0)
+                            {
+                                throw new InvalidOperationException("Customer not found");
+                            }
+                        }
+
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    catch (MySqlException ex)
+                    {
+                        await transaction.RollbackAsync();
+                        switch (ex.Number)
+                        {
+                            case 1451: // cannot delete or update a parent row
+                                throw new InvalidOperationException("Cannot delete customer because they have associated records", ex);
+                            default:
+                                throw new Exception("Database error occurred while deleting customer", ex);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        await transaction.RollbackAsync();
+                        throw;
+                    }
                 }
             }
         }
