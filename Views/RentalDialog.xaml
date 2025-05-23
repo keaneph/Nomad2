@@ -217,7 +217,8 @@
                     <ComboBox ItemsSource="{Binding AvailableStatuses}"
                             SelectedItem="{Binding RentalStatus}"
                             Style="{StaticResource BaseComboboxStyle}"
-                              Margin="-323,0,0,10"/>
+                            HorizontalAlignment="Left"
+                            Margin="0,0,0,10"/>
                 </DockPanel>
 
                 <TextBlock Text="{Binding ErrorMessage}"

@@ -253,59 +253,49 @@
             <Setter.Value>
                 <ControlTemplate TargetType="ComboBox">
                     <Grid>
+                        <Border x:Name="MainBorder"
+                                Background="{Binding Background, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                BorderBrush="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                BorderThickness="{Binding BorderThickness, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                CornerRadius="8">
+                            <Border.Effect>
+                                <DropShadowEffect Color="{StaticResource PurpleColor}" 
+                                                 BlurRadius="20" 
+                                                 ShadowDepth="0" 
+                                                 Opacity="0.3"/>
+                            </Border.Effect>
+                        </Border>
+                        
                         <ToggleButton x:Name="ToggleButton"
-                                    Background="{Binding Background, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                    Background="Transparent"
                                     Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ComboBox}}"
                                     IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                     Focusable="False">
                             <ToggleButton.Template>
                                 <ControlTemplate TargetType="ToggleButton">
-                                    <Border x:Name="MainBorder"
-                                            Background="{TemplateBinding Background}"
-                                            BorderBrush="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=ComboBox}}"
-                                            BorderThickness="{Binding BorderThickness, RelativeSource={RelativeSource AncestorType=ComboBox}}"
-                                            CornerRadius="8">
-                                        <Border.Effect>
-                                            <DropShadowEffect Color="{StaticResource PurpleColor}" 
-                                                             BlurRadius="20" 
-                                                             ShadowDepth="0" 
-                                                             Opacity="0.3"/>
-                                        </Border.Effect>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
 
-                                            <ContentPresenter Grid.Column="0"
+                                        <ContentPresenter Grid.Column="0"
                                                          Content="{Binding Path=SelectionBoxItem, RelativeSource={RelativeSource AncestorType=ComboBox}}"
                                                          ContentTemplate="{Binding Path=SelectionBoxItemTemplate, RelativeSource={RelativeSource AncestorType=ComboBox}}"
                                                          ContentTemplateSelector="{Binding Path=ItemTemplateSelector, RelativeSource={RelativeSource AncestorType=ComboBox}}"
                                                          VerticalAlignment="Center"
                                                          Margin="12,0,0,0"/>
 
-                                            <Path Grid.Column="1"
-                                                  Data="M1,1 L5,5 L9,1"
-                                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ComboBox}}"
-                                                  StrokeThickness="1.5"
-                                                  Width="10"
-                                                  Height="10"
-                                                  Stretch="Uniform"
-                                                  VerticalAlignment="Center"
-                                                  Margin="0,0,12,0"/>
-                                        </Grid>
-                                    </Border>
-                                    <!--needed to setup the bg binding in order for the hover to work...-->
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="MainBorder" Property="Background" Value="{StaticResource PurpleGradientHover}"/>
-                                        </Trigger>
-                                        <Trigger Property="IsChecked" Value="True">
-                                            <Setter TargetName="MainBorder" Property="CornerRadius" Value="8,8,0,0"/>
-                                            <Setter Property="Background" Value="{StaticResource PurpleGradientBackground}">
-                                            </Setter>
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
+                                        <Path Grid.Column="1"
+                                              Data="M1,1 L5,5 L9,1"
+                                              Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                              StrokeThickness="1.5"
+                                              Width="10"
+                                              Height="10"
+                                              Stretch="Uniform"
+                                              VerticalAlignment="Center"
+                                              Margin="0,0,12,0"/>
+                                    </Grid>
                                 </ControlTemplate>
                             </ToggleButton.Template>
                         </ToggleButton>
@@ -329,6 +319,15 @@
                             </Border>
                         </Popup>
                     </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="MainBorder" Property="Background" Value="{StaticResource PurpleGradientHover}"/>
+                        </Trigger>
+                        <Trigger Property="IsDropDownOpen" Value="True">
+                            <Setter TargetName="MainBorder" Property="CornerRadius" Value="8,8,0,0"/>
+                            <Setter TargetName="MainBorder" Property="Background" Value="{StaticResource PurpleGradientBackground}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

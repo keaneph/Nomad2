@@ -147,10 +147,13 @@
                         <Run Text="*" 
                              Foreground="{StaticResource RedBrush}"/>
                     </TextBlock>
-                    <ComboBox Style="{StaticResource BaseComboboxStyle}"
-                             ItemsSource="{Binding StatusOptions}"
-                             SelectedItem="{Binding Bike.BikeStatus}"                          
-                             Margin="-323,0,0,10"/>
+                    <Grid>
+                        <ComboBox Style="{StaticResource BaseComboboxStyle}"
+                                 ItemsSource="{Binding StatusOptions}"
+                                 SelectedItem="{Binding Bike.BikeStatus}"
+                                 HorizontalAlignment="Left"
+                                 Margin="0,0,0,10"/>
+                    </Grid>
                 </DockPanel>
 
                 <!-- Error Message -->

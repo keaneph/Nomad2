@@ -155,8 +155,9 @@
                     </TextBlock>
                     <ComboBox Style="{StaticResource BaseComboboxStyle}"
                               ItemsSource="{Binding StatusOptions}"
-                              SelectedItem="{Binding Customer.CustomerStatus}"                          
-                              Margin="-323,0,0,10"/>
+                              SelectedItem="{Binding Customer.CustomerStatus}"
+                              HorizontalAlignment="Left"
+                              Margin="0,0,0,10"/>
                 </DockPanel>
 
                 <!-- Registration Date -->
