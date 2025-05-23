@@ -1,5 +1,6 @@
 ﻿using Nomad2.Models;
 using Nomad2.Services;
+using Nomad2.Validators;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -12,14 +13,14 @@ namespace Nomad2.ViewModels
 {
     // view model for managing rental ops
     public class RentalDialogViewModel : BaseViewModel
-
-    // services and core dependencies
     {
+        // services and core dependencies
         private readonly ICustomerService _customerService;
         private readonly IBikeService _bikeService;
         private readonly Window _dialog;
         private readonly Rental _rental;
         private readonly bool _isEdit;
+        private string _errorMessage;
 
         // search and selection state tracking
         private string _customerSearch;
@@ -90,6 +91,17 @@ namespace Nomad2.ViewModels
             set
             {
                 _rentalId = value;
+                OnPropertyChanged();
+            }
+        }
+
+        // error message property with notification
+        public string ErrorMessage
+        {
+            get => _errorMessage;
+            set
+            {
+                _errorMessage = value;
                 OnPropertyChanged();
             }
         }
@@ -170,7 +182,6 @@ namespace Nomad2.ViewModels
             }
         }
 
-
         // current status of rental
         public string RentalStatus
         {
@@ -179,7 +190,7 @@ namespace Nomad2.ViewModels
             {
                 _rentalStatus = value;
                 OnPropertyChanged();
-                (SaveCommand as RelayCommand)?.RaiseCanExecuteChanged();  // Add this line
+                (SaveCommand as RelayCommand)?.RaiseCanExecuteChanged();
             }
         }
 
@@ -210,7 +221,6 @@ namespace Nomad2.ViewModels
         public ObservableCollection<Bike> BikeSearchResults { get; }
         public ObservableCollection<string> AvailableStatuses { get; }
 
-
         #endregion
 
         #region Commands
@@ -223,7 +233,6 @@ namespace Nomad2.ViewModels
         #endregion
 
         #region Methods
-
 
         // searches customers based on input
         private async Task SearchCustomers()
@@ -277,19 +286,23 @@ namespace Nomad2.ViewModels
             }
         }
 
-
         // validates rental data before saving
         private bool CanSave()
         {
-            bool customerValid = _rental.CustomerId != null && _rental.Customer != null;
-            bool bikeValid = _rental.BikeId != null && _rental.Bike != null;
-            bool statusValid = !string.IsNullOrWhiteSpace(_rental.RentalStatus);
-            bool dateValid = _rental.RentalDate >= DateTime.Today;
-            bool idValid = !string.IsNullOrWhiteSpace(_rental.RentalId);
+            // Update the rental object with current values
+            _rental.RentalDate = RentalDate;
+            _rental.RentalStatus = RentalStatus;
 
-            return customerValid && bikeValid && statusValid && dateValid && idValid;
+            var (isValid, errorMessage) = RentalValidator.ValidateRental(_rental);
+            if (!isValid)
+            {
+                ErrorMessage = errorMessage;
+                return false;
+            }
+
+            ErrorMessage = string.Empty;
+            return true;
         }
-
 
         // saves rental and closes dialog
         private void Save()
@@ -301,7 +314,6 @@ namespace Nomad2.ViewModels
             _dialog.Close();
         }
 
-
         // cancels operation and closes dialog
         private void Cancel()
         {
@@ -310,7 +322,6 @@ namespace Nomad2.ViewModels
         }
 
         #endregion
-
 
         // loads and displays active customers
         private async Task ShowAvailableCustomers()
@@ -334,7 +345,6 @@ namespace Nomad2.ViewModels
             }
         }
 
-
         // loads and displays available bikes
         private async Task ShowAvailableBikes()
         {
@@ -357,7 +367,6 @@ namespace Nomad2.ViewModels
             }
         }
 
-
         // text for customer browse button
         private string _customerButtonText = "Browse";
         public string CustomerButtonText
@@ -371,7 +380,6 @@ namespace Nomad2.ViewModels
         }
 
         // text for bike browse button
-
         private string _bikeButtonText = "Browse";
         public string BikeButtonText
         {
@@ -448,6 +456,5 @@ namespace Nomad2.ViewModels
                 }
             }
         }
-
     }
 }

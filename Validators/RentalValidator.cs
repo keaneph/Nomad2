@@ -27,8 +27,8 @@ namespace Nomad2.Validators
             if (rental.RentalDate == default)
                 return (false, "Rental date is required.");
 
-            if (rental.RentalDate.Date < DateTime.Now.Date)
-                return (false, "Rental date cannot be in the past.");
+            if (rental.RentalDate > DateTime.Now)
+                return (false, "Rental date cannot be in the future.");
 
             // Validate RentalStatus
             if (string.IsNullOrWhiteSpace(rental.RentalStatus))

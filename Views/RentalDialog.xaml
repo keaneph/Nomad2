@@ -221,11 +221,12 @@
                             Margin="0,0,0,10"/>
                 </DockPanel>
 
+                <!-- Error Message -->
                 <TextBlock Text="{Binding ErrorMessage}"
-                           Foreground="{StaticResource RedBrush}"
-                           FontFamily="{StaticResource RubikSemibold}"
-                           VerticalAlignment="Center"
-                           Margin="0,15,0,0"/>
+                          Foreground="{StaticResource RedBrush}"
+                          FontFamily="{StaticResource RubikSemibold}"
+                          VerticalAlignment="Center"
+                          Margin="0,15,0,0"/>
             </StackPanel>
 
             <!-- Bottom Section -->
