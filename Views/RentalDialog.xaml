@@ -106,16 +106,35 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>
-                                <TextBlock>
-                                    <Run Text="{Binding CustomerId}" 
-                                         Foreground="{StaticResource TextSecondaryBrush}"/>
+                                <TextBlock FontFamily="{StaticResource RubikSemibold}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                                                    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                    <Run Text="{Binding CustomerId}"/>
                                     <Run Text=" - "/>
-                                    <Run Text="{Binding Name}" 
-                                         Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    <Run Text="{Binding Name}"/>
                                 </TextBlock>
-                                <TextBlock Text="{Binding PhoneNumber}"
-                                         Foreground="{StaticResource TextSecondaryBrush}"
-                                         FontSize="12"/>
+                                <TextBlock FontFamily="{StaticResource RubikSemibold}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                                                    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                    <Run Text="Phone: "/>
+                                    <Run Text="{Binding PhoneNumber}"/>
+                                </TextBlock>
                             </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
@@ -171,20 +190,35 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>
-                                <TextBlock>
-                                    <Run Text="{Binding BikeId}" 
-                                         Foreground="{StaticResource TextSecondaryBrush}"/>
+                                <TextBlock FontFamily="{StaticResource RubikSemibold}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                                                    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                    <Run Text="{Binding BikeId}"/>
                                     <Run Text=" - "/>
-                                    <Run Text="{Binding BikeModel}" 
-                                         Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    <Run Text="{Binding BikeModel}"/>
                                 </TextBlock>
-                                <TextBlock>
-                                    <Run Text="Rate: $" 
-                                         Foreground="{StaticResource TextSecondaryBrush}"/>
-                                    <Run Text="{Binding DailyRate}" 
-                                         Foreground="{StaticResource TextPrimaryBrush}"/>
-                                    <Run Text="/day" 
-                                         Foreground="{StaticResource TextSecondaryBrush}"/>
+                                <TextBlock FontFamily="{StaticResource RubikSemibold}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                                                    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                    <Run Text="Rate: ₱"/>
+                                    <Run Text="{Binding DailyRate}"/>
+                                    <Run Text="/day"/>
                                 </TextBlock>
                             </StackPanel>
                         </DataTemplate>
