@@ -18,9 +18,9 @@ namespace Nomad2.Converters
                 // uses switch expression to match status with corresponding colors
                 return status.ToLower() switch
                 {
-                    "active" => Application.Current.Resources["GreenBrush"],   
-                    "completed" => Application.Current.Resources["PurpleBrush"], 
-                    "overdue" => Application.Current.Resources["RedBrush"],      
+                    "active" => Application.Current.Resources["GreenGradientBackground"],   
+                    "completed" => Application.Current.Resources["PurpleGradientBackground"], 
+                    "overdue" => Application.Current.Resources["RedGradientBackground"],      
                     _ => Application.Current.Resources["TextSecondaryBrush"]        
                 };
             }

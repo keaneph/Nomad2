@@ -86,8 +86,8 @@
                                 Padding="15"
                                 BorderThickness="1"
                                 CornerRadius="8"
-                                Background="#2A2D3E"
-                                BorderBrush="#373B4D">
+                                Background="{StaticResource SearchboxBackgroundBrush}"
+                                BorderBrush="{StaticResource BorderBrush}">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
@@ -104,17 +104,37 @@
                                     </Grid.ColumnDefinitions>
 
                                     <TextBlock Text="{Binding RentalId}"
-                                                 FontWeight="SemiBold"
-                                                 Foreground="#E0E1EE"/>
+                                             FontFamily="{StaticResource RubikSemibold}"
+                                             Foreground="{StaticResource TextPrimaryBrush}"/>
 
                                     <Border Grid.Column="1"
-                                            Padding="8,4"
-                                            CornerRadius="4"
-                                            Background="{Binding RentalStatus, 
-                                            Converter={StaticResource StatusToColorConverter}}">
-                                        <TextBlock Text="{Binding RentalStatus}"
-                                                 Foreground="White"
-                                                 FontSize="12"/>
+                                            Padding="0"
+                                            CornerRadius="8">
+                                        <Grid>
+                                            <Border Background="{Binding RentalStatus, 
+                                                    Converter={StaticResource StatusToColorConverter}}"
+                                                    BorderThickness="1.5,1.5,1.5,2"
+                                                    BorderBrush="{Binding RentalStatus, 
+                                                    Converter={StaticResource StatusToBorderConverter}}"
+                                                    CornerRadius="8"
+                                                    MinWidth="95"
+                                                    MinHeight="25"
+                                                    Padding="12,2">
+                                                <Border.Effect>
+                                                    <DropShadowEffect Color="{Binding RentalStatus, 
+                                                    Converter={StaticResource StatusToShadowColorConverter}}"
+                                                                     BlurRadius="20" 
+                                                                     ShadowDepth="0"
+                                                                     Opacity="0.3"/>
+                                                </Border.Effect>
+                                            </Border>
+                                            <TextBlock Text="{Binding RentalStatus}"
+                                                     Foreground="White"
+                                                     FontSize="12"
+                                                     FontFamily="{StaticResource RubikSemibold}"
+                                                     HorizontalAlignment="Center"
+                                                     VerticalAlignment="Center"/>
+                                        </Grid>
                                     </Border>
                                 </Grid>
 
@@ -122,29 +142,32 @@
                                 <StackPanel Grid.Row="1" 
                                             Margin="0,10,0,0">
                                     <TextBlock Text="Customer"
-                                               Foreground="#9A9CA5"
-                                               FontSize="12"/>
+                                               Foreground="{StaticResource TextSecondaryBrush}"
+                                               FontSize="12"
+                                               FontFamily="{StaticResource RubikSemibold}"/>
                                     <TextBlock Text="{Binding Customer.Name}"
-                                               Foreground="#E0E1EE"
-                                               FontWeight="SemiBold"/>
-                                    <TextBlock Text="{Binding Customer.PhoneNumber}"
-                                               Foreground="#9A9CA5"/>
+                                               Foreground="{StaticResource TextPrimaryBrush}"
+                                               FontFamily="{StaticResource RubikSemibold}"/>
+                                    <TextBlock FontFamily="{StaticResource RubikSemibold}">
+                                        <Run Text="Phone: " Foreground="{StaticResource TextSecondaryBrush}"/>
+                                        <Run Text="{Binding Customer.PhoneNumber}" Foreground="{StaticResource TextSecondaryBrush}"/>
+                                    </TextBlock>
                                 </StackPanel>
 
                                 <!-- Bike Info -->
                                 <StackPanel Grid.Row="2" 
                                             Margin="0,10,0,0">
                                     <TextBlock Text="Bike"
-                                               Foreground="#9A9CA5"
-                                               FontSize="12"/>        
+                                               Foreground="{StaticResource TextSecondaryBrush}"
+                                               FontSize="12"
+                                               FontFamily="{StaticResource RubikSemibold}"/>        
                                     <TextBlock Text="{Binding Bike.BikeModel}"
-                                               Foreground="#E0E1EE"
-                                               FontWeight="SemiBold"/>
-                                    <TextBlock>
-                                        <Run Text="Rate: $" Foreground="#9A9CA5"/>
-                                        <Run Text="{Binding Bike.DailyRate}" 
-                                             Foreground="#E0E1EE"/>
-                                        <Run Text="/day" Foreground="#9A9CA5"/>
+                                               Foreground="{StaticResource TextPrimaryBrush}"
+                                               FontFamily="{StaticResource RubikSemibold}"/>
+                                    <TextBlock FontFamily="{StaticResource RubikSemibold}">
+                                        <Run Text="Rate: ₱" Foreground="{StaticResource TextSecondaryBrush}"/>
+                                        <Run Text="{Binding Bike.DailyRate}" Foreground="{StaticResource TextSecondaryBrush}"/>
+                                        <Run Text="/day" Foreground="{StaticResource TextSecondaryBrush}"/>
                                     </TextBlock>
                                 </StackPanel>
 

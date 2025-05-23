@@ -21,6 +21,8 @@
 
             <converters:StatusToColorConverter x:Key="StatusToColorConverter"/>
             <converters:ActiveToVisibilityConverter x:Key="ActiveToVisibilityConverter"/>
+            <converters:StatusToBorderConverter x:Key="StatusToBorderConverter"/>
+            <converters:StatusToShadowColorConverter x:Key="StatusToShadowColorConverter"/>
 
 
             <!--data templates-->
