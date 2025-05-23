@@ -50,10 +50,6 @@ namespace Nomad2.Validators
             if (!allowedExtensions.Contains(extension))
                 return (false, "Bike picture must be a PNG, JPEG, or JPG file");
 
-            // validate if file exists
-            if (!System.IO.File.Exists(bike.BikePicture))
-                return (false, "Government ID picture file does not exist");
-
             // validate BikeStatus (VARCHAR(30))
             if (string.IsNullOrWhiteSpace(bike.BikeStatus))
                 return (false, "Bike status is required");
