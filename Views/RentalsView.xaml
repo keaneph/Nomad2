@@ -91,22 +91,23 @@
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
 
-                                <!-- Rental ID and Status -->
-                                <Grid Grid.Row="0">
+                                <!-- Rental ID and Status (span both columns) -->
+                                <Grid Grid.Row="0" Grid.ColumnSpan="2">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-
                                     <TextBlock Text="{Binding RentalId}"
                                              FontFamily="{StaticResource RubikSemibold}"
                                              Foreground="{StaticResource TextPrimaryBrush}"/>
-
                                     <Border Grid.Column="1"
                                             Padding="0"
                                             CornerRadius="8">
@@ -138,9 +139,9 @@
                                     </Border>
                                 </Grid>
 
-                                <!-- Customer Info -->
-                                <StackPanel Grid.Row="1" 
-                                            Margin="0,10,0,0">
+                                <!-- Left Column: Customer and Bike Info -->
+                                <StackPanel Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                    <!-- Customer Info -->
                                     <TextBlock Text="Customer"
                                                Foreground="{StaticResource TextSecondaryBrush}"
                                                FontSize="12"
@@ -152,12 +153,9 @@
                                         <Run Text="Phone: " Foreground="{StaticResource TextSecondaryBrush}"/>
                                         <Run Text="{Binding Customer.PhoneNumber}" Foreground="{StaticResource TextSecondaryBrush}"/>
                                     </TextBlock>
-                                </StackPanel>
 
-                                <!-- Bike Info -->
-                                <StackPanel Grid.Row="2" 
-                                            Margin="0,10,0,0">
-                                    <TextBlock Text="Bike"
+                                    <!-- Bike Info -->
+                                    <TextBlock Text="Bike" Margin="0,10,0,0"
                                                Foreground="{StaticResource TextSecondaryBrush}"
                                                FontSize="12"
                                                FontFamily="{StaticResource RubikSemibold}"/>        
@@ -170,9 +168,37 @@
                                         <Run Text="/day" Foreground="{StaticResource TextSecondaryBrush}"/>
                                     </TextBlock>
                                 </StackPanel>
+                                
+                                
 
-                                <!-- Action Buttons -->
-                                <Grid Grid.Row="3" Margin="0,15,0,0">
+                                <!-- Right Column: Rental Dates -->
+                                <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="-35,15,0,0">
+                                    <TextBlock Text="Payment Status:"
+                                               Foreground="{StaticResource TextSecondaryBrush}"
+                                               FontSize="12"
+                                               FontFamily="{StaticResource RubikSemibold}"/>
+                                                <TextBlock FontFamily="{StaticResource RubikSemibold}" TextTrimming="None">
+                                        <Run Text="Process Payment" Foreground="{StaticResource TextSecondaryBrush}"/>
+                                    </TextBlock>
+                                    <TextBlock FontFamily="{StaticResource RubikSemibold}" TextTrimming="None">
+                                    </TextBlock>
+                                    
+                                    <TextBlock Text="Rental Dates"
+                                               Foreground="{StaticResource TextSecondaryBrush}"
+                                               FontSize="12"
+                                               FontFamily="{StaticResource RubikSemibold}"/>
+                                    <TextBlock FontFamily="{StaticResource RubikSemibold}" TextTrimming="None">
+                                        <Run Text="Rented: " Foreground="{StaticResource TextSecondaryBrush}"/>
+                                        <Run Text="{Binding RentalDate, StringFormat=MM/dd/yyyy}" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    </TextBlock>
+                                    <TextBlock FontFamily="{StaticResource RubikSemibold}" TextTrimming="None">
+                                        <Run Text="Returned: " Foreground="{StaticResource TextSecondaryBrush}"/>
+                                        <Run Text="{Binding ReturnDate, StringFormat=MM/dd/yyyy, TargetNullValue='-'}" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    </TextBlock>
+                                </StackPanel>
+
+                                <!-- Action Buttons (span both columns) -->
+                                <Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="0,15,0,0">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>

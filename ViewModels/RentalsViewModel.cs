@@ -254,13 +254,8 @@ namespace Nomad2.ViewModels
         {
             if (rental != null)
             {
-                var result = MessageBox.Show(
-                    "Are you sure you want to complete this rental?",
-                    "Confirm Completion",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question);
-
-                if (result == MessageBoxResult.Yes)
+                var dialog = new ReturnDialog(rental);
+                if (dialog.ShowDialog() == true)
                 {
                     try
                     {
@@ -276,6 +271,13 @@ namespace Nomad2.ViewModels
                                 customer.CustomerStatus = "Inactive";
                                 await _customerService.UpdateCustomerAsync(customer);
                             }
+                        }
+                        // Update bike status to Available
+                        var bike = await _bikeService.GetBikeByIdAsync(rental.BikeId);
+                        if (bike != null)
+                        {
+                            bike.BikeStatus = "Available";
+                            await _bikeService.UpdateBikeAsync(bike);
                         }
                         await LoadRentals();
                     }
