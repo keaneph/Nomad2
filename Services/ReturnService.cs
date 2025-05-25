@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Linq;
 
 namespace Nomad2.Services
 {
@@ -391,10 +392,137 @@ namespace Nomad2.Services
             using (var connection = _db.GetConnection())
             {
                 await connection.OpenAsync();
-                string query = "DELETE FROM `returns`";
-                using (var command = new MySqlCommand(query, connection))
+                using (var transaction = await connection.BeginTransactionAsync())
                 {
-                    return await command.ExecuteNonQueryAsync() > 0;
+                    try
+                    {
+                        // check if any bikes are currently rented
+                        string checkActiveRentalsQuery = @"
+                            SELECT COUNT(*) 
+                            FROM rentals 
+                            WHERE rental_status = 'Active'";
+
+                        using (var command = new MySqlCommand(checkActiveRentalsQuery, connection, transaction))
+                        {
+                            int activeRentals = Convert.ToInt32(await command.ExecuteScalarAsync());
+                            if (activeRentals > 0)
+                            {
+                                MessageBox.Show(
+                                    "Cannot clear returns because some bikes are currently rented.",
+                                    "Cannot Clear",
+                                    MessageBoxButton.OK,
+                                    MessageBoxImage.Warning
+                                );
+                                return false;
+                            }
+                        }
+
+                        // check if any bikes have multiple returns
+                        string checkMultipleReturnsQuery = @"
+                            SELECT bike_id, COUNT(*) as return_count
+                            FROM `returns`
+                            GROUP BY bike_id
+                            HAVING COUNT(*) > 1";
+
+                        using (var command = new MySqlCommand(checkMultipleReturnsQuery, connection, transaction))
+                        {
+                            using (var reader = await command.ExecuteReaderAsync())
+                            {
+                                if (await reader.ReadAsync())
+                                {
+                                    MessageBox.Show(
+                                        "Cannot clear returns because some bikes have multiple return records. Please delete returns individually to maintain data integrity.",
+                                        "Cannot Clear",
+                                        MessageBoxButton.OK,
+                                        MessageBoxImage.Warning
+                                    );
+                                    return false;
+                                }
+                            }
+                        }
+
+                        // get all return records
+                        string getReturnsQuery = @"
+                            SELECT r.rental_id, r.customer_id, r.bike_id
+                            FROM `returns` r";
+
+                        var rentalIds = new List<string>();
+                        var customerIds = new HashSet<string>();
+                        var bikeIds = new HashSet<string>();
+
+                        using (var command = new MySqlCommand(getReturnsQuery, connection, transaction))
+                        {
+                            using (var reader = await command.ExecuteReaderAsync())
+                            {
+                                while (await reader.ReadAsync())
+                                {
+                                    rentalIds.Add(reader.GetString("rental_id"));
+                                    customerIds.Add(reader.GetString("customer_id"));
+                                    bikeIds.Add(reader.GetString("bike_id"));
+                                }
+                            }
+                        }
+
+                        // delete all return records
+                        string deleteQuery = "DELETE FROM `returns`";
+                        using (var command = new MySqlCommand(deleteQuery, connection, transaction))
+                        {
+                            await command.ExecuteNonQueryAsync();
+                        }
+
+                        // update all rentals back to Active
+                        if (rentalIds.Any())
+                        {
+                            string updateRentalsQuery = @"
+                                UPDATE rentals 
+                                SET rental_status = 'Active' 
+                                WHERE rental_id IN ({0})";
+
+                            string rentalIdList = string.Join(",", rentalIds.Select(id => $"'{id}'"));
+                            using (var command = new MySqlCommand(string.Format(updateRentalsQuery, rentalIdList), connection, transaction))
+                            {
+                                await command.ExecuteNonQueryAsync();
+                            }
+                        }
+
+                        // update bikes to Rented
+                        if (bikeIds.Any())
+                        {
+                            string updateBikesQuery = @"
+                                UPDATE bike 
+                                SET bike_status = 'Rented' 
+                                WHERE bike_id IN ({0})";
+
+                            string bikeIdList = string.Join(",", bikeIds.Select(id => $"'{id}'"));
+                            using (var command = new MySqlCommand(string.Format(updateBikesQuery, bikeIdList), connection, transaction))
+                            {
+                                await command.ExecuteNonQueryAsync();
+                            }
+                        }
+
+                        // update customers to Active
+                        if (customerIds.Any())
+                        {
+                            string updateCustomersQuery = @"
+                                UPDATE customer 
+                                SET customer_status = 'Active' 
+                                WHERE customer_id IN ({0})";
+
+                            string customerIdList = string.Join(",", customerIds.Select(id => $"'{id}'"));
+                            using (var command = new MySqlCommand(string.Format(updateCustomersQuery, customerIdList), connection, transaction))
+                            {
+                                await command.ExecuteNonQueryAsync();
+                            }
+                        }
+
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    catch (Exception)
+                    {
+                        await transaction.RollbackAsync();
+                        throw;
+                    }
                 }
             }
         }
