@@ -41,6 +41,7 @@ namespace Nomad2.ViewModels
         public string DialogTitle => "Edit Return";
 
         public string ReturnId => _return.ReturnId;
+        public string RentalId => _return.RentalId;
         public string CustomerId => _return.CustomerId;
         public string BikeId => _return.BikeId;
 

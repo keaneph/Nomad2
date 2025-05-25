@@ -31,18 +31,51 @@ namespace Nomad2.ViewModels
             SaveCommand = new RelayCommand(ExecuteSave, CanExecuteSave);
             CancelCommand = new RelayCommand(ExecuteCancel);
 
-            // Set default return date to current date
+            // set default return date to current date
             ReturnDate = DateTime.Now;
+
+            // Generate and set the next return ID
+            _ = GenerateNextReturnId();
         }
 
         public string DialogTitle => "Return Bike";
 
+        public string ReturnId { get; private set; }
         public string RentalId => _rental.RentalId;
         public DateTime RentalDate => _rental.RentalDate;
         public string CustomerName => _rental.Customer?.Name;
         public string CustomerPhone => _rental.Customer?.PhoneNumber;
         public string BikeModel => _rental.Bike?.BikeModel;
         public int DailyRate => _rental.Bike?.DailyRate ?? 0;
+
+        private async Task GenerateNextReturnId()
+        {
+            try
+            {
+                var lastId = await _returnService.GetLastReturnIdAsync();
+                if (string.IsNullOrWhiteSpace(lastId) || lastId == "0000-0000")
+                {
+                    ReturnId = "0000-0001";
+                }
+                else
+                {
+                    string[] parts = lastId.Split('-');
+                    if (parts.Length == 2 && int.TryParse(parts[1], out int number))
+                    {
+                        ReturnId = $"{parts[0]}-{(number + 1):D4}";
+                    }
+                    else
+                    {
+                        ReturnId = "0000-0001";
+                    }
+                }
+                OnPropertyChanged(nameof(ReturnId));
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Error generating return ID: {ex.Message}";
+            }
+        }
 
         public DateTime? ReturnDate
         {
@@ -95,7 +128,7 @@ namespace Nomad2.ViewModels
                     // create return record
                     var returnRecord = new Return
                     {
-                        ReturnId = string.Empty, // let the service generate the ID
+                        ReturnId = ReturnId, // use the pre-generated ID
                         RentalId = _rental.RentalId,
                         CustomerId = _rental.CustomerId,
                         BikeId = _rental.BikeId,
