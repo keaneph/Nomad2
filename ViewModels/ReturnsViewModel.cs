@@ -177,8 +177,15 @@ namespace Nomad2.ViewModels
         {
             if (returnItem == null) return;
 
+            // If multiple items are selected, use the selected returns
+            var itemsToDelete = SelectedReturns?.Count > 1 ? SelectedReturns.Cast<Return>() : new[] { returnItem };
+
+            var message = itemsToDelete.Count() > 1
+                ? $"Are you sure you want to delete {itemsToDelete.Count()} selected returns?"
+                : "Are you sure you want to delete this return?";
+
             var result = MessageBox.Show(
-                "Are you sure you want to delete this return?",
+                message,
                 "Confirm Delete",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Warning
@@ -186,7 +193,10 @@ namespace Nomad2.ViewModels
 
             if (result == MessageBoxResult.Yes)
             {
-                await _returnService.DeleteReturnAsync(returnItem.ReturnId);
+                foreach (var item in itemsToDelete)
+                {
+                    await _returnService.DeleteReturnAsync(item.ReturnId);
+                }
                 await LoadReturns();
             }
         }
