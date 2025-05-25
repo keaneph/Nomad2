@@ -149,13 +149,11 @@
                                     <TextBlock FontFamily="{StaticResource RubikSemibold}">
                                         <Hyperlink Command="{Binding DataContext.NavigateToCustomerCommand, 
                                                   RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                  CommandParameter="{Binding Customer}"
-                                                  Foreground="{StaticResource TextPrimaryBrush}"
-                                                  TextDecorations="None">
+                                                  CommandParameter="{Binding Customer}">
                                             <TextBlock Text="{Binding Customer.Name}"/>
                                             <Hyperlink.Style>
-                                                <Style TargetType="Hyperlink">
-                                                    <Setter Property="Cursor" Value="Hand"/>
+                                                <Style TargetType="Hyperlink" BasedOn="{StaticResource {x:Type Hyperlink}}">
+                                                    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
                                                     <Style.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
                                                             <Setter Property="Foreground" Value="{StaticResource PurpleBrush}"/>
@@ -178,13 +176,11 @@
                                     <TextBlock FontFamily="{StaticResource RubikSemibold}">
                                         <Hyperlink Command="{Binding DataContext.NavigateToBikeCommand, 
                                                   RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                  CommandParameter="{Binding Bike}"
-                                                  Foreground="{StaticResource TextPrimaryBrush}"
-                                                  TextDecorations="None">
+                                                  CommandParameter="{Binding Bike}">
                                             <TextBlock Text="{Binding Bike.BikeModel}"/>
                                             <Hyperlink.Style>
-                                                <Style TargetType="Hyperlink">
-                                                    <Setter Property="Cursor" Value="Hand"/>
+                                                <Style TargetType="Hyperlink" BasedOn="{StaticResource {x:Type Hyperlink}}">
+                                                    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
                                                     <Style.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
                                                             <Setter Property="Foreground" Value="{StaticResource PurpleBrush}"/>
@@ -230,13 +226,11 @@
                                         <TextBlock>
                                             <Hyperlink Command="{Binding DataContext.NavigateToReturnCommand, 
                                                       RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                      CommandParameter="{Binding}"
-                                                      Foreground="{StaticResource TextPrimaryBrush}"
-                                                      TextDecorations="None">
+                                                      CommandParameter="{Binding}">
                                                 <TextBlock Text="{Binding ReturnDate, StringFormat=MM/dd/yyyy, TargetNullValue='-'}"/>
                                                 <Hyperlink.Style>
-                                                    <Style TargetType="Hyperlink">
-                                                        <Setter Property="Cursor" Value="Hand"/>
+                                                    <Style TargetType="Hyperlink" BasedOn="{StaticResource {x:Type Hyperlink}}">
+                                                        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
                                                         <Style.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
                                                                 <Setter Property="Foreground" Value="{StaticResource PurpleBrush}"/>
