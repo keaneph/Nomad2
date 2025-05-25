@@ -1,8 +1,9 @@
-﻿<Window x:Class="Nomad2.Views.RentalDialog"
+<Window x:Class="Nomad2.Views.AddReturnDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Nomad2.Views"
         mc:Ignorable="d"
         Title="{Binding DialogTitle}"
         Height="620" 
@@ -38,24 +39,6 @@
 
             <!-- Form Fields -->
             <StackPanel Grid.Row="1" Margin="0,0,0,15">
-                <!-- Rental ID -->
-                <DockPanel LastChildFill="True" Margin="0,0,0,15">
-                    <TextBlock Text="Rental ID"
-                             DockPanel.Dock="Top"
-                             FontFamily="{StaticResource RubikSemibold}"
-                             Foreground="{StaticResource TextPrimaryBrush}"
-                             Margin="0,0,0,5"/>
-                    <Border Background="{StaticResource ThirdBackgroundBrush}" 
-                            CornerRadius="8"
-                            Padding="15,8"
-                            Height="34">
-                        <TextBlock Text="{Binding RentalId}"
-                                 Foreground="{StaticResource TextSecondaryBrush}"
-                                 VerticalAlignment="Center"                                 
-                                 FontFamily="{StaticResource RubikSemibold}"/>
-                    </Border>
-                </DockPanel>
-
                 <!-- Customer Selection -->
                 <DockPanel LastChildFill="True" Margin="0,0,0,15">
                     <TextBlock DockPanel.Dock="Top" Margin="0,0,0,5">
@@ -120,20 +103,6 @@
                                     <Run Text="{Binding CustomerId}"/>
                                     <Run Text=" - "/>
                                     <Run Text="{Binding Name}"/>
-                                </TextBlock>
-                                <TextBlock FontFamily="{StaticResource RubikSemibold}">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
-                                                    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                    <Run Text="Phone: "/>
-                                    <Run Text="{Binding PhoneNumber}"/>
                                 </TextBlock>
                             </StackPanel>
                         </DataTemplate>
@@ -205,46 +174,17 @@
                                     <Run Text=" - "/>
                                     <Run Text="{Binding BikeModel}"/>
                                 </TextBlock>
-                                <TextBlock FontFamily="{StaticResource RubikSemibold}">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
-                                                    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                    <Run Text="Rate: ₱"/>
-                                    <Run Text="{Binding DailyRate}"/>
-                                    <Run Text="/day"/>
-                                </TextBlock>
                             </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
 
-                <!-- Rental Date -->
-                <DockPanel LastChildFill="True" Margin="0,0,0,15">
-                    <TextBlock DockPanel.Dock="Top" Margin="0,0,0,5">
-                        <Run Text="Rental Date" 
-                             FontFamily="{StaticResource RubikSemibold}" 
-                             Foreground="{StaticResource TextPrimaryBrush}"/>
-                        <Run Text="*" 
-                             Foreground="{StaticResource RedBrush}"/>
-                    </TextBlock>
-                    <DatePicker SelectedDate="{Binding RentalDate}"
-                              Style="{StaticResource FormDatePickerStyle}"
-                              Height="35"/>
-                </DockPanel>
-
                 <!-- Error Message -->
                 <TextBlock Text="{Binding ErrorMessage}"
-                          Foreground="{StaticResource RedBrush}"
-                          FontFamily="{StaticResource RubikSemibold}"
-                          VerticalAlignment="Center"
-                          Margin="0,15,0,0"/>
+                         Foreground="{StaticResource RedBrush}"
+                         FontFamily="{StaticResource RubikSemibold}"
+                         VerticalAlignment="Center"
+                         Margin="0,0,0,15"/>
             </StackPanel>
 
             <!-- Bottom Section -->
@@ -274,10 +214,10 @@
                     </Button.Tag>
                 </Button>
 
-                <!-- Save Button -->
+                <!-- Continue Button -->
                 <Button Grid.Column="2"
                         Content="Save"
-                        Command="{Binding SaveCommand}"
+                        Command="{Binding ContinueCommand}"
                         Style="{StaticResource SaveButtonStyle}"
                         Width="120"
                         Height="35">
@@ -294,4 +234,4 @@
             </Grid>
         </Grid>
     </Border>
-</Window>
+</Window> 

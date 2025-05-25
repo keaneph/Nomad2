@@ -1,4 +1,4 @@
-<Window x:Class="Nomad2.Views.ReturnDialog"
+<Window x:Class="Nomad2.Views.EditReturnDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Nomad2.Views"
         mc:Ignorable="d"
         Title="{Binding DialogTitle}"
-        Height="680" 
+        Height="620" 
         Width="560"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource PrimaryBackgroundBrush}"
@@ -75,24 +75,6 @@
                     </Border>
                 </DockPanel>
 
-                <!-- Rental Date -->
-                <DockPanel LastChildFill="True" Margin="0,0,0,15">
-                    <TextBlock Text="Rental Date"
-                             DockPanel.Dock="Top"
-                             FontFamily="{StaticResource RubikSemibold}"
-                             Foreground="{StaticResource TextPrimaryBrush}"
-                             Margin="0,0,0,5"/>
-                    <Border Background="{StaticResource ThirdBackgroundBrush}" 
-                            CornerRadius="8"
-                            Padding="15,8"
-                            Height="34">
-                        <TextBlock Text="{Binding RentalDate, StringFormat=MM/dd/yyyy}"
-                                 Foreground="{StaticResource TextSecondaryBrush}"
-                                 VerticalAlignment="Center"                                 
-                                 FontFamily="{StaticResource RubikSemibold}"/>
-                    </Border>
-                </DockPanel>
-
                 <!-- Customer Details -->
                 <DockPanel LastChildFill="True" Margin="0,0,0,15">
                     <TextBlock Text="Customer Details"
@@ -122,13 +104,13 @@
                                  Foreground="{StaticResource TextPrimaryBrush}"
                                  Margin="0,0,0,5"/>
 
-                        <!-- Phone Number -->
-                        <TextBlock Text="Phone:"
+                        <!-- Customer ID -->
+                        <TextBlock Text="ID:"
                                  Grid.Row="1" Grid.Column="0"
                                  FontFamily="{StaticResource RubikSemibold}"
                                  Foreground="{StaticResource TextSecondaryBrush}"
                                  Margin="0,0,10,5"/>
-                        <TextBlock Text="{Binding CustomerPhone}"
+                        <TextBlock Text="{Binding CustomerId}"
                                  Grid.Row="1" Grid.Column="1"
                                  FontFamily="{StaticResource RubikSemibold}"
                                  Foreground="{StaticResource TextPrimaryBrush}"
@@ -165,13 +147,13 @@
                                  Foreground="{StaticResource TextPrimaryBrush}"
                                  Margin="0,0,0,5"/>
 
-                        <!-- Daily Rate -->
-                        <TextBlock Text="Rate:"
+                        <!-- Bike ID -->
+                        <TextBlock Text="ID:"
                                  Grid.Row="1" Grid.Column="0"
                                  FontFamily="{StaticResource RubikSemibold}"
                                  Foreground="{StaticResource TextSecondaryBrush}"
                                  Margin="0,0,10,5"/>
-                        <TextBlock Text="{Binding DailyRate, StringFormat=₱{0}/day}"
+                        <TextBlock Text="{Binding BikeId}"
                                  Grid.Row="1" Grid.Column="1"
                                  FontFamily="{StaticResource RubikSemibold}"
                                  Foreground="{StaticResource TextPrimaryBrush}"

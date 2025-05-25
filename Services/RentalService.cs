@@ -53,29 +53,21 @@ public class RentalService : IRentalService
             string direction = sortOption?.IsAscending == true ? "ASC" : "DESC";
 
             //join query to get rental data with customer and bike info
-            string query = @"
-                SELECT SQL_CALC_FOUND_ROWS 
-                    r.*, 
-                    c.name as customer_name, 
-                    c.phone_number,
-                    c.address,
-                    c.government_id_picture,
-                    c.customer_status,
-                    c.registration_date,
-                    b.bike_model,
-                    b.daily_rate
+            string query = $@"
+                SELECT SQL_CALC_FOUND_ROWS r.*, c.name as customer_name, c.phone_number,
+                       c.address, c.government_id_picture, c.customer_status, c.registration_date,
+                       b.bike_model, b.daily_rate,
+                       CASE WHEN ret.return_id IS NOT NULL THEN 'Completed' ELSE 'Active' END as rental_status,
+                       ret.return_date
                 FROM rentals r
                 LEFT JOIN customer c ON r.customer_id = c.customer_id
                 LEFT JOIN bike b ON r.bike_id = b.bike_id
-                WHERE 
-                    LOWER(r.rental_id) LIKE LOWER(@SearchTerm) OR
-                    LOWER(r.customer_id) LIKE LOWER(@SearchTerm) OR
-                    LOWER(c.name) LIKE LOWER(@SearchTerm) OR
-                    LOWER(r.bike_id) LIKE LOWER(@SearchTerm) OR
-                    LOWER(b.bike_model) LIKE LOWER(@SearchTerm) OR
-                    LOWER(r.rental_status) LIKE LOWER(@SearchTerm) OR
-                    DATE_FORMAT(r.rental_date, '%Y-%m-%d') LIKE @SearchTerm
-                ORDER BY " + orderByColumn + " " + direction + @"
+                LEFT JOIN `returns` ret ON r.rental_id = ret.rental_id
+                WHERE (@SearchTerm = '' OR 
+                      r.rental_id LIKE @SearchTerm OR 
+                      c.name LIKE @SearchTerm OR 
+                      b.bike_model LIKE @SearchTerm)
+                ORDER BY {orderByColumn} {direction}
                 LIMIT @Offset, @PageSize";
 
             using (var command = new MySqlCommand(query, connection))
@@ -96,6 +88,7 @@ public class RentalService : IRentalService
                             BikeId = reader.GetString("bike_id"),
                             RentalDate = reader.GetDateTime("rental_date"),
                             RentalStatus = reader.GetString("rental_status"),
+                            ReturnDate = reader.IsDBNull(reader.GetOrdinal("return_date")) ? null : (DateTime?)reader.GetDateTime("return_date"),
                             // initialize navigation properties
                             Customer = new Customer
                             {
@@ -136,10 +129,12 @@ public class RentalService : IRentalService
             string query = @"
                 SELECT r.*, c.name as customer_name, c.phone_number, c.address, 
                        c.government_id_picture, c.customer_status, c.registration_date,
-                       b.bike_model, b.daily_rate
+                       b.bike_model, b.daily_rate,
+                       CASE WHEN ret.return_id IS NOT NULL THEN 'Completed' ELSE 'Active' END as rental_status
                 FROM rentals r
                 LEFT JOIN customer c ON r.customer_id = c.customer_id
                 LEFT JOIN bike b ON r.bike_id = b.bike_id
+                LEFT JOIN `returns` ret ON r.rental_id = ret.rental_id
                 WHERE r.rental_id = @Id";
 
             using (var command = new MySqlCommand(query, connection))
@@ -206,7 +201,7 @@ public class RentalService : IRentalService
                         INSERT INTO rentals 
                         (rental_id, customer_id, bike_id, rental_date, rental_status) 
                         VALUES 
-                        (@RentalId, @CustomerId, @BikeId, @RentalDate, @RentalStatus)";
+                        (@RentalId, @CustomerId, @BikeId, @RentalDate, 'Active')";
 
                     using (var command = new MySqlCommand(query, connection, transaction))
                     {
@@ -214,7 +209,6 @@ public class RentalService : IRentalService
                         command.Parameters.AddWithValue("@CustomerId", rental.CustomerId);
                         command.Parameters.AddWithValue("@BikeId", rental.BikeId);
                         command.Parameters.AddWithValue("@RentalDate", rental.RentalDate);
-                        command.Parameters.AddWithValue("@RentalStatus", rental.RentalStatus);
 
                         await command.ExecuteNonQueryAsync();
                     }
@@ -266,12 +260,29 @@ public class RentalService : IRentalService
             {
                 try
                 {
+                    // first check if rental has a return record
+                    string checkReturnQuery = @"
+                        SELECT COUNT(*) 
+                        FROM `returns` 
+                        WHERE rental_id = @RentalId";
+
+                    using (var checkCommand = new MySqlCommand(checkReturnQuery, connection, transaction))
+                    {
+                        checkCommand.Parameters.AddWithValue("@RentalId", rental.RentalId);
+                        int hasReturn = Convert.ToInt32(await checkCommand.ExecuteScalarAsync());
+                        if (hasReturn > 0)
+                        {
+                            throw new InvalidOperationException("Cannot update rental because it has a return record");
+                        }
+                    }
+
+                    // update the rental
                     string query = @"
                         UPDATE rentals 
                         SET customer_id = @CustomerId,
                             bike_id = @BikeId,
                             rental_date = @RentalDate,
-                            rental_status = @RentalStatus
+                            rental_status = 'Active'
                         WHERE rental_id = @RentalId";
 
                     using (var command = new MySqlCommand(query, connection, transaction))
@@ -280,7 +291,6 @@ public class RentalService : IRentalService
                         command.Parameters.AddWithValue("@CustomerId", rental.CustomerId);
                         command.Parameters.AddWithValue("@BikeId", rental.BikeId);
                         command.Parameters.AddWithValue("@RentalDate", rental.RentalDate);
-                        command.Parameters.AddWithValue("@RentalStatus", rental.RentalStatus);
 
                         int rowsAffected = await command.ExecuteNonQueryAsync();
                         if (rowsAffected == 0)
@@ -312,9 +322,15 @@ public class RentalService : IRentalService
                 try
                 {
                     // first get the rental to check its status and get the bike ID
-                    string getRentalQuery = "SELECT rental_status, bike_id FROM rentals WHERE rental_id = @Id";
+                    string getRentalQuery = @"
+                        SELECT r.rental_status, r.bike_id, r.customer_id,
+                               (SELECT COUNT(*) FROM `returns` WHERE rental_id = r.rental_id) as has_return
+                        FROM rentals r 
+                        WHERE r.rental_id = @Id";
                     string rentalStatus = null;
                     string bikeId = null;
+                    string customerId = null;
+                    int hasReturn = 0;
 
                     using (var command = new MySqlCommand(getRentalQuery, connection, transaction))
                     {
@@ -325,6 +341,8 @@ public class RentalService : IRentalService
                             {
                                 rentalStatus = reader.GetString("rental_status");
                                 bikeId = reader.GetString("bike_id");
+                                customerId = reader.GetString("customer_id");
+                                hasReturn = reader.GetInt32("has_return");
                             }
                         }
                     }
@@ -332,6 +350,12 @@ public class RentalService : IRentalService
                     if (rentalStatus == null)
                     {
                         throw new InvalidOperationException("Rental not found");
+                    }
+
+                    // check if rental has a return record
+                    if (hasReturn > 0)
+                    {
+                        throw new InvalidOperationException("Cannot delete rental because it has a return record");
                     }
 
                     // delete the rental
@@ -390,7 +414,27 @@ public class RentalService : IRentalService
             {
                 try
                 {
-                    // First get all active rentals to update bike and customer statuses
+                    // check if any rentals have return records
+                    string checkReturnsQuery = @"
+                        SELECT COUNT(*) 
+                        FROM rentals r
+                        WHERE EXISTS (
+                            SELECT 1 
+                            FROM `returns` ret 
+                            WHERE ret.customer_id = r.customer_id 
+                            AND ret.bike_id = r.bike_id
+                        )";
+
+                    using (var command = new MySqlCommand(checkReturnsQuery, connection, transaction))
+                    {
+                        int rentalsWithReturns = Convert.ToInt32(await command.ExecuteScalarAsync());
+                        if (rentalsWithReturns > 0)
+                        {
+                            throw new InvalidOperationException("Cannot clear rentals because some have return records");
+                        }
+                    }
+
+                    // first get all active rentals to update bike and customer statuses
                     string getActiveRentalsQuery = @"
                         SELECT DISTINCT r.customer_id, r.bike_id
                         FROM rentals r
@@ -411,7 +455,7 @@ public class RentalService : IRentalService
                         }
                     }
 
-                    // Update all bikes to Available
+                    // update all bikes to Available
                     foreach (var rental in activeRentals)
                     {
                         string updateBikeQuery = @"
@@ -426,7 +470,7 @@ public class RentalService : IRentalService
                         }
                     }
 
-                    // Update all customers to Inactive
+                    // update all customers to Inactive
                     foreach (var rental in activeRentals)
                     {
                         string updateCustomerQuery = @"
@@ -441,7 +485,7 @@ public class RentalService : IRentalService
                         }
                     }
 
-                    // Finally delete all rentals
+                    // finally delete all rentals
                     string deleteQuery = "DELETE FROM rentals";
                     using (var command = new MySqlCommand(deleteQuery, connection, transaction))
                     {

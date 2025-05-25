@@ -172,27 +172,29 @@
                                 
 
                                 <!-- Right Column: Rental Dates -->
-                                <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="-35,15,0,0">
-                                    <TextBlock Text="Payment Status:"
+                                <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right">
+                                    <TextBlock Text="Process Payment"
                                                Foreground="{StaticResource TextSecondaryBrush}"
                                                FontSize="12"
+                                               Margin="-25,13,0,0"
                                                FontFamily="{StaticResource RubikSemibold}"/>
+                                               <TextBlock FontFamily="{StaticResource RubikSemibold}" TextTrimming="None" Margin="-25,0,0,0">
+                                                    <Run Text="Status:" Foreground="{StaticResource TextSecondaryBrush}"/>
+                                                </TextBlock>
                                                 <TextBlock FontFamily="{StaticResource RubikSemibold}" TextTrimming="None">
-                                        <Run Text="Process Payment" Foreground="{StaticResource TextSecondaryBrush}"/>
-                                    </TextBlock>
-                                    <TextBlock FontFamily="{StaticResource RubikSemibold}" TextTrimming="None">
-                                    </TextBlock>
+                                                </TextBlock>
                                     
-                                    <TextBlock Text="Rental Dates"
+                                    <TextBlock Text="Dates"
                                                Foreground="{StaticResource TextSecondaryBrush}"
                                                FontSize="12"
+                                               Margin="-25,0,0,0"
                                                FontFamily="{StaticResource RubikSemibold}"/>
-                                    <TextBlock FontFamily="{StaticResource RubikSemibold}" TextTrimming="None">
-                                        <Run Text="Rented: " Foreground="{StaticResource TextSecondaryBrush}"/>
+                                    <TextBlock FontFamily="{StaticResource RubikSemibold}" TextTrimming="None" Margin="-25,0,0,0">
+                                        <Run Text="Rental: " Foreground="{StaticResource TextSecondaryBrush}"/>
                                         <Run Text="{Binding RentalDate, StringFormat=MM/dd/yyyy}" Foreground="{StaticResource TextPrimaryBrush}"/>
                                     </TextBlock>
-                                    <TextBlock FontFamily="{StaticResource RubikSemibold}" TextTrimming="None">
-                                        <Run Text="Returned: " Foreground="{StaticResource TextSecondaryBrush}"/>
+                                    <TextBlock FontFamily="{StaticResource RubikSemibold}" TextTrimming="None" Margin="-25,0,0,0">
+                                        <Run Text="Return: " Foreground="{StaticResource TextSecondaryBrush}"/>
                                         <Run Text="{Binding ReturnDate, StringFormat=MM/dd/yyyy, TargetNullValue='-'}" Foreground="{StaticResource TextPrimaryBrush}"/>
                                     </TextBlock>
                                 </StackPanel>

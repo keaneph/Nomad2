@@ -7,38 +7,38 @@ namespace Nomad2.Validators
     {
         public static (bool isValid, string errorMessage) ValidateRental(Rental rental)
         {
-            // Check for null
+            // check for null
             if (rental == null)
                 return (false, "Rental cannot be null.");
 
-            // Validate RentalId (following your 9-character pattern)
+            // validate RentalId (following your 9-character pattern)
             if (string.IsNullOrWhiteSpace(rental.RentalId) || rental.RentalId.Length > 9)
                 return (false, "Invalid Rental ID. Must not be empty and no more than 9 characters.");
 
-            // Validate CustomerId
+            // validate CustomerId
             if (string.IsNullOrWhiteSpace(rental.CustomerId))
                 return (false, "Customer ID is required.");
 
-            // Validate BikeId
+            // validate BikeId
             if (string.IsNullOrWhiteSpace(rental.BikeId))
                 return (false, "Bike ID is required.");
 
-            // Validate RentalDate
+            // validate RentalDate
             if (rental.RentalDate == default)
                 return (false, "Rental date is required.");
 
             if (rental.RentalDate > DateTime.Now)
                 return (false, "Rental date cannot be in the future.");
 
-            // Validate RentalStatus
+            // validate RentalStatus
             if (string.IsNullOrWhiteSpace(rental.RentalStatus))
                 return (false, "Rental status is required.");
 
-            // Validate RentalStatus values
+            // validate RentalStatus values
             if (!IsValidRentalStatus(rental.RentalStatus))
                 return (false, "Invalid rental status. Must be 'Active', 'Completed', or 'Overdue'.");
 
-            // If all validations pass
+            // if all validations pass
             return (true, string.Empty);
         }
 

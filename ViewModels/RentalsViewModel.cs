@@ -214,8 +214,7 @@ namespace Nomad2.ViewModels
         {
             "All",
             "Active",
-            "Completed",
-            "Overdue"
+            "Completed"
         };
 
         #endregion
@@ -259,9 +258,7 @@ namespace Nomad2.ViewModels
                 {
                     try
                     {
-                        rental.RentalStatus = "Completed";
-                        await _rentalService.UpdateRentalAsync(rental);
-                        // check if customer has any more active rentals
+                        // Check if customer has any more active rentals
                         var activeRentals = await _rentalService.GetActiveRentalsByCustomerAsync(rental.CustomerId);
                         if (activeRentals.Count == 0)
                         {
@@ -271,13 +268,6 @@ namespace Nomad2.ViewModels
                                 customer.CustomerStatus = "Inactive";
                                 await _customerService.UpdateCustomerAsync(customer);
                             }
-                        }
-                        // Update bike status to Available
-                        var bike = await _bikeService.GetBikeByIdAsync(rental.BikeId);
-                        if (bike != null)
-                        {
-                            bike.BikeStatus = "Available";
-                            await _bikeService.UpdateBikeAsync(bike);
                         }
                         await LoadRentals();
                     }

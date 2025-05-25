@@ -31,7 +31,6 @@ namespace Nomad2.ViewModels
         private Customer _selectedCustomer;
         private Bike _selectedBike;
         private DateTime _rentalDate;
-        private string _rentalStatus;
         private bool _isCustomerSearchVisible;
         private bool _isBikeSearchVisible;
 
@@ -73,11 +72,9 @@ namespace Nomad2.ViewModels
             // initialize collections and properties
             CustomerSearchResults = new ObservableCollection<Customer>();
             BikeSearchResults = new ObservableCollection<Bike>();
-            AvailableStatuses = new ObservableCollection<string> { "Active", "Completed", "Overdue" };
 
             RentalId = rental.RentalId;
             RentalDate = rental.RentalDate;
-            RentalStatus = rental.RentalStatus;
 
             // if editing, set the initial values
             if (_isEdit && rental.Customer != null && rental.Bike != null)
@@ -91,7 +88,7 @@ namespace Nomad2.ViewModels
             else
             {
                 RentalDate = DateTime.Now;
-                RentalStatus = "Active";
+                _rental.RentalStatus = "Active";
             }
         }
 
@@ -200,18 +197,6 @@ namespace Nomad2.ViewModels
             }
         }
 
-        // current status of rental
-        public string RentalStatus
-        {
-            get => _rentalStatus;
-            set
-            {
-                _rentalStatus = value;
-                OnPropertyChanged();
-                (SaveCommand as RelayCommand)?.RaiseCanExecuteChanged();
-            }
-        }
-
         // controls customer search visibility
         public bool IsCustomerSearchVisible
         {
@@ -237,7 +222,6 @@ namespace Nomad2.ViewModels
         // collections for search results and status options
         public ObservableCollection<Customer> CustomerSearchResults { get; }
         public ObservableCollection<Bike> BikeSearchResults { get; }
-        public ObservableCollection<string> AvailableStatuses { get; }
 
         #endregion
 
@@ -266,7 +250,9 @@ namespace Nomad2.ViewModels
             {
                 var (customers, _) = await _customerService.GetCustomersAsync(1, CustomerSearch, null);
                 CustomerSearchResults.Clear();
-                foreach (var customer in customers)
+                foreach (var customer in customers.Where(c =>
+                    c.CustomerStatus.Equals("Active", StringComparison.OrdinalIgnoreCase) ||
+                    c.CustomerStatus.Equals("Inactive", StringComparison.OrdinalIgnoreCase)))
                 {
                     CustomerSearchResults.Add(customer);
                 }
@@ -292,7 +278,8 @@ namespace Nomad2.ViewModels
             {
                 var (bikes, _) = await _bikeService.GetBikesAsync(1, BikeSearch, null);
                 BikeSearchResults.Clear();
-                foreach (var bike in bikes)
+                foreach (var bike in bikes.Where(b =>
+                    b.BikeStatus.Equals("Available", StringComparison.OrdinalIgnoreCase)))
                 {
                     BikeSearchResults.Add(bike);
                 }
@@ -309,7 +296,6 @@ namespace Nomad2.ViewModels
         {
             // Update the rental object with current values
             _rental.RentalDate = RentalDate;
-            _rental.RentalStatus = RentalStatus;
 
             var (isValid, errorMessage) = RentalValidator.ValidateRental(_rental);
             if (!isValid)
@@ -328,7 +314,6 @@ namespace Nomad2.ViewModels
             try
             {
                 _rental.RentalDate = RentalDate;
-                _rental.RentalStatus = RentalStatus;
 
                 // validate customer eligibility for new rentals
                 if (!_isEdit && !await _rentalService.IsCustomerEligibleForRental(_rental.CustomerId))
@@ -372,6 +357,29 @@ namespace Nomad2.ViewModels
                         );
                         return;
                     }
+                }
+
+                // Defensive: Ensure new rentals always get a new RentalId
+                if (!_isEdit && string.IsNullOrWhiteSpace(_rental.RentalId))
+                {
+                    var lastId = await _rentalService.GetLastRentalIdAsync();
+                    if (string.IsNullOrWhiteSpace(lastId) || lastId == "0000-0000")
+                    {
+                        _rental.RentalId = "0000-0001";
+                    }
+                    else
+                    {
+                        string[] parts = lastId.Split('-');
+                        if (parts.Length == 2 && int.TryParse(parts[1], out int number))
+                        {
+                            _rental.RentalId = $"{parts[0]}-{(number + 1):D4}";
+                        }
+                        else
+                        {
+                            _rental.RentalId = "0000-0001";
+                        }
+                    }
+                    RentalId = _rental.RentalId;
                 }
 
                 // 1. update the rental in the database first

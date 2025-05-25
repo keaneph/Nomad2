@@ -141,6 +141,7 @@ namespace Nomad2.Services
                     string createReturnTable = @"
                         CREATE TABLE IF NOT EXISTS returns (
                             return_id VARCHAR(9) PRIMARY KEY NOT NULL,
+                            rental_id VARCHAR(9) NOT NULL,
                             customer_id VARCHAR(9) NOT NULL,
                             bike_id VARCHAR(9) NOT NULL,
                             return_date DATE NOT NULL,
@@ -149,6 +150,9 @@ namespace Nomad2.Services
                                 ON UPDATE CASCADE,
                             FOREIGN KEY (bike_id) REFERENCES bike(bike_id) 
                                 ON DELETE RESTRICT 
+                                ON UPDATE CASCADE,
+                            FOREIGN KEY (rental_id) REFERENCES rentals(rental_id)
+                                ON DELETE RESTRICT
                                 ON UPDATE CASCADE
                         )";
 

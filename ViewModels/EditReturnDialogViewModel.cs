@@ -7,42 +7,54 @@ using System.Threading.Tasks;
 
 namespace Nomad2.ViewModels
 {
-    public class ReturnDialogViewModel : BaseViewModel
+    public class EditReturnDialogViewModel : BaseViewModel
     {
-        private readonly Rental _rental;
+        private readonly Return _return;
         private readonly Window _dialog;
         private readonly IReturnService _returnService;
-        private readonly IRentalService _rentalService;
         private readonly ICustomerService _customerService;
         private readonly IBikeService _bikeService;
+        private readonly IRentalService _rentalService;
         private string _errorMessage;
         private DateTime? _returnDate;
+        private string _customerName;
+        private string _bikeModel;
+        private DateTime _rentalDate;
 
-        public ReturnDialogViewModel(Rental rental, Window dialog)
+        public EditReturnDialogViewModel(Return returnItem, Window dialog)
         {
-            _rental = rental ?? throw new ArgumentNullException(nameof(rental));
+            _return = returnItem ?? throw new ArgumentNullException(nameof(returnItem));
             _dialog = dialog ?? throw new ArgumentNullException(nameof(dialog));
             _returnService = new ReturnService();
-            _rentalService = new RentalService();
             _customerService = new CustomerService();
             _bikeService = new BikeService();
+            _rentalService = new RentalService();
 
             // initialize commands
             SaveCommand = new RelayCommand(ExecuteSave, CanExecuteSave);
             CancelCommand = new RelayCommand(ExecuteCancel);
 
-            // Set default return date to current date
-            ReturnDate = DateTime.Now;
+            // load initial data
+            _ = LoadInitialData();
         }
 
-        public string DialogTitle => "Return Bike";
+        public string DialogTitle => "Edit Return";
 
-        public string RentalId => _rental.RentalId;
-        public DateTime RentalDate => _rental.RentalDate;
-        public string CustomerName => _rental.Customer?.Name;
-        public string CustomerPhone => _rental.Customer?.PhoneNumber;
-        public string BikeModel => _rental.Bike?.BikeModel;
-        public int DailyRate => _rental.Bike?.DailyRate ?? 0;
+        public string ReturnId => _return.ReturnId;
+        public string CustomerId => _return.CustomerId;
+        public string BikeId => _return.BikeId;
+
+        public string CustomerName
+        {
+            get => _customerName;
+            set { _customerName = value; OnPropertyChanged(); }
+        }
+
+        public string BikeModel
+        {
+            get => _bikeModel;
+            set { _bikeModel = value; OnPropertyChanged(); }
+        }
 
         public DateTime? ReturnDate
         {
@@ -68,6 +80,40 @@ namespace Nomad2.ViewModels
         public ICommand SaveCommand { get; }
         public ICommand CancelCommand { get; }
 
+        private async Task LoadInitialData()
+        {
+            try
+            {
+                // load customer name
+                var customer = await _customerService.GetCustomerByIdAsync(_return.CustomerId);
+                if (customer != null)
+                {
+                    CustomerName = customer.Name;
+                }
+
+                // load bike model
+                var bike = await _bikeService.GetBikeByIdAsync(_return.BikeId);
+                if (bike != null)
+                {
+                    BikeModel = bike.BikeModel;
+                }
+
+                // load rental date
+                var rental = await _rentalService.GetRentalByIdAsync(_return.RentalId);
+                if (rental != null)
+                {
+                    _rentalDate = rental.RentalDate;
+                }
+
+                // set return date
+                ReturnDate = _return.ReturnDate;
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Error loading data: {ex.Message}";
+            }
+        }
+
         private bool CanExecuteSave()
         {
             if (!ReturnDate.HasValue)
@@ -76,7 +122,7 @@ namespace Nomad2.ViewModels
                 return false;
             }
 
-            if (ReturnDate.Value < RentalDate)
+            if (ReturnDate.Value < _rentalDate)
             {
                 ErrorMessage = "Return date cannot be before rental date";
                 return false;
@@ -92,30 +138,9 @@ namespace Nomad2.ViewModels
             {
                 try
                 {
-                    // create return record
-                    var returnRecord = new Return
-                    {
-                        ReturnId = string.Empty, // let the service generate the ID
-                        RentalId = _rental.RentalId,
-                        CustomerId = _rental.CustomerId,
-                        BikeId = _rental.BikeId,
-                        ReturnDate = ReturnDate.Value
-                    };
-
-                    // add return record
-                    await _returnService.AddReturnAsync(returnRecord);
-
-                    // check if customer has any more active rentals
-                    var activeRentals = await _rentalService.GetActiveRentalsByCustomerAsync(_rental.CustomerId);
-                    if (activeRentals.Count == 0)
-                    {
-                        var customer = await _customerService.GetCustomerByIdAsync(_rental.CustomerId);
-                        if (customer != null)
-                        {
-                            customer.CustomerStatus = "Inactive";
-                            await _customerService.UpdateCustomerAsync(customer);
-                        }
-                    }
+                    // update return record
+                    _return.ReturnDate = ReturnDate.Value;
+                    await _returnService.UpdateReturnAsync(_return);
 
                     _dialog.DialogResult = true;
                     _dialog.Close();
