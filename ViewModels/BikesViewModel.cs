@@ -466,5 +466,26 @@ namespace Nomad2.ViewModels
         {
             SearchText = searchTerm;
         }
+
+        public void SelectBike(Bike bike)
+        {
+            if (bike != null)
+            {
+                // find the bike in the current collection
+                var existingBike = Bikes.FirstOrDefault(b => b.BikeId == bike.BikeId);
+                if (existingBike != null)
+                {
+                    SelectedBike = existingBike;
+                }
+                else
+                {
+                    // if bike is not in current view, search for it
+                    SearchText = bike.BikeId;
+                    // the LoadBikes() will be called automatically due to SearchText property setter
+                    // after loading, we'll select the bike
+                    SelectedBike = bike;
+                }
+            }
+        }
     }
 }

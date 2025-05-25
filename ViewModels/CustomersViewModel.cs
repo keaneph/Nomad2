@@ -512,5 +512,25 @@ namespace Nomad2.ViewModels
             // LoadCustomers() will be called automatically due to the SearchText property setter
         }
 
+        public void SelectCustomer(Customer customer)
+        {
+            if (customer != null)
+            {
+                // find the customer in the current collection
+                var existingCustomer = Customers.FirstOrDefault(c => c.CustomerId == customer.CustomerId);
+                if (existingCustomer != null)
+                {
+                    SelectedCustomer = existingCustomer;
+                }
+                else
+                {
+                    // if customer is not in current view, search for them
+                    SearchText = customer.CustomerId;
+                    // the LoadCustomers() will be called automatically due to SearchText property setter
+                    // after loading, we'll select the customer
+                    SelectedCustomer = customer;
+                }
+            }
+        }
     }
 }

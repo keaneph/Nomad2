@@ -64,6 +64,9 @@ namespace Nomad2.ViewModels
             PreviousPageCommand = new RelayCommand(ExecutePreviousPage, CanExecutePreviousPage);
             ToggleSortDirectionCommand = new RelayCommand(() => IsAscending = !IsAscending);
             ClearCommand = new RelayCommand(() => ExecuteClear());
+            NavigateToCustomerCommand = new RelayCommand<Customer>(ExecuteNavigateToCustomer);
+            NavigateToBikeCommand = new RelayCommand<Bike>(ExecuteNavigateToBike);
+            NavigateToReturnCommand = new RelayCommand<Rental>(ExecuteNavigateToReturn);
 
             _ = LoadRentals();
         }
@@ -191,6 +194,9 @@ namespace Nomad2.ViewModels
         public ICommand PreviousPageCommand { get; }
         public ICommand ToggleSortDirectionCommand { get; }
         public ICommand ClearCommand { get; }
+        public ICommand NavigateToCustomerCommand { get; }
+        public ICommand NavigateToBikeCommand { get; }
+        public ICommand NavigateToReturnCommand { get; }
 
         #endregion
 
@@ -220,6 +226,54 @@ namespace Nomad2.ViewModels
         #endregion
 
         #region Command Methods
+
+        private void ExecuteNavigateToCustomer(Customer customer)
+        {
+            if (customer != null)
+            {
+                // navigate to CustomersView and select the customer
+                var mainViewModel = Application.Current.MainWindow.DataContext as MainViewModel;
+                if (mainViewModel != null)
+                {
+                    mainViewModel.NavigateCommand.Execute("Customers");
+                    // the CustomersViewModel will handle selecting the customer
+                    var customersViewModel = mainViewModel.CurrentView as CustomersViewModel;
+                    customersViewModel?.SelectCustomer(customer);
+                }
+            }
+        }
+
+        private void ExecuteNavigateToBike(Bike bike)
+        {
+            if (bike != null)
+            {
+                // navigate to BikeView and select the bike
+                var mainViewModel = Application.Current.MainWindow.DataContext as MainViewModel;
+                if (mainViewModel != null)
+                {
+                    mainViewModel.NavigateCommand.Execute("Bikes");
+                    // the BikesViewModel will handle selecting the bike
+                    var bikesViewModel = mainViewModel.CurrentView as BikesViewModel;
+                    bikesViewModel?.SelectBike(bike);
+                }
+            }
+        }
+
+        private void ExecuteNavigateToReturn(Rental rental)
+        {
+            if (rental != null)
+            {
+                // navigate to ReturnView and select the rental
+                var mainViewModel = Application.Current.MainWindow.DataContext as MainViewModel;
+                if (mainViewModel != null)
+                {
+                    mainViewModel.NavigateCommand.Execute("Returns");
+                    // the ReturnsViewModel will handle selecting the rental
+                    var returnsViewModel = mainViewModel.CurrentView as ReturnsViewModel;
+                    returnsViewModel?.SelectRental(rental);
+                }
+            }
+        }
 
         // creates new rental with validation
         private async void ExecuteCreateRental()

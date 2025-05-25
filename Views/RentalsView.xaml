@@ -146,9 +146,25 @@
                                                Foreground="{StaticResource TextSecondaryBrush}"
                                                FontSize="12"
                                                FontFamily="{StaticResource RubikSemibold}"/>
-                                    <TextBlock Text="{Binding Customer.Name}"
-                                               Foreground="{StaticResource TextPrimaryBrush}"
-                                               FontFamily="{StaticResource RubikSemibold}"/>
+                                    <TextBlock FontFamily="{StaticResource RubikSemibold}">
+                                        <Hyperlink Command="{Binding DataContext.NavigateToCustomerCommand, 
+                                                  RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                  CommandParameter="{Binding Customer}"
+                                                  Foreground="{StaticResource TextPrimaryBrush}"
+                                                  TextDecorations="None">
+                                            <TextBlock Text="{Binding Customer.Name}"/>
+                                            <Hyperlink.Style>
+                                                <Style TargetType="Hyperlink">
+                                                    <Setter Property="Cursor" Value="Hand"/>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Foreground" Value="{StaticResource PurpleBrush}"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Hyperlink.Style>
+                                        </Hyperlink>
+                                    </TextBlock>
                                     <TextBlock FontFamily="{StaticResource RubikSemibold}">
                                         <Run Text="Phone: " Foreground="{StaticResource TextSecondaryBrush}"/>
                                         <Run Text="{Binding Customer.PhoneNumber}" Foreground="{StaticResource TextSecondaryBrush}"/>
@@ -159,9 +175,25 @@
                                                Foreground="{StaticResource TextSecondaryBrush}"
                                                FontSize="12"
                                                FontFamily="{StaticResource RubikSemibold}"/>        
-                                    <TextBlock Text="{Binding Bike.BikeModel}"
-                                               Foreground="{StaticResource TextPrimaryBrush}"
-                                               FontFamily="{StaticResource RubikSemibold}"/>
+                                    <TextBlock FontFamily="{StaticResource RubikSemibold}">
+                                        <Hyperlink Command="{Binding DataContext.NavigateToBikeCommand, 
+                                                  RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                  CommandParameter="{Binding Bike}"
+                                                  Foreground="{StaticResource TextPrimaryBrush}"
+                                                  TextDecorations="None">
+                                            <TextBlock Text="{Binding Bike.BikeModel}"/>
+                                            <Hyperlink.Style>
+                                                <Style TargetType="Hyperlink">
+                                                    <Setter Property="Cursor" Value="Hand"/>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Foreground" Value="{StaticResource PurpleBrush}"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Hyperlink.Style>
+                                        </Hyperlink>
+                                    </TextBlock>
                                     <TextBlock FontFamily="{StaticResource RubikSemibold}">
                                         <Run Text="Rate: ₱" Foreground="{StaticResource TextSecondaryBrush}"/>
                                         <Run Text="{Binding Bike.DailyRate}" Foreground="{StaticResource TextSecondaryBrush}"/>
@@ -195,7 +227,25 @@
                                     </TextBlock>
                                     <TextBlock FontFamily="{StaticResource RubikSemibold}" TextTrimming="None" Margin="-25,0,0,0">
                                         <Run Text="Return: " Foreground="{StaticResource TextSecondaryBrush}"/>
-                                        <Run Text="{Binding ReturnDate, StringFormat=MM/dd/yyyy, TargetNullValue='-'}" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                        <TextBlock>
+                                            <Hyperlink Command="{Binding DataContext.NavigateToReturnCommand, 
+                                                      RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                      CommandParameter="{Binding}"
+                                                      Foreground="{StaticResource TextPrimaryBrush}"
+                                                      TextDecorations="None">
+                                                <TextBlock Text="{Binding ReturnDate, StringFormat=MM/dd/yyyy, TargetNullValue='-'}"/>
+                                                <Hyperlink.Style>
+                                                    <Style TargetType="Hyperlink">
+                                                        <Setter Property="Cursor" Value="Hand"/>
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Foreground" Value="{StaticResource PurpleBrush}"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Hyperlink.Style>
+                                            </Hyperlink>
+                                        </TextBlock>
                                     </TextBlock>
                                 </StackPanel>
 
@@ -228,7 +278,7 @@
                                             <Button.Tag>
                                                 <Viewbox Width="16" 
                                                          Height="16">
-                                                        <Path Data="{StaticResource EditIcon}"
+                                                    <Path Data="{StaticResource EditIcon}"
                                                         Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, 
                                                         Path=Foreground}"
                                                         Style="{StaticResource PathStyle}"/>

@@ -240,5 +240,26 @@ namespace Nomad2.ViewModels
         {
             SearchText = searchTerm;
         }
+
+        public void SelectRental(Rental rental)
+        {
+            if (rental != null)
+            {
+                // find the return record for this rental
+                var returnRecord = Returns.FirstOrDefault(r => r.RentalId == rental.RentalId);
+                if (returnRecord != null)
+                {
+                    SelectedReturn = returnRecord;
+                }
+                else
+                {
+                    // if return record is not in current view, search for it
+                    SearchText = rental.RentalId;
+                    // the LoadReturns() will be called automatically due to SearchText property setter
+                    // after loading, we'll select the return record
+                    SelectedReturn = returnRecord;
+                }
+            }
+        }
     }
 }
