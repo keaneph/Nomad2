@@ -37,8 +37,13 @@
                         </Viewbox>
                     </Button.Tag>
                 </Button>
-            </StackPanel>
 
+                <ComboBox Width="120"
+                          Margin="8,0,0,0"
+                          Style="{StaticResource BaseComboboxStyle}"
+                          ItemsSource="{Binding StatusFilters}"
+                          SelectedItem="{Binding SelectedStatusFilter}"/>
+            </StackPanel>
 
             <Button Grid.Column="2"
                     Command="{Binding AddPaymentCommand}"

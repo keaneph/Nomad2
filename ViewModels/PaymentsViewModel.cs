@@ -26,6 +26,32 @@ namespace Nomad2.ViewModels
         private bool _isAscending = true;
         private int _pageSize = 10;
 
+        #region Filtering
+
+        // current status filter
+        private string _selectedStatusFilter = "All";
+        public string SelectedStatusFilter
+        {
+            get => _selectedStatusFilter;
+            set
+            {
+                _selectedStatusFilter = value;
+                OnPropertyChanged();
+                LoadPayments();
+            }
+        }
+
+        // available status filter options
+        public ObservableCollection<string> StatusFilters { get; } = new ObservableCollection<string>
+        {
+            "All",
+            "Paid",
+            "Pending",
+            "Unpaid"
+        };
+
+        #endregion
+
         public PaymentsViewModel()
         {
             Title = "Payments";
@@ -155,7 +181,20 @@ namespace Nomad2.ViewModels
         {
             try
             {
+                var sortOption = new SortOption<PaymentSortOption>
+                {
+                    Option = CurrentSortOption.Option,
+                    IsAscending = IsAscending
+                };
+
                 var (payments, totalCount) = await _paymentService.GetPaymentsAsync(_currentPage, SearchText ?? "", CurrentSortOption);
+
+                // Apply status filter if not "All"
+                if (SelectedStatusFilter != "All")
+                {
+                    payments = payments.Where(p => p.PaymentStatus == SelectedStatusFilter).ToList();
+                }
+
                 Payments = new ObservableCollection<Payment>(payments);
                 _totalPages = (int)Math.Ceiling(totalCount / (double)_paymentService.PageSize);
                 CurrentPageDisplay = $"Page {_currentPage} of {_totalPages}";
