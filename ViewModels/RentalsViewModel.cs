@@ -67,6 +67,8 @@ namespace Nomad2.ViewModels
             NavigateToCustomerCommand = new RelayCommand<Customer>(ExecuteNavigateToCustomer);
             NavigateToBikeCommand = new RelayCommand<Bike>(ExecuteNavigateToBike);
             NavigateToReturnCommand = new RelayCommand<Rental>(ExecuteNavigateToReturn);
+            ProcessPaymentCommand = new RelayCommand<Rental>(ExecuteProcessPayment);
+            NavigateToPaymentsCommand = new RelayCommand<Rental>(ExecuteNavigateToPayments);
 
             _ = LoadRentals();
         }
@@ -197,6 +199,8 @@ namespace Nomad2.ViewModels
         public ICommand NavigateToCustomerCommand { get; }
         public ICommand NavigateToBikeCommand { get; }
         public ICommand NavigateToReturnCommand { get; }
+        public ICommand ProcessPaymentCommand { get; }
+        public ICommand NavigateToPaymentsCommand { get; }
 
         #endregion
 
@@ -424,6 +428,34 @@ namespace Nomad2.ViewModels
             {
                 _currentPage--;
                 LoadRentals();
+            }
+        }
+
+        private async void ExecuteProcessPayment(Rental rental)
+        {
+            if (rental != null)
+            {
+                var dialog = new PaymentDialog(rental, false); // partial payment mode
+                dialog.Owner = Application.Current.MainWindow;
+                if (dialog.ShowDialog() == true)
+                {
+                    await LoadRentals();
+                }
+            }
+        }
+
+        private void ExecuteNavigateToPayments(Rental rental)
+        {
+            if (rental != null)
+            {
+                var mainViewModel = Application.Current.MainWindow.DataContext as MainViewModel;
+                if (mainViewModel != null)
+                {
+                    mainViewModel.NavigateCommand.Execute("Payments");
+                    // Select the payment for this rental in PaymentsViewModel
+                    var paymentsViewModel = mainViewModel.CurrentView as PaymentsViewModel;
+                    paymentsViewModel?.SelectPaymentByRentalId(rental.RentalId);
+                }
             }
         }
 

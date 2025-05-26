@@ -1,9 +1,11 @@
 using Nomad2.Models;
 using Nomad2.Services;
+using Nomad2.Views;
 using System;
 using System.Windows;
 using System.Windows.Input;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Nomad2.ViewModels
 {
@@ -15,6 +17,7 @@ namespace Nomad2.ViewModels
         private readonly IRentalService _rentalService;
         private readonly ICustomerService _customerService;
         private readonly IBikeService _bikeService;
+        private readonly IPaymentService _paymentService;
         private string _errorMessage;
         private DateTime? _returnDate;
 
@@ -26,6 +29,7 @@ namespace Nomad2.ViewModels
             _rentalService = new RentalService();
             _customerService = new CustomerService();
             _bikeService = new BikeService();
+            _paymentService = new PaymentService();
 
             // initialize commands
             SaveCommand = new RelayCommand(ExecuteSave, CanExecuteSave);
@@ -125,29 +129,144 @@ namespace Nomad2.ViewModels
             {
                 try
                 {
-                    // create return record
+                    // Check if return record already exists for this rental
+                    var existingReturns = await _returnService.GetAllReturnsAsync();
+                    var existingReturn = existingReturns.FirstOrDefault(r => r.RentalId == _rental.RentalId);
+                    if (existingReturn != null)
+                    {
+                        // If return record exists, just close the dialog
+                        _dialog.DialogResult = true;
+                        _dialog.Close();
+                        return;
+                    }
+
+                    // Calculate total amount due using the return date
+                    int daysRented = (ReturnDate.Value - _rental.RentalDate).Days + 1; // Include both start and end day
+                    int totalAmount = (_rental.Bike?.DailyRate ?? 0) * daysRented;
+                    int totalPaid = await _paymentService.GetTotalPaidForRentalAsync(_rental.RentalId);
+                    int remainingBalance = totalAmount - totalPaid;
+
+                    if (remainingBalance > 0)
+                    {
+                        // Show PaymentDialog for manual payment
+                        _rental.ReturnDate = ReturnDate.Value;
+                        var paymentDialog = new PaymentDialog(_rental, isCompletionPayment: true);
+                        paymentDialog.Owner = _dialog;
+                        if (paymentDialog.ShowDialog() != true)
+                        {
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        // Auto-create completion payment record
+                        string lastPaymentId = await _paymentService.GetLastPaymentIdAsync();
+                        string completionPaymentId;
+                        if (string.IsNullOrWhiteSpace(lastPaymentId) || lastPaymentId == "0000-0000")
+                        {
+                            completionPaymentId = "0000-0001";
+                        }
+                        else
+                        {
+                            string[] parts = lastPaymentId.Split('-');
+                            if (parts.Length == 2 && int.TryParse(parts[1], out int number))
+                            {
+                                completionPaymentId = $"{parts[0]}-{(number + 1):D4}";
+                            }
+                            else
+                            {
+                                completionPaymentId = "0000-0001";
+                            }
+                        }
+
+                        var completionPayment = new Payment
+                        {
+                            PaymentId = completionPaymentId,
+                            RentalId = _rental.RentalId,
+                            CustomerId = _rental.CustomerId,
+                            BikeId = _rental.BikeId,
+                            AmountToPay = totalAmount,
+                            AmountPaid = totalAmount,
+                            PaymentDate = DateTime.Now,
+                            PaymentStatus = "Paid"
+                        };
+
+                        await _paymentService.AddPaymentAsync(completionPayment);
+
+                        // If there's an excess payment, create refund record
+                        if (totalPaid > totalAmount)
+                        {
+                            int refundAmount = totalPaid - totalAmount;
+                            string refundPaymentId;
+                            lastPaymentId = await _paymentService.GetLastPaymentIdAsync();
+                            if (string.IsNullOrWhiteSpace(lastPaymentId) || lastPaymentId == "0000-0000")
+                            {
+                                refundPaymentId = "0000-0001";
+                            }
+                            else
+                            {
+                                string[] parts = lastPaymentId.Split('-');
+                                if (parts.Length == 2 && int.TryParse(parts[1], out int number))
+                                {
+                                    refundPaymentId = $"{parts[0]}-{(number + 1):D4}";
+                                }
+                                else
+                                {
+                                    refundPaymentId = "0000-0001";
+                                }
+                            }
+
+                            var refundPayment = new Payment
+                            {
+                                PaymentId = refundPaymentId,
+                                RentalId = _rental.RentalId,
+                                CustomerId = _rental.CustomerId,
+                                BikeId = _rental.BikeId,
+                                AmountToPay = null,
+                                AmountPaid = -refundAmount,
+                                PaymentDate = DateTime.Now,
+                                PaymentStatus = "Refunded"
+                            };
+
+                            await _paymentService.AddPaymentAsync(refundPayment);
+                        }
+                    }
+
+                    // Create and save return record first
                     var returnRecord = new Return
                     {
-                        ReturnId = ReturnId, // use the pre-generated ID
+                        ReturnId = ReturnId,
                         RentalId = _rental.RentalId,
                         CustomerId = _rental.CustomerId,
                         BikeId = _rental.BikeId,
                         ReturnDate = ReturnDate.Value
                     };
 
-                    // add return record
-                    await _returnService.AddReturnAsync(returnRecord);
+                    // Update rental status to completed
+                    _rental.RentalStatus = "Completed";
+                    _rental.ReturnDate = ReturnDate.Value;
 
-                    // check if customer has any more active rentals
-                    var activeRentals = await _rentalService.GetActiveRentalsByCustomerAsync(_rental.CustomerId);
-                    if (activeRentals.Count == 0)
+                    // Update bike status to available
+                    var bike = await _bikeService.GetBikeByIdAsync(_rental.BikeId);
+                    if (bike != null)
                     {
-                        var customer = await _customerService.GetCustomerByIdAsync(_rental.CustomerId);
-                        if (customer != null)
-                        {
-                            customer.CustomerStatus = "Inactive";
-                            await _customerService.UpdateCustomerAsync(customer);
-                        }
+                        bike.BikeStatus = "Available";
+                    }
+
+                    // Check if customer has any more active rentals
+                    var activeRentals = await _rentalService.GetActiveRentalsByCustomerAsync(_rental.CustomerId);
+                    var customer = await _customerService.GetCustomerByIdAsync(_rental.CustomerId);
+                    if (activeRentals.Count == 0 && customer != null)
+                    {
+                        customer.CustomerStatus = "Inactive";
+                    }
+
+                    // Save all changes in a single transaction
+                    var success = await _returnService.AddReturnWithStatusUpdatesAsync(returnRecord, _rental, bike, customer);
+                    if (!success)
+                    {
+                        ErrorMessage = "Failed to save return record";
+                        return;
                     }
 
                     _dialog.DialogResult = true;

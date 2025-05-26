@@ -1,0 +1,251 @@
+<Window x:Class="Nomad2.Views.EditPaymentDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Nomad2.Views"
+        mc:Ignorable="d"
+        Title="{Binding DialogTitle}"
+        Height="680" 
+        Width="560"
+        WindowStartupLocation="CenterOwner"
+        Background="{StaticResource PrimaryBackgroundBrush}"
+        ResizeMode="NoResize">
+
+    <Border>
+        <Grid Margin="35,25">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <StackPanel>
+                <TextBlock Text="{Binding DialogTitle}"                    
+                          Foreground="{StaticResource TextPrimaryBrush}"
+                          FontSize="24"
+                          FontFamily="{StaticResource RubikBold}"
+                          Margin="0,0,0,5"/>
+                <TextBlock Text="All fields marked with * are required"
+                          Foreground="{StaticResource TextSecondaryBrush}"
+                          FontSize="12"
+                          FontFamily="{StaticResource RubikSemibold}"
+                          Margin="0,0,0,15"/>
+                <Border Height="1" 
+                        Background="{StaticResource PrimaryBackgroundBrush}" 
+                        Margin="0,0,0,15"/>
+            </StackPanel>
+
+            <!-- Form Fields -->
+            <StackPanel Grid.Row="1" Margin="0,0,0,15">
+                <!-- Payment ID -->
+                <DockPanel LastChildFill="True" Margin="0,0,0,15">
+                    <TextBlock Text="Payment ID"
+                             DockPanel.Dock="Top"
+                             FontFamily="{StaticResource RubikSemibold}"
+                             Foreground="{StaticResource TextPrimaryBrush}"
+                             Margin="0,0,0,5"/>
+                    <Border Background="{StaticResource ThirdBackgroundBrush}" 
+                            CornerRadius="8"
+                            Padding="15,8"
+                            Height="34">
+                        <TextBlock Text="{Binding PaymentId}"
+                                 Foreground="{StaticResource TextSecondaryBrush}"
+                                 VerticalAlignment="Center"                                 
+                                 FontFamily="{StaticResource RubikSemibold}"/>
+                    </Border>
+                </DockPanel>
+
+                <!-- Rental Details -->
+                <DockPanel LastChildFill="True" Margin="0,0,0,15">
+                    <TextBlock Text="Rental Details"
+                             DockPanel.Dock="Top"
+                             FontFamily="{StaticResource RubikSemibold}"
+                             Foreground="{StaticResource TextPrimaryBrush}"
+                             Margin="0,0,0,5"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Customer Name -->
+                        <TextBlock Text="Customer:"
+                                 Grid.Row="0" Grid.Column="0"
+                                 FontFamily="{StaticResource RubikSemibold}"
+                                 Foreground="{StaticResource TextSecondaryBrush}"
+                                 Margin="0,0,10,5"/>
+                        <TextBlock Text="{Binding CustomerName}"
+                                 Grid.Row="0" Grid.Column="1"
+                                 FontFamily="{StaticResource RubikSemibold}"
+                                 Foreground="{StaticResource TextPrimaryBrush}"
+                                 Margin="0,0,0,5"/>
+
+                        <!-- Bike Model -->
+                        <TextBlock Text="Bike:"
+                                 Grid.Row="1" Grid.Column="0"
+                                 FontFamily="{StaticResource RubikSemibold}"
+                                 Foreground="{StaticResource TextSecondaryBrush}"
+                                 Margin="0,0,10,5"/>
+                        <TextBlock Text="{Binding BikeModel}"
+                                 Grid.Row="1" Grid.Column="1"
+                                 FontFamily="{StaticResource RubikSemibold}"
+                                 Foreground="{StaticResource TextPrimaryBrush}"
+                                 Margin="0,0,0,5"/>
+
+                        <!-- Rental Dates -->
+                        <TextBlock Text="Dates:"
+                                 Grid.Row="2" Grid.Column="0"
+                                 FontFamily="{StaticResource RubikSemibold}"
+                                 Foreground="{StaticResource TextSecondaryBrush}"
+                                 Margin="0,0,10,5"/>
+                        <TextBlock Text="{Binding RentalDates}"
+                                 Grid.Row="2" Grid.Column="1"
+                                 FontFamily="{StaticResource RubikSemibold}"
+                                 Foreground="{StaticResource TextPrimaryBrush}"
+                                 Margin="0,0,0,5"/>
+                    </Grid>
+                </DockPanel>
+
+                <!-- Payment Details -->
+                <DockPanel LastChildFill="True" Margin="0,0,0,15">
+                    <TextBlock Text="Payment Details"
+                             DockPanel.Dock="Top"
+                             FontFamily="{StaticResource RubikSemibold}"
+                             Foreground="{StaticResource TextPrimaryBrush}"
+                             Margin="0,0,0,5"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Total Days -->
+                        <TextBlock Text="Total Days:"
+                                 Grid.Row="0" Grid.Column="0"
+                                 FontFamily="{StaticResource RubikSemibold}"
+                                 Foreground="{StaticResource TextSecondaryBrush}"
+                                 Margin="0,0,10,5"/>
+                        <TextBlock Text="{Binding TotalDays}"
+                                 Grid.Row="0" Grid.Column="1"
+                                 FontFamily="{StaticResource RubikSemibold}"
+                                 Foreground="{StaticResource TextPrimaryBrush}"
+                                 Margin="0,0,0,5"/>
+
+                        <!-- Daily Rate -->
+                        <TextBlock Text="Daily Rate:"
+                                 Grid.Row="1" Grid.Column="0"
+                                 FontFamily="{StaticResource RubikSemibold}"
+                                 Foreground="{StaticResource TextSecondaryBrush}"
+                                 Margin="0,0,10,5"/>
+                        <TextBlock Text="{Binding DailyRate, StringFormat='{}{0:C}'}"
+                                 Grid.Row="1" Grid.Column="1"
+                                 FontFamily="{StaticResource RubikSemibold}"
+                                 Foreground="{StaticResource TextPrimaryBrush}"
+                                 Margin="0,0,0,5"/>
+
+                        <!-- Total Amount -->
+                        <TextBlock Text="Total Amount:"
+                                 Grid.Row="2" Grid.Column="0"
+                                 FontFamily="{StaticResource RubikSemibold}"
+                                 Foreground="{StaticResource TextSecondaryBrush}"
+                                 Margin="0,0,10,5"/>
+                        <TextBlock Text="{Binding TotalAmount, StringFormat='{}{0:C}'}"
+                                 Grid.Row="2" Grid.Column="1"
+                                 FontFamily="{StaticResource RubikSemibold}"
+                                 Foreground="{StaticResource TextPrimaryBrush}"
+                                 Margin="0,0,0,5"/>
+
+                        <!-- Amount Paid -->
+                        <TextBlock Text="Amount Paid:"
+                                 Grid.Row="3" Grid.Column="0"
+                                 FontFamily="{StaticResource RubikSemibold}"
+                                 Foreground="{StaticResource TextSecondaryBrush}"
+                                 Margin="0,0,10,5"/>
+                        <TextBox Text="{Binding AmountPaid, UpdateSourceTrigger=PropertyChanged}"
+                                Grid.Row="3" Grid.Column="1"
+                                Style="{StaticResource BaseTextBoxStyle}"
+                                Margin="0,0,0,5"/>
+                    </Grid>
+                </DockPanel>
+
+                <!-- Payment Date -->
+                <DockPanel LastChildFill="True" Margin="0,0,0,15">
+                    <TextBlock Text="Payment Date *"
+                             DockPanel.Dock="Top"
+                             FontFamily="{StaticResource RubikSemibold}"
+                             Foreground="{StaticResource TextPrimaryBrush}"
+                             Margin="0,0,0,5"/>
+                    <DatePicker SelectedDate="{Binding PaymentDate}"
+                              Style="{StaticResource DatePickerStyle}"
+                              Height="34"/>
+                </DockPanel>
+
+                <!-- Error Message -->
+                <TextBlock Text="{Binding ErrorMessage}"
+                         Foreground="{StaticResource RedBrush}"
+                         FontFamily="{StaticResource RubikSemibold}"
+                         VerticalAlignment="Center"
+                         Margin="0,0,0,15"/>
+            </StackPanel>
+
+            <!-- Bottom Section -->
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Cancel Button -->
+                <Button Grid.Column="1"
+                        Content="Cancel"
+                        Command="{Binding CancelCommand}"
+                        Style="{StaticResource CancelButtonStyle}"
+                        Width="120"
+                        Height="35"
+                        Margin="0,0,10,0">
+                    <Button.Tag>
+                        <Viewbox Width="16" Height="16">
+                            <Grid>
+                                <Path Data="{StaticResource CancelIcon}"
+                                      Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                      Style="{StaticResource PathStyle}"/>
+                            </Grid>
+                        </Viewbox>
+                    </Button.Tag>
+                </Button>
+
+                <!-- Save Button -->
+                <Button Grid.Column="2"
+                        Content="Save"
+                        Command="{Binding SaveCommand}"
+                        Style="{StaticResource SaveButtonStyle}"
+                        Width="120"
+                        Height="35">
+                    <Button.Tag>
+                        <Viewbox Width="16" Height="16">
+                            <Grid>
+                                <Path Data="{StaticResource SaveIcon}"
+                                      Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                      Style="{StaticResource PathStyle}"/>
+                            </Grid>
+                        </Viewbox>
+                    </Button.Tag>
+                </Button>
+            </Grid>
+        </Grid>
+    </Border>
+</Window> 

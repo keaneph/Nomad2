@@ -4,12 +4,186 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:Nomad2.Views"
-             mc:Ignorable="d">
-    <Grid Background="#0F1022">
-        <TextBlock Text="Payments View"
-                  Foreground="White"
-                  FontSize="24"
-                  HorizontalAlignment="Center"
-                  VerticalAlignment="Center"/>
+             mc:Ignorable="d"
+             Background="{StaticResource PrimaryBackgroundBrush}">
+    <Grid Margin="20,0,20,20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Top controls: Sorting, Search, Add -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <ComboBox Width="120"
+                          Style="{StaticResource BaseComboboxStyle}"
+                          ItemsSource="{Binding AvailableSortOptions}"
+                          SelectedItem="{Binding CurrentSortOption}"
+                          DisplayMemberPath="DisplayName"/>
+                <Button Command="{Binding ToggleSortDirectionCommand}"
+                        Style="{StaticResource ToggleSortButtonStyle}">
+                    <Button.Tag>
+                        <Viewbox Width="16" Height="16">
+                            <Path Data="{StaticResource SortIcon}"
+                                  Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                  Style="{StaticResource PathStyle}"/>
+                        </Viewbox>
+                    </Button.Tag>
+                </Button>
+            </StackPanel>
+
+
+            <Button Grid.Column="2"
+                    Command="{Binding AddPaymentCommand}"
+                    Style="{StaticResource PrimaryButtonStyle}">
+                <Button.Tag>
+                    <Viewbox Width="16" Height="16">
+                        <Grid>
+                            <Path Data="{StaticResource AddCustomersIcon}"
+                                  Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                  Style="{StaticResource PathStyle}"/>
+                        </Grid>
+                    </Viewbox>
+                </Button.Tag>
+                Add Payment
+            </Button>
+        </Grid>
+
+        <!-- DataGrid -->
+        <DataGrid Grid.Row="1"
+                  x:Name="paymentsDataGrid"
+                  SelectionMode="Extended"
+                  SelectionChanged="DataGrid_SelectionChanged"
+                  Style="{StaticResource DataGridStyle}"
+                  ColumnHeaderStyle="{StaticResource DataGridColumnHeaderStyle}"
+                  CellStyle="{StaticResource DataGridCellStyle}"
+                  RowStyle="{StaticResource DataGridRowStyle}"
+                  SelectionUnit="FullRow"
+                  ItemsSource="{Binding Payments}"
+                  AutoGenerateColumns="False"
+                  Padding="10,0,10,0"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  IsReadOnly="True"
+                  RowHeaderWidth="0">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Payment ID" Binding="{Binding PaymentId, StringFormat={}{0:0000-0000}}" Width="0.9*"/>
+                <DataGridTextColumn Header="Rental ID" Binding="{Binding RentalId}" Width="0.8*"/>
+                <DataGridTextColumn Header="Customer ID" Binding="{Binding CustomerId}" Width="1.2*"/>
+                <DataGridTextColumn Header="Customer" Binding="{Binding Customer.Name}" Width="1*"/>
+                <DataGridTextColumn Header="Bike ID" Binding="{Binding BikeId}" Width="0.8*"/>
+                <DataGridTextColumn Header="Bike" Binding="{Binding Bike.BikeModel}" Width="1*"/>
+                <DataGridTemplateColumn Header="Amount To Pay" Width="1.1*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock>
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Text" Value="{Binding AmountToPay, StringFormat='₱{0:#,0}'}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding AmountToPay}" Value="{x:Null}">
+                                                <Setter Property="Text" Value="-" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Amount Paid" Binding="{Binding AmountPaid, StringFormat='₱{0:#,0}'}" Width="1*"/>
+                <DataGridTextColumn Header="Payment Date" Binding="{Binding PaymentDate, StringFormat=MM/dd/yyyy}" Width="1.1*"/>
+                <DataGridTextColumn Header="Status" Binding="{Binding PaymentStatus}" Width="0.8*"/>
+                <DataGridTemplateColumn Header="Actions" Width="Auto" MinWidth="120">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Command="{Binding DataContext.EditPaymentCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                        CommandParameter="{Binding}"
+                                        Style="{StaticResource EditButtonStyle}">
+                                    <Button.Tag>
+                                        <Viewbox Width="16" Height="16">
+                                            <Path Data="{StaticResource EditIcon}"
+                                                  Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                                  Style="{StaticResource PathStyle}"/>
+                                        </Viewbox>
+                                    </Button.Tag>
+                                </Button>
+                                <Button Command="{Binding DataContext.DeletePaymentCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                        CommandParameter="{Binding}"
+                                        Style="{StaticResource DeleteButtonStyle}">
+                                    <Button.Tag>
+                                        <Viewbox Width="16" Height="16">
+                                            <Path Data="{StaticResource DeleteIcon}"
+                                                  Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                                  Style="{StaticResource PathStyle}"/>
+                                        </Viewbox>
+                                    </Button.Tag>
+                                </Button>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Bottom controls: Clear, Pagination -->
+        <Grid Grid.Row="2" Margin="0,20,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0"
+                    Command="{Binding ClearCommand}"
+                    Style="{StaticResource ClearButtonStyle}">
+                <Button.Tag>
+                    <Viewbox Width="16" Height="16">
+                        <Grid>
+                            <Path Data="{StaticResource ClearIcon}"
+                                  Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                  Style="{StaticResource PathStyle}"/>
+                        </Grid>
+                    </Viewbox>
+                </Button.Tag>
+            </Button>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="-120,0,0,0">
+                <Button Command="{Binding PreviousPageCommand}"
+                        Style="{StaticResource PaginationButtonStyle}">
+                    <Button.Tag>
+                        <Viewbox Width="16" Height="16">
+                            <Grid>
+                                <Path Data="{StaticResource ArrowLeftIcon}"
+                                      Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                      Style="{StaticResource PathStyle}"/>
+                            </Grid>
+                        </Viewbox>
+                    </Button.Tag>
+                </Button>
+                <TextBlock Text="{Binding CurrentPageDisplay}"
+                           FontFamily="{StaticResource RubikSemibold}"
+                           Foreground="#E0E1EE"
+                           VerticalAlignment="Center"
+                           Margin="20,0"/>
+                <Button Command="{Binding NextPageCommand}"
+                        Style="{StaticResource PaginationButtonStyle}">
+                    <Button.Tag>
+                        <Viewbox Width="16" Height="16">
+                            <Grid>
+                                <Path Data="{StaticResource ArrowRightIcon}"
+                                      Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                      Style="{StaticResource PathStyle}"/>
+                            </Grid>
+                        </Viewbox>
+                    </Button.Tag>
+                </Button>
+            </StackPanel>
+        </Grid>
     </Grid>
 </UserControl>

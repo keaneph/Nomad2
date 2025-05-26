@@ -111,31 +111,29 @@
                                     <Border Grid.Column="1"
                                             Padding="0"
                                             CornerRadius="8">
-                                        <Grid>
-                                            <Border Background="{Binding RentalStatus, 
-                                                    Converter={StaticResource StatusToColorConverter}}"
-                                                    BorderThickness="1.5,1.5,1.5,2"
-                                                    BorderBrush="{Binding RentalStatus, 
-                                                    Converter={StaticResource StatusToBorderConverter}}"
-                                                    CornerRadius="8"
-                                                    MinWidth="95"
-                                                    MinHeight="25"
-                                                    Padding="12,2">
-                                                <Border.Effect>
-                                                    <DropShadowEffect Color="{Binding RentalStatus, 
-                                                    Converter={StaticResource StatusToShadowColorConverter}}"
-                                                                     BlurRadius="20" 
-                                                                     ShadowDepth="0"
-                                                                     Opacity="0.3"/>
-                                                </Border.Effect>
-                                            </Border>
+                                        <Border Background="{Binding RentalStatus, 
+                                                Converter={StaticResource StatusToColorConverter}}"
+                                                BorderThickness="1.5,1.5,1.5,2"
+                                                BorderBrush="{Binding RentalStatus, 
+                                                Converter={StaticResource StatusToBorderConverter}}"
+                                                CornerRadius="8"
+                                                MinWidth="95"
+                                                MinHeight="25"
+                                                Padding="12,2">
+                                            <Border.Effect>
+                                                <DropShadowEffect Color="{Binding RentalStatus, 
+                                                Converter={StaticResource StatusToShadowColorConverter}}"
+                                                                 BlurRadius="20" 
+                                                                 ShadowDepth="0"
+                                                                 Opacity="0.3"/>
+                                            </Border.Effect>
                                             <TextBlock Text="{Binding RentalStatus}"
                                                      Foreground="White"
                                                      FontSize="12"
                                                      FontFamily="{StaticResource RubikSemibold}"
                                                      HorizontalAlignment="Center"
                                                      VerticalAlignment="Center"/>
-                                        </Grid>
+                                        </Border>
                                     </Border>
                                 </Grid>
 
@@ -201,21 +199,100 @@
 
                                 <!-- Right Column: Rental Dates -->
                                 <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Right">
-                                    <TextBlock Text="Process Payment"
-                                               Foreground="{StaticResource TextSecondaryBrush}"
-                                               FontSize="12"
-                                               Margin="-25,13,0,0"
-                                               FontFamily="{StaticResource RubikSemibold}"/>
-                                               <TextBlock FontFamily="{StaticResource RubikSemibold}" TextTrimming="None" Margin="-25,0,0,0">
-                                                    <Run Text="Status:" Foreground="{StaticResource TextSecondaryBrush}"/>
-                                                </TextBlock>
-                                                <TextBlock FontFamily="{StaticResource RubikSemibold}" TextTrimming="None">
-                                                </TextBlock>
+                                    <!-- Process Payment Hyperlink -->
+                                    <TextBlock FontFamily="{StaticResource RubikSemibold}" Margin="-25,13,0,0">
+                                        <Hyperlink Command="{Binding DataContext.ProcessPaymentCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                  CommandParameter="{Binding}">
+                                            <TextBlock Text="Process Payment"/>
+                                            <Hyperlink.Style>
+                                                <Style TargetType="Hyperlink" BasedOn="{StaticResource {x:Type Hyperlink}}">
+                                                    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Foreground" Value="{StaticResource PurpleBrush}"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Hyperlink.Style>
+                                        </Hyperlink>
+                                    </TextBlock>
+                                    <!-- Payment Status: Show as Hyperlink if Pending or Paid, else plain text -->
+                                    <ContentControl Margin="-25,0,0,0" Content="{Binding}">
+                                        <ContentControl.Style>
+                                            <Style TargetType="ContentControl">
+                                                <Setter Property="ContentTemplate">
+                                                    <Setter.Value>
+                                                        <DataTemplate>
+                                                            <TextBlock FontFamily="{StaticResource RubikSemibold}">
+                                                                <Run Text="Status:" Foreground="{StaticResource TextSecondaryBrush}"/>
+                                                                <Run Text=" " />
+                                                                <Run Text="{Binding PaymentStatus}" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                                            </TextBlock>
+                                                        </DataTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding PaymentStatus}" Value="Pending">
+                                                        <Setter Property="ContentTemplate">
+                                                            <Setter.Value>
+                                                                <DataTemplate>
+                                                                    <TextBlock FontFamily="{StaticResource RubikSemibold}">
+                                                                        <Run Text="Status:" Foreground="{StaticResource TextSecondaryBrush}"/>
+                                                                        <Run Text=" " />
+                                                                        <Hyperlink Command="{Binding DataContext.NavigateToPaymentsCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                                                   CommandParameter="{Binding}">
+                                                                            <TextBlock Text="Pending"/>
+                                                                            <Hyperlink.Style>
+                                                                                <Style TargetType="Hyperlink" BasedOn="{StaticResource {x:Type Hyperlink}}">
+                                                                                    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                                                                                    <Style.Triggers>
+                                                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                                                            <Setter Property="Foreground" Value="{StaticResource PurpleBrush}"/>
+                                                                                        </Trigger>
+                                                                                    </Style.Triggers>
+                                                                                </Style>
+                                                                            </Hyperlink.Style>
+                                                                        </Hyperlink>
+                                                                    </TextBlock>
+                                                                </DataTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding PaymentStatus}" Value="Paid">
+                                                        <Setter Property="ContentTemplate">
+                                                            <Setter.Value>
+                                                                <DataTemplate>
+                                                                    <TextBlock FontFamily="{StaticResource RubikSemibold}">
+                                                                        <Run Text="Status:" Foreground="{StaticResource TextSecondaryBrush}"/>
+                                                                        <Run Text=" " />
+                                                                        <Hyperlink Command="{Binding DataContext.NavigateToPaymentsCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                                                   CommandParameter="{Binding}">
+                                                                            <TextBlock Text="Paid"/>
+                                                                            <Hyperlink.Style>
+                                                                                <Style TargetType="Hyperlink" BasedOn="{StaticResource {x:Type Hyperlink}}">
+                                                                                    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                                                                                    <Style.Triggers>
+                                                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                                                            <Setter Property="Foreground" Value="{StaticResource PurpleBrush}"/>
+                                                                                        </Trigger>
+                                                                                    </Style.Triggers>
+                                                                                </Style>
+                                                                            </Hyperlink.Style>
+                                                                        </Hyperlink>
+                                                                    </TextBlock>
+                                                                </DataTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ContentControl.Style>
+                                    </ContentControl>
                                     
                                     <TextBlock Text="Dates"
                                                Foreground="{StaticResource TextSecondaryBrush}"
                                                FontSize="12"
-                                               Margin="-25,0,0,0"
+                                               Margin="-25,13,0,0"
                                                FontFamily="{StaticResource RubikSemibold}"/>
                                     <TextBlock FontFamily="{StaticResource RubikSemibold}" TextTrimming="None" Margin="-25,0,0,0">
                                         <Run Text="Rental: " Foreground="{StaticResource TextSecondaryBrush}"/>

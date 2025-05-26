@@ -123,17 +123,21 @@ namespace Nomad2.Services
                     string createPaymentTable = @"
                         CREATE TABLE IF NOT EXISTS payments (
                             payment_id VARCHAR(9) PRIMARY KEY NOT NULL,
+                            rental_id VARCHAR(9) NOT NULL,
                             customer_id VARCHAR(9) NOT NULL,
                             bike_id VARCHAR(9) NOT NULL,
-                            amount_to_pay INT(9) NOT NULL CHECK (amount_to_pay >= 0),
-                            amount_paid INT(9) NOT NULL CHECK (amount_paid >= 0),
+                            amount_to_pay INT(9) NULL,
+                            amount_paid INT(9) NOT NULL,
                             payment_date DATE NOT NULL,
-                            payment_status VARCHAR(30) NOT NULL CHECK (payment_status IN ('Pending', 'Paid', 'Failed', 'Refunded')),
+                            payment_status VARCHAR(30) NOT NULL CHECK (payment_status IN ('Unpaid', 'Pending', 'Paid', 'Refunded')),
                             FOREIGN KEY (customer_id) REFERENCES customer(customer_id) 
                                 ON DELETE RESTRICT 
                                 ON UPDATE CASCADE,
                             FOREIGN KEY (bike_id) REFERENCES bike(bike_id) 
                                 ON DELETE RESTRICT 
+                                ON UPDATE CASCADE,
+                            FOREIGN KEY (rental_id) REFERENCES rentals(rental_id)
+                                ON DELETE RESTRICT
                                 ON UPDATE CASCADE
                         )";
 

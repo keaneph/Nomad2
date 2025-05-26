@@ -58,7 +58,21 @@ public class RentalService : IRentalService
                        c.address, c.government_id_picture, c.customer_status, c.registration_date,
                        b.bike_model, b.daily_rate,
                        CASE WHEN ret.return_id IS NOT NULL THEN 'Completed' ELSE 'Active' END as rental_status,
-                       ret.return_date
+                       ret.return_date,
+                       CASE 
+                           WHEN EXISTS (
+                               SELECT 1 
+                               FROM payments p 
+                               WHERE p.rental_id = r.rental_id 
+                               AND p.payment_status = 'Paid'
+                           ) THEN 'Paid'
+                           WHEN EXISTS (
+                               SELECT 1 
+                               FROM payments p 
+                               WHERE p.rental_id = r.rental_id
+                           ) THEN 'Pending'
+                           ELSE 'Unpaid'
+                       END as payment_status
                 FROM rentals r
                 LEFT JOIN customer c ON r.customer_id = c.customer_id
                 LEFT JOIN bike b ON r.bike_id = b.bike_id
@@ -88,6 +102,7 @@ public class RentalService : IRentalService
                             BikeId = reader.GetString("bike_id"),
                             RentalDate = reader.GetDateTime("rental_date"),
                             RentalStatus = reader.GetString("rental_status"),
+                            PaymentStatus = reader.GetString("payment_status"),
                             ReturnDate = reader.IsDBNull(reader.GetOrdinal("return_date")) ? null : (DateTime?)reader.GetDateTime("return_date"),
                             // initialize navigation properties
                             Customer = new Customer

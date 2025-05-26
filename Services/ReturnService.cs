@@ -159,7 +159,7 @@ namespace Nomad2.Services
             }
         }
 
-        public async Task<bool> AddReturnAsync(Return returnItem)
+        public async Task<bool> AddReturnWithStatusUpdatesAsync(Return returnItem, Rental rental, Bike bike, Customer customer)
         {
             using (var connection = _db.GetConnection())
             {
@@ -168,29 +168,19 @@ namespace Nomad2.Services
                 {
                     try
                     {
-                        // check if a return record already exists for this rental
-                        string checkExistingQuery = @"
-                            SELECT COUNT(*) 
-                            FROM `returns` 
-                            WHERE rental_id = @RentalId";
-
-                        using (var command = new MySqlCommand(checkExistingQuery, connection, transaction))
+                        // Check if return record already exists
+                        string checkQuery = "SELECT COUNT(*) FROM `returns` WHERE rental_id = @RentalId";
+                        using (var command = new MySqlCommand(checkQuery, connection, transaction))
                         {
                             command.Parameters.AddWithValue("@RentalId", returnItem.RentalId);
-                            int existingReturns = Convert.ToInt32(await command.ExecuteScalarAsync());
-                            if (existingReturns > 0)
+                            int count = Convert.ToInt32(await command.ExecuteScalarAsync());
+                            if (count > 0)
                             {
-                                MessageBox.Show(
-                                    "A return record already exists for this rental.",
-                                    "Duplicate Return",
-                                    MessageBoxButton.OK,
-                                    MessageBoxImage.Warning
-                                );
-                                return false;
+                                throw new InvalidOperationException("Return record already exists for this rental");
                             }
                         }
 
-                        // generate new return ID if not provided
+                        // Generate return ID if not provided
                         if (string.IsNullOrEmpty(returnItem.ReturnId))
                         {
                             var lastId = await GetLastReturnIdAsync();
@@ -212,10 +202,10 @@ namespace Nomad2.Services
                             }
                         }
 
-                        // first update the rental status to Completed
+                        // Update rental status and return date
                         string updateRentalQuery = @"
                             UPDATE rentals 
-                            SET rental_status = 'Completed' 
+                            SET rental_status = 'Completed'
                             WHERE rental_id = @RentalId";
 
                         using (var command = new MySqlCommand(updateRentalQuery, connection, transaction))
@@ -224,10 +214,15 @@ namespace Nomad2.Services
                             await command.ExecuteNonQueryAsync();
                         }
 
-                        // then insert the return record
-                        string query = @"INSERT INTO `returns` (return_id, rental_id, customer_id, bike_id, return_date)
-                                     VALUES (@ReturnId, @RentalId, @CustomerId, @BikeId, @ReturnDate)";
-                        using (var command = new MySqlCommand(query, connection, transaction))
+                        // Insert return record
+                        string insertReturnQuery = @"
+                            INSERT INTO `returns` (
+                                return_id, rental_id, customer_id, bike_id, return_date
+                            ) VALUES (
+                                @ReturnId, @RentalId, @CustomerId, @BikeId, @ReturnDate
+                            )";
+
+                        using (var command = new MySqlCommand(insertReturnQuery, connection, transaction))
                         {
                             command.Parameters.AddWithValue("@ReturnId", returnItem.ReturnId);
                             command.Parameters.AddWithValue("@RentalId", returnItem.RentalId);
@@ -237,16 +232,34 @@ namespace Nomad2.Services
                             await command.ExecuteNonQueryAsync();
                         }
 
-                        // finally update bike status to Available
-                        string updateBikeQuery = @"
-                            UPDATE bike 
-                            SET bike_status = 'Available' 
-                            WHERE bike_id = @BikeId";
-
-                        using (var command = new MySqlCommand(updateBikeQuery, connection, transaction))
+                        // Update bike status if provided
+                        if (bike != null)
                         {
-                            command.Parameters.AddWithValue("@BikeId", returnItem.BikeId);
-                            await command.ExecuteNonQueryAsync();
+                            string updateBikeQuery = @"
+                                UPDATE bike 
+                                SET bike_status = 'Available' 
+                                WHERE bike_id = @BikeId";
+
+                            using (var command = new MySqlCommand(updateBikeQuery, connection, transaction))
+                            {
+                                command.Parameters.AddWithValue("@BikeId", bike.BikeId);
+                                await command.ExecuteNonQueryAsync();
+                            }
+                        }
+
+                        // Update customer status if provided
+                        if (customer != null)
+                        {
+                            string updateCustomerQuery = @"
+                                UPDATE customer 
+                                SET customer_status = 'Inactive' 
+                                WHERE customer_id = @CustomerId";
+
+                            using (var command = new MySqlCommand(updateCustomerQuery, connection, transaction))
+                            {
+                                command.Parameters.AddWithValue("@CustomerId", customer.CustomerId);
+                                await command.ExecuteNonQueryAsync();
+                            }
                         }
 
                         await transaction.CommitAsync();
@@ -537,6 +550,91 @@ namespace Nomad2.Services
                 {
                     var result = await command.ExecuteScalarAsync();
                     return result?.ToString() ?? "0000-0000";
+                }
+            }
+        }
+
+        public async Task<bool> AddReturnAsync(Return returnItem)
+        {
+            using (var connection = _db.GetConnection())
+            {
+                await connection.OpenAsync();
+                using (var transaction = await connection.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        // Check if return record already exists
+                        string checkQuery = "SELECT COUNT(*) FROM `returns` WHERE rental_id = @RentalId";
+                        using (var command = new MySqlCommand(checkQuery, connection, transaction))
+                        {
+                            command.Parameters.AddWithValue("@RentalId", returnItem.RentalId);
+                            int count = Convert.ToInt32(await command.ExecuteScalarAsync());
+                            if (count > 0)
+                            {
+                                throw new InvalidOperationException("Return record already exists for this rental");
+                            }
+                        }
+
+                        // Generate return ID if not provided
+                        if (string.IsNullOrEmpty(returnItem.ReturnId))
+                        {
+                            var lastId = await GetLastReturnIdAsync();
+                            if (lastId == "0000-0000")
+                            {
+                                returnItem.ReturnId = "0000-0001";
+                            }
+                            else
+                            {
+                                string[] parts = lastId.Split('-');
+                                if (parts.Length == 2 && int.TryParse(parts[1], out int number))
+                                {
+                                    returnItem.ReturnId = $"{parts[0]}-{(number + 1):D4}";
+                                }
+                                else
+                                {
+                                    returnItem.ReturnId = "0000-0001";
+                                }
+                            }
+                        }
+
+                        // Update rental status to Completed
+                        string updateRentalQuery = @"
+                            UPDATE rentals 
+                            SET rental_status = 'Completed' 
+                            WHERE rental_id = @RentalId";
+
+                        using (var command = new MySqlCommand(updateRentalQuery, connection, transaction))
+                        {
+                            command.Parameters.AddWithValue("@RentalId", returnItem.RentalId);
+                            await command.ExecuteNonQueryAsync();
+                        }
+
+                        // Insert return record
+                        string insertReturnQuery = @"
+                            INSERT INTO `returns` (
+                                return_id, rental_id, customer_id, bike_id, return_date
+                            ) VALUES (
+                                @ReturnId, @RentalId, @CustomerId, @BikeId, @ReturnDate
+                            )";
+
+                        using (var command = new MySqlCommand(insertReturnQuery, connection, transaction))
+                        {
+                            command.Parameters.AddWithValue("@ReturnId", returnItem.ReturnId);
+                            command.Parameters.AddWithValue("@RentalId", returnItem.RentalId);
+                            command.Parameters.AddWithValue("@CustomerId", returnItem.CustomerId);
+                            command.Parameters.AddWithValue("@BikeId", returnItem.BikeId);
+                            command.Parameters.AddWithValue("@ReturnDate", returnItem.ReturnDate);
+                            await command.ExecuteNonQueryAsync();
+                        }
+
+                        await transaction.CommitAsync();
+                        return true;
+                    }
+                    catch (Exception)
+                    {
+                        await transaction.RollbackAsync();
+                        throw;
+                    }
                 }
             }
         }

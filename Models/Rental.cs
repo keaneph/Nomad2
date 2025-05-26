@@ -13,6 +13,7 @@ namespace Nomad2.Models
         public string BikeId { get; set; } // foreign key
         public DateTime RentalDate { get; set; } // YYYY-MM-DD
         public string RentalStatus { get; set; }    // length 30
+        public string PaymentStatus { get; set; }
         public DateTime? ReturnDate { get; set; }
 
         // navigation properties (not in DB, using in UI)
