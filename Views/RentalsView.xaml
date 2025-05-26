@@ -226,13 +226,13 @@
                                                             <TextBlock FontFamily="{StaticResource RubikSemibold}">
                                                                 <Run Text="Status:" Foreground="{StaticResource TextSecondaryBrush}"/>
                                                                 <Run Text=" " />
-                                                                <Run Text="{Binding PaymentStatus}" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                                                <Run Text="{Binding Payment.PaymentStatus}" Foreground="{StaticResource TextPrimaryBrush}"/>
                                                             </TextBlock>
                                                         </DataTemplate>
                                                     </Setter.Value>
                                                 </Setter>
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding PaymentStatus}" Value="Pending">
+                                                    <DataTrigger Binding="{Binding Payment.PaymentStatus}" Value="Pending">
                                                         <Setter Property="ContentTemplate">
                                                             <Setter.Value>
                                                                 <DataTemplate>
@@ -258,7 +258,7 @@
                                                             </Setter.Value>
                                                         </Setter>
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding PaymentStatus}" Value="Paid">
+                                                    <DataTrigger Binding="{Binding Payment.PaymentStatus}" Value="Paid">
                                                         <Setter Property="ContentTemplate">
                                                             <Setter.Value>
                                                                 <DataTemplate>

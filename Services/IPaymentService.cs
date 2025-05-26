@@ -17,7 +17,6 @@ namespace Nomad2.Services
         Task<string> GetLastPaymentIdAsync();
         Task<List<Payment>> GetAllPaymentsAsync();
         Task<int> GetTotalPaidForRentalAsync(string rentalId);
-        Task UpdatePaymentStatusesForRentalAsync(string rentalId, int totalAmount);
         Task ProcessRefundAsync(string paymentId, int refundAmount);
     }
 } 

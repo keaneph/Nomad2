@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows;
 using Nomad2.Views;
+using System.Linq;
 
 namespace Nomad2.ViewModels
 {
@@ -484,8 +485,18 @@ namespace Nomad2.ViewModels
                 }
 
                 Rentals.Clear();
+                var paymentService = new PaymentService();
+                var allPayments = await paymentService.GetAllPaymentsAsync();
                 foreach (var rental in rentals)
                 {
+                    var paymentsForRental = allPayments.Where(p => p.RentalId == rental.RentalId).ToList();
+                    string status = "Unpaid";
+                    if (paymentsForRental.Any(p => p.PaymentStatus == "Paid"))
+                        status = "Paid";
+                    else if (paymentsForRental.Any(p => p.PaymentStatus == "Pending"))
+                        status = "Pending";
+                    // Create a synthetic Payment object for status display
+                    rental.Payment = new Payment { PaymentStatus = status };
                     Rentals.Add(rental);
                 }
 

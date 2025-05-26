@@ -110,7 +110,6 @@ namespace Nomad2.ViewModels
             {
                 _payment.AmountPaid = AmountPaid;
                 _payment.PaymentDate = PaymentDate;
-                _payment.PaymentStatus = (TotalAmount.HasValue && AmountPaid >= TotalAmount.Value) ? "Paid" : "Pending";
 
                 await _paymentService.UpdatePaymentAsync(_payment);
                 CloseDialog();

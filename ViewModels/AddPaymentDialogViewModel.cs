@@ -111,8 +111,7 @@ namespace Nomad2.ViewModels
                 {
                     PaymentId = await _paymentService.GetLastPaymentIdAsync(),
                     AmountPaid = AmountPaid,
-                    PaymentDate = PaymentDate,
-                    PaymentStatus = AmountPaid >= TotalAmount ? "Paid" : "Pending"
+                    PaymentDate = PaymentDate
                 };
 
                 await _paymentService.AddPaymentAsync(payment);

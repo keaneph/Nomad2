@@ -374,33 +374,6 @@ namespace Nomad2.Services
             }
         }
 
-        public async Task UpdatePaymentStatusesForRentalAsync(string rentalId, int totalAmount)
-        {
-            using (var connection = _db.GetConnection())
-            {
-                await connection.OpenAsync();
-                string query = @"
-                    UPDATE `payments` 
-                    SET `payment_status` = 'Paid'
-                    WHERE `rental_id` = @RentalId 
-                    AND EXISTS (
-                        SELECT 1 
-                        FROM (
-                            SELECT COALESCE(SUM(`amount_paid`), 0) as total_paid 
-                            FROM `payments` 
-                            WHERE `rental_id` = @RentalId
-                        ) as totals 
-                        WHERE total_paid >= @TotalAmount
-                    )";
-                using (var command = new MySqlCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@RentalId", rentalId);
-                    command.Parameters.AddWithValue("@TotalAmount", totalAmount);
-                    await command.ExecuteNonQueryAsync();
-                }
-            }
-        }
-
         public async Task ProcessRefundAsync(string paymentId, int refundAmount)
         {
             using (var connection = _db.GetConnection())

@@ -16,7 +16,6 @@ namespace Nomad2.Models
         public int AmountPaid { get; set; } //  length should be set to 9
         public DateTime PaymentDate { get; set; } // YYYY-MM-DD
         public string PaymentStatus { get; set; }    // length 30
-        public string RefundStatus { get; set; }
 
         // navigation properties (not in DB, using in UI)
         public Customer Customer { get; set; }
