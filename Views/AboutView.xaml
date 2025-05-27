@@ -5,12 +5,62 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:Nomad2.Views"
              mc:Ignorable="d">
-    <Grid Background="#0F1022">
-        <TextBlock Text="About View"
-                  Foreground="White"
-                  FontSize="24"
-                  HorizontalAlignment="Center"
-                  VerticalAlignment="Center"/>
-        
+    <Grid Background="{StaticResource PrimaryBackgroundBrush}">
+        <StackPanel 
+            Margin="40"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
+            <TextBlock Text="Nomad"
+                      Foreground="{StaticResource TextPrimaryBrush}"
+                      FontSize="36"
+                      FontFamily="{StaticResource RubikSemibold}"
+                      HorizontalAlignment="Center"
+                      Margin="0,0,0,10"/>
+            
+            <TextBlock Text="Version 1.0.0"
+                       Foreground="{StaticResource TextPrimaryBrush}"
+                       FontSize="16"
+                       HorizontalAlignment="Center"
+                       FontFamily="{StaticResource Rubik}"
+                       Margin="0,0,0,30"/>
+            
+            <TextBlock Text="A comprehensive bike rental management system"
+                       Foreground="{StaticResource TextPrimaryBrush}"
+                       FontSize="18"
+                       TextWrapping="Wrap"
+                       TextAlignment="Center"
+                       FontFamily="{StaticResource Rubik}"
+                       MaxWidth="600"
+                       Margin="0,0,0,20"/>
+            
+            <TextBlock Text="Nomad helps you manage your bike rental business efficiently. Track rentals, returns, payments, and customer information all in one place."
+                       Foreground="{StaticResource TextPrimaryBrush}"
+                       FontSize="14"
+                       FontFamily="{StaticResource Rubik}"
+                       TextWrapping="Wrap"
+                       TextAlignment="Center"
+                       MaxWidth="500"
+                       Margin="0,0,0,30"/>
+            
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
+                <TextBlock Text="© 2024 Nomad. All rights reserved."
+                           Foreground="{StaticResource TextPrimaryBrush}"
+                           FontFamily="{StaticResource Rubik}"
+                           FontSize="12"/>
+            </StackPanel>
+            
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <TextBlock Text="For support, contact: "
+                           Foreground="{StaticResource TextPrimaryBrush}"
+                           FontFamily="{StaticResource Rubik}"
+                          FontSize="12"/>
+                <TextBlock Text="nearpharelle@gmail.com"
+                          Foreground="{StaticResource PurpleBrush}"
+                           FontFamily="{StaticResource RubikSemibold}"
+                          FontSize="12"
+                          Cursor="Hand"
+                          MouseLeftButtonDown="SupportEmail_Click"/>
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </UserControl>

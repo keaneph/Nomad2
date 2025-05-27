@@ -21,11 +21,11 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0">
-                    <TextBlock Text="Welcome to Nomad Bike Rentals" 
+                    <TextBlock Text="Welcome to Nomad" 
                                Foreground="{StaticResource TextPrimaryBrush}" 
                                FontSize="20" 
                                FontFamily="{StaticResource RubikSemibold}"/>
-                    <TextBlock Text="Your one-stop solution for bike rentals" 
+                    <TextBlock Text="The Journey is Yours. The Bike is Ours." 
                                Foreground="{StaticResource TextSecondaryBrush}" 
                                FontSize="14" 
                                FontFamily="{StaticResource Rubik}" 
