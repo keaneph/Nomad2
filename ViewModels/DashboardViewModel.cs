@@ -74,7 +74,6 @@ namespace Nomad2.ViewModels
             }
         }
         
-        public ICommand RefreshCommand { get; }
 
         public DashboardViewModel(
             ICustomerService customerService,
@@ -90,7 +89,6 @@ namespace Nomad2.ViewModels
             _rentalService = rentalService;
             _paymentService = paymentService;
             
-            RefreshCommand = new RelayCommand(LoadData);
             
             // Initialize with default values
             TotalCustomers = 0;
@@ -189,19 +187,11 @@ namespace Nomad2.ViewModels
                 StrokeThickness = 2
             });
 
-            // Example/mock data for popular bike types
+            // --- Real data for popular bike types ---
             PopularBikeTypesSeries.Clear();
             PopularBikeTypesLabels.Clear();
-            var bikeTypeValues = new ChartValues<double> { 57, 18, 25 };
-            var bikeTypes = new[] { "Trucks", "Cargo Vans", "Others" };
-            PopularBikeTypesSeries.Add(new PieSeries { Title = bikeTypes[0], Values = new ChartValues<double> { bikeTypeValues[0] }, DataLabels = true });
-            PopularBikeTypesSeries.Add(new PieSeries { Title = bikeTypes[1], Values = new ChartValues<double> { bikeTypeValues[1] }, DataLabels = true });
-            PopularBikeTypesSeries.Add(new PieSeries { Title = bikeTypes[2], Values = new ChartValues<double> { bikeTypeValues[2] }, DataLabels = true });
-            foreach (var t in bikeTypes) PopularBikeTypesLabels.Add(t);
 
-            // Rentals Bar Chart Data (real data)
-            RentalsSeries.Clear();
-            RentalsLabels.Clear();
+            // Fetch all rentals
             var allRentals = new List<Rental>();
             int page = 1;
             int pageSize = 100;
@@ -213,6 +203,43 @@ namespace Nomad2.ViewModels
                 if (allRentals.Count >= totalCount) break;
                 page++;
             }
+            // Fetch all bikes
+            var allBikes = await _bikeService.GetAllBikesAsync();
+
+            // Join rentals to bikes to get bike types
+            var rentalsWithBikeTypes = from rental in allRentals
+                                       join bike in allBikes on rental.BikeId equals bike.BikeId
+                                       select bike.BikeType;
+
+            // Count rentals per bike type, take top 3
+            var bikeTypeCounts = rentalsWithBikeTypes
+                .GroupBy(type => type)
+                .Select(g => new { BikeType = g.Key, Count = g.Count() })
+                .OrderByDescending(g => g.Count)
+                .Take(3)
+                .ToList();
+
+            // Gradient brush keys for top 3
+            var brushKeys = new[] { "PurpleGradientBackground", "RedGradientBackground", "GreenGradientBackground" };
+            for (int i = 0; i < bikeTypeCounts.Count; i++)
+            {
+                var item = bikeTypeCounts[i];
+                var brush = (System.Windows.Media.Brush)System.Windows.Application.Current.Resources[brushKeys[i]];
+                PopularBikeTypesSeries.Add(new PieSeries
+                {
+                    Title = item.BikeType,
+                    Values = new ChartValues<double> { item.Count },
+                    DataLabels = true,
+                    StrokeThickness=2,
+                    Stroke = (Brush)Application.Current.Resources["ButtonBackgroundBrush"],
+                    Fill = brush
+                });
+                PopularBikeTypesLabels.Add(item.BikeType);
+            }
+
+            // Rentals Bar Chart Data (real data)
+            RentalsSeries.Clear();
+            RentalsLabels.Clear();
             var RentalsPerMonth = new int[12];
             foreach (var rental in allRentals)
             {
