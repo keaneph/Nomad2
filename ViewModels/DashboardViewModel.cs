@@ -31,8 +31,8 @@ namespace Nomad2.ViewModels
         public ObservableCollection<string> MonthlyRevenueLabels { get; set; }
         public SeriesCollection PopularBikeTypesSeries { get; set; }
         public ObservableCollection<string> PopularBikeTypesLabels { get; set; }
-        public SeriesCollection OrdersSeries { get; set; }
-        public ObservableCollection<string> OrdersLabels { get; set; }
+        public SeriesCollection RentalsSeries { get; set; }
+        public ObservableCollection<string> RentalsLabels { get; set; }
         
         public int TotalCustomers
         {
@@ -103,8 +103,8 @@ namespace Nomad2.ViewModels
             MonthlyRevenueLabels = new ObservableCollection<string>();
             PopularBikeTypesSeries = new SeriesCollection();
             PopularBikeTypesLabels = new ObservableCollection<string>();
-            OrdersSeries = new SeriesCollection();
-            OrdersLabels = new ObservableCollection<string>();
+            RentalsSeries = new SeriesCollection();
+            RentalsLabels = new ObservableCollection<string>();
             
             // Load data when the ViewModel is created
             LoadData();
@@ -199,9 +199,9 @@ namespace Nomad2.ViewModels
             PopularBikeTypesSeries.Add(new PieSeries { Title = bikeTypes[2], Values = new ChartValues<double> { bikeTypeValues[2] }, DataLabels = true });
             foreach (var t in bikeTypes) PopularBikeTypesLabels.Add(t);
 
-            // Orders Bar Chart Data (real data)
-            OrdersSeries.Clear();
-            OrdersLabels.Clear();
+            // Rentals Bar Chart Data (real data)
+            RentalsSeries.Clear();
+            RentalsLabels.Clear();
             var allRentals = new List<Rental>();
             int page = 1;
             int pageSize = 100;
@@ -213,15 +213,15 @@ namespace Nomad2.ViewModels
                 if (allRentals.Count >= totalCount) break;
                 page++;
             }
-            var ordersPerMonth = new int[12];
+            var RentalsPerMonth = new int[12];
             foreach (var rental in allRentals)
             {
                 int month = rental.RentalDate.Month;
-                ordersPerMonth[month - 1]++;
+                RentalsPerMonth[month - 1]++;
             }
-            var orderValues = new ChartValues<int>(ordersPerMonth);
-            foreach (var m in months) OrdersLabels.Add(m);
-            OrdersSeries.Add(new ColumnSeries
+            var orderValues = new ChartValues<int>(RentalsPerMonth);
+            foreach (var m in months) RentalsLabels.Add(m);
+            RentalsSeries.Add(new ColumnSeries
             {
                 Title = "Rentals",
                 Values = orderValues,
