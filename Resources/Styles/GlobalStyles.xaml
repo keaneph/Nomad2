@@ -64,6 +64,26 @@
         <GradientStop Color="#33682EC7" Offset="1.0"/>
     </LinearGradientBrush>
 
+    <!-- For the stats -->
+    <LinearGradientBrush x:Key="PurpleGradientBackgroundTransparent3" StartPoint="1,0" EndPoint="0,1">
+        <GradientStop Color="#44682EC7" Offset="0.0"/>
+        <GradientStop Color="#00190F33" Offset="1.0"/>
+    </LinearGradientBrush>
+    
+    
+    <!-- bg for bar-->
+    <LinearGradientBrush x:Key="PurpleGradientBackgroundTransparent4" StartPoint="1,1" EndPoint="0,0">
+        <GradientStop Color="#44682EC7" Offset="0.0"/>
+        <GradientStop Color="#00190F33" Offset="1.0"/>
+    </LinearGradientBrush>
+
+    <!-- bg for pie-->
+    <LinearGradientBrush x:Key="PurpleGradientBackgroundTransparent5" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#44682EC7" Offset="0.0"/>
+        <GradientStop Color="#00190F33" Offset="1.0"/>
+    </LinearGradientBrush>
+
+
     <RadialGradientBrush x:Key="RedGradientBackground" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
         <GradientStop Color="#843153" Offset="0.1"/>
         <GradientStop Color="#2C1A1E" Offset="1"/>

@@ -21,6 +21,7 @@
     <None Remove="Resources\Fonts\Satoshi\Satoshi-Light.ttf" />
     <None Remove="Resources\Fonts\Satoshi\Satoshi-Medium.ttf" />
     <None Remove="Resources\Fonts\Satoshi\Satoshi-Regular.ttf" />
+    <None Remove="Resources\Images\test.jpg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -50,10 +51,7 @@
     <Resource Include="Resources\Fonts\Satoshi\Satoshi-Light.ttf" />
     <Resource Include="Resources\Fonts\Satoshi\Satoshi-Medium.ttf" />
     <Resource Include="Resources\Fonts\Satoshi\Satoshi-Regular.ttf" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Resources\Images\" />
+    <Resource Include="Resources\Images\test.jpg" />
   </ItemGroup>
 
   <ItemGroup>
