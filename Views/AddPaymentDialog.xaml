@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Nomad2.Views"
         mc:Ignorable="d"
         Title="{Binding DialogTitle}"
-        Height="680" 
+        Height="620"
         Width="560"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource PrimaryBackgroundBrush}"
@@ -39,159 +39,145 @@
 
             <!-- Form Fields -->
             <StackPanel Grid.Row="1" Margin="0,0,0,15">
-                <!-- Payment ID -->
+                <!-- Customer Selection -->
                 <DockPanel LastChildFill="True" Margin="0,0,0,15">
-                    <TextBlock Text="Payment ID"
-                             DockPanel.Dock="Top"
-                             FontFamily="{StaticResource RubikSemibold}"
-                             Foreground="{StaticResource TextPrimaryBrush}"
-                             Margin="0,0,0,5"/>
-                    <Border Background="{StaticResource ThirdBackgroundBrush}" 
-                            CornerRadius="8"
-                            Padding="15,8"
-                            Height="34">
-                        <TextBlock Text="{Binding PaymentId}"
-                                 Foreground="{StaticResource TextSecondaryBrush}"
-                                 VerticalAlignment="Center"                                 
-                                 FontFamily="{StaticResource RubikSemibold}"/>
-                    </Border>
-                </DockPanel>
-
-                <!-- Rental Details -->
-                <DockPanel LastChildFill="True" Margin="0,0,0,15">
-                    <TextBlock Text="Rental Details"
-                             DockPanel.Dock="Top"
-                             FontFamily="{StaticResource RubikSemibold}"
-                             Foreground="{StaticResource TextPrimaryBrush}"
-                             Margin="0,0,0,5"/>
+                    <TextBlock DockPanel.Dock="Top" Margin="0,0,0,5">
+                        <Run Text="Customer" 
+                             FontFamily="{StaticResource RubikSemibold}" 
+                             Foreground="{StaticResource TextPrimaryBrush}"/>
+                        <Run Text="*" 
+                             Foreground="{StaticResource RedBrush}"/>
+                    </TextBlock>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
 
-                        <!-- Customer Name -->
-                        <TextBlock Text="Customer:"
-                                 Grid.Row="0" Grid.Column="0"
-                                 FontFamily="{StaticResource RubikSemibold}"
-                                 Foreground="{StaticResource TextSecondaryBrush}"
-                                 Margin="0,0,10,5"/>
-                        <TextBlock Text="{Binding CustomerName}"
-                                 Grid.Row="0" Grid.Column="1"
-                                 FontFamily="{StaticResource RubikSemibold}"
-                                 Foreground="{StaticResource TextPrimaryBrush}"
-                                 Margin="0,0,0,5"/>
+                        <TextBox Text="{Binding CustomerSearch, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource FormTextBoxStyle}"
+                                Height="34"/>
 
-                        <!-- Bike Model -->
-                        <TextBlock Text="Bike:"
-                                 Grid.Row="1" Grid.Column="0"
-                                 FontFamily="{StaticResource RubikSemibold}"
-                                 Foreground="{StaticResource TextSecondaryBrush}"
-                                 Margin="0,0,10,5"/>
-                        <TextBlock Text="{Binding BikeModel}"
-                                 Grid.Row="1" Grid.Column="1"
-                                 FontFamily="{StaticResource RubikSemibold}"
-                                 Foreground="{StaticResource TextPrimaryBrush}"
-                                 Margin="0,0,0,5"/>
-
-                        <!-- Rental Dates -->
-                        <TextBlock Text="Dates:"
-                                 Grid.Row="2" Grid.Column="0"
-                                 FontFamily="{StaticResource RubikSemibold}"
-                                 Foreground="{StaticResource TextSecondaryBrush}"
-                                 Margin="0,0,10,5"/>
-                        <TextBlock Text="{Binding RentalDates}"
-                                 Grid.Row="2" Grid.Column="1"
-                                 FontFamily="{StaticResource RubikSemibold}"
-                                 Foreground="{StaticResource TextPrimaryBrush}"
-                                 Margin="0,0,0,5"/>
+                        <Button Grid.Column="1"
+                                Content="{Binding CustomerButtonText}"
+                                Command="{Binding ToggleCustomerListCommand}"
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Width="100"
+                                Height="39"
+                                Margin="10,0,0,0">
+                            <Button.Tag>
+                                <Viewbox Width="16" Height="16">
+                                    <Grid>
+                                        <Path Data="{StaticResource BrowseIcon}"
+                                              Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                              Style="{StaticResource PathStyle}"/>
+                                    </Grid>
+                                </Viewbox>
+                            </Button.Tag>
+                        </Button>
                     </Grid>
                 </DockPanel>
 
-                <!-- Payment Details -->
+                <!-- Customer Search Results -->
+                <ListBox ItemsSource="{Binding CustomerSearchResults}"
+                         SelectedItem="{Binding SelectedCustomer, Mode=TwoWay}"
+                         MaxHeight="100"
+                         Margin="0,0,0,15"
+                         Style="{StaticResource BaseListBoxStyle}"
+                         Visibility="{Binding IsCustomerSearchVisible, 
+                                    Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock FontFamily="{StaticResource RubikSemibold}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                                                    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                    <Run Text="{Binding CustomerId}"/>
+                                    <Run Text=" - "/>
+                                    <Run Text="{Binding Name}"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <!-- Bike Selection -->
                 <DockPanel LastChildFill="True" Margin="0,0,0,15">
-                    <TextBlock Text="Payment Details"
-                             DockPanel.Dock="Top"
-                             FontFamily="{StaticResource RubikSemibold}"
-                             Foreground="{StaticResource TextPrimaryBrush}"
-                             Margin="0,0,0,5"/>
+                    <TextBlock DockPanel.Dock="Top" Margin="0,0,0,5">
+                        <Run Text="Bike" 
+                             FontFamily="{StaticResource RubikSemibold}" 
+                             Foreground="{StaticResource TextPrimaryBrush}"/>
+                        <Run Text="*" 
+                             Foreground="{StaticResource RedBrush}"/>
+                    </TextBlock>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
 
-                        <!-- Total Days -->
-                        <TextBlock Text="Total Days:"
-                                 Grid.Row="0" Grid.Column="0"
-                                 FontFamily="{StaticResource RubikSemibold}"
-                                 Foreground="{StaticResource TextSecondaryBrush}"
-                                 Margin="0,0,10,5"/>
-                        <TextBlock Text="{Binding TotalDays}"
-                                 Grid.Row="0" Grid.Column="1"
-                                 FontFamily="{StaticResource RubikSemibold}"
-                                 Foreground="{StaticResource TextPrimaryBrush}"
-                                 Margin="0,0,0,5"/>
+                        <TextBox Text="{Binding BikeSearch, UpdateSourceTrigger=PropertyChanged}"
+                                Style="{StaticResource FormTextBoxStyle}"
+                                Height="34"/>
 
-                        <!-- Daily Rate -->
-                        <TextBlock Text="Daily Rate:"
-                                 Grid.Row="1" Grid.Column="0"
-                                 FontFamily="{StaticResource RubikSemibold}"
-                                 Foreground="{StaticResource TextSecondaryBrush}"
-                                 Margin="0,0,10,5"/>
-                        <TextBlock Text="{Binding DailyRate, StringFormat='{}{0:C}'}"
-                                 Grid.Row="1" Grid.Column="1"
-                                 FontFamily="{StaticResource RubikSemibold}"
-                                 Foreground="{StaticResource TextPrimaryBrush}"
-                                 Margin="0,0,0,5"/>
-
-                        <!-- Total Amount -->
-                        <TextBlock Text="Total Amount:"
-                                 Grid.Row="2" Grid.Column="0"
-                                 FontFamily="{StaticResource RubikSemibold}"
-                                 Foreground="{StaticResource TextSecondaryBrush}"
-                                 Margin="0,0,10,5"/>
-                        <TextBlock Text="{Binding TotalAmount, StringFormat='{}{0:C}'}"
-                                 Grid.Row="2" Grid.Column="1"
-                                 FontFamily="{StaticResource RubikSemibold}"
-                                 Foreground="{StaticResource TextPrimaryBrush}"
-                                 Margin="0,0,0,5"/>
-
-                        <!-- Amount Paid -->
-                        <TextBlock Text="Amount Paid:"
-                                 Grid.Row="3" Grid.Column="0"
-                                 FontFamily="{StaticResource RubikSemibold}"
-                                 Foreground="{StaticResource TextSecondaryBrush}"
-                                 Margin="0,0,10,5"/>
-                        <TextBox Text="{Binding AmountPaid, UpdateSourceTrigger=PropertyChanged}"
-                                Grid.Row="3" Grid.Column="1"
-                                Style="{StaticResource BaseTextBoxStyle}"
-                                Margin="0,0,0,5"/>
+                        <Button Grid.Column="1"
+                                Content="{Binding BikeButtonText}"
+                                Command="{Binding ToggleBikeListCommand}"
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Width="100"
+                                Height="39"
+                                Margin="10,0,0,0">
+                            <Button.Tag>
+                                <Viewbox Width="16" Height="16">
+                                    <Grid>
+                                        <Path Data="{StaticResource BrowseIcon}"
+                                              Stroke="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                              Style="{StaticResource PathStyle}"/>
+                                    </Grid>
+                                </Viewbox>
+                            </Button.Tag>
+                        </Button>
                     </Grid>
                 </DockPanel>
 
-                <!-- Payment Date -->
-                <DockPanel LastChildFill="True" Margin="0,0,0,15">
-                    <TextBlock Text="Payment Date *"
-                             DockPanel.Dock="Top"
-                             FontFamily="{StaticResource RubikSemibold}"
-                             Foreground="{StaticResource TextPrimaryBrush}"
-                             Margin="0,0,0,5"/>
-                    <DatePicker SelectedDate="{Binding PaymentDate}"
-                              Style="{StaticResource DatePickerStyle}"
-                              Height="34"/>
-                </DockPanel>
+                <!-- Bike Search Results -->
+                <ListBox ItemsSource="{Binding BikeSearchResults}"
+                         SelectedItem="{Binding SelectedBike, Mode=TwoWay}"
+                         MaxHeight="100"
+                         Margin="0,0,0,15"
+                         Style="{StaticResource BaseListBoxStyle}"
+                         Visibility="{Binding IsBikeSearchVisible, 
+                                    Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock FontFamily="{StaticResource RubikSemibold}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                                                    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                    <Run Text="{Binding BikeId}"/>
+                                    <Run Text=" - "/>
+                                    <Run Text="{Binding BikeModel}"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
 
                 <!-- Error Message -->
                 <TextBlock Text="{Binding ErrorMessage}"
@@ -201,7 +187,7 @@
                          Margin="0,0,0,15"/>
             </StackPanel>
 
-            <!-- Bottom Section -->
+            <!-- Bottom Buttons -->
             <Grid Grid.Row="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -228,10 +214,10 @@
                     </Button.Tag>
                 </Button>
 
-                <!-- Save Button -->
+                <!-- Continue Button -->
                 <Button Grid.Column="2"
-                        Content="Save"
-                        Command="{Binding SaveCommand}"
+                        Content="Continue"
+                        Command="{Binding ContinueCommand}"
                         Style="{StaticResource SaveButtonStyle}"
                         Width="120"
                         Height="35">

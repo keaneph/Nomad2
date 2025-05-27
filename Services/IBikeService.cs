@@ -36,5 +36,7 @@ namespace Nomad2.Services
         Task<string> GetLastBikeIdAsync();
         // retrieves all bikes without pagination
         Task<List<Bike>> GetAllBikesAsync();
+        // searches bikes by search term
+        Task<List<Bike>> SearchBikesAsync(string searchTerm);
     }
 }

@@ -26,5 +26,7 @@ namespace Nomad2.Services
         Task<string> GetLastCustomerIdAsync();
         // retrieves all customer without pagination
         Task<List<Customer>> GetAllCustomersAsync();
+        // searches customers by search term
+        Task<List<Customer>> SearchCustomersAsync(string searchTerm);
     }
 }

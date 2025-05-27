@@ -7,6 +7,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows;
+using Nomad2.Views;
+using Nomad2.Scripts;
 
 namespace Nomad2.ViewModels
 {
@@ -80,6 +82,8 @@ namespace Nomad2.ViewModels
             NextPageCommand = new RelayCommand(ExecuteNextPage, CanExecuteNextPage);
             PreviousPageCommand = new RelayCommand(ExecutePreviousPage, CanExecutePreviousPage);
             ToggleSortDirectionCommand = new RelayCommand(() => IsAscending = !IsAscending);
+            AddPaymentCommand = new RelayCommand(ExecuteAddPayment);
+            EditPaymentCommand = new RelayCommand<Payment>(ExecuteEditPayment);
 
             _ = LoadPayments();
         }
@@ -152,6 +156,8 @@ namespace Nomad2.ViewModels
         public ICommand NextPageCommand { get; }
         public ICommand PreviousPageCommand { get; }
         public ICommand ToggleSortDirectionCommand { get; }
+        public ICommand AddPaymentCommand { get; }
+        public ICommand EditPaymentCommand { get; }
 
         public int PageSize
         {
@@ -302,6 +308,26 @@ namespace Nomad2.ViewModels
                         SelectedPayment = payment;
                     }
                 }
+            }
+        }
+
+        private async void ExecuteAddPayment()
+        {
+            var dialog = new AddPaymentDialog();
+            if (dialog.ShowDialog() == true)
+            {
+                await LoadPayments();
+            }
+        }
+
+        private async void ExecuteEditPayment(Payment payment)
+        {
+            if (payment == null) return;
+
+            var dialog = new EditPaymentDialog(payment);
+            if (dialog.ShowDialog() == true)
+            {
+                await LoadPayments();
             }
         }
     }

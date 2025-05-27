@@ -446,10 +446,51 @@ namespace Nomad2.Services
 
                 using (var command = new MySqlCommand(query, connection))
                 {
-                    // retrieves the highest customer_id for auto-generation purposes
                     var result = await command.ExecuteScalarAsync();
                     return result?.ToString();
                 }
+            }
+        }
+
+        // searches customers by search term
+        public async Task<List<Customer>> SearchCustomersAsync(string searchTerm)
+        {
+            using (var connection = _db.GetConnection())
+            {
+                await connection.OpenAsync();
+                var customers = new List<Customer>();
+
+                string query = @"
+                    SELECT * FROM customer
+                    WHERE 
+                        LOWER(customer_id) LIKE LOWER(@SearchTerm) OR
+                        LOWER(name) LIKE LOWER(@SearchTerm) OR
+                        LOWER(phone_number) LIKE LOWER(@SearchTerm) OR
+                        LOWER(address) LIKE LOWER(@SearchTerm) OR
+                        LOWER(customer_status) LIKE LOWER(@SearchTerm)";
+
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@SearchTerm", $"%{searchTerm}%");
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            customers.Add(new Customer
+                            {
+                                CustomerId = reader.GetString("customer_id"),
+                                Name = reader.GetString("name"),
+                                PhoneNumber = reader.GetString("phone_number"),
+                                Address = reader.GetString("address"),
+                                GovernmentIdPicture = reader.GetString("government_id_picture"),
+                                CustomerStatus = reader.GetString("customer_status"),
+                                RegistrationDate = reader.GetDateTime("registration_date")
+                            });
+                        }
+                    }
+                }
+                return customers;
             }
         }
     }

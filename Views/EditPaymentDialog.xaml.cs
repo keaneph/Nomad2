@@ -9,7 +9,7 @@ namespace Nomad2.Views
         public EditPaymentDialog(Payment payment)
         {
             InitializeComponent();
-            DataContext = new EditPaymentDialogViewModel(payment);
+            DataContext = new EditPaymentDialogViewModel(payment, this);
         }
     }
 } 

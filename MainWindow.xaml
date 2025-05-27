@@ -265,7 +265,7 @@
                         </RadioButton.Tag>
                     </RadioButton>
 
-                    <!--Settings Menu Item-->
+                    <!--Settings Menu Item
                     <RadioButton Style="{StaticResource MenuItemStyle}" 
                                 Content="Settings" 
                                 GroupName="MenuItems"
@@ -286,7 +286,7 @@
                                 </Grid>
                             </Viewbox>
                         </RadioButton.Tag>
-                    </RadioButton>
+                    </RadioButton>-->
 
                     <!--Help Menu Item-->
                     <RadioButton Style="{StaticResource MenuItemStyle}" 

@@ -57,9 +57,27 @@
                     </Border>
                 </DockPanel>
 
-                <!-- Rental Details -->
+                <!-- Rental ID -->
                 <DockPanel LastChildFill="True" Margin="0,0,0,15">
-                    <TextBlock Text="Rental Details"
+                    <TextBlock Text="Rental ID"
+                             DockPanel.Dock="Top"
+                             FontFamily="{StaticResource RubikSemibold}"
+                             Foreground="{StaticResource TextPrimaryBrush}"
+                             Margin="0,0,0,5"/>
+                    <Border Background="{StaticResource ThirdBackgroundBrush}" 
+                            CornerRadius="8"
+                            Padding="15,8"
+                            Height="34">
+                        <TextBlock Text="{Binding RentalId}"
+                                 Foreground="{StaticResource TextSecondaryBrush}"
+                                 VerticalAlignment="Center"                                 
+                                 FontFamily="{StaticResource RubikSemibold}"/>
+                    </Border>
+                </DockPanel>
+
+                <!-- Customer Details -->
+                <DockPanel LastChildFill="True" Margin="0,0,0,15">
+                    <TextBlock Text="Customer Details"
                              DockPanel.Dock="Top"
                              FontFamily="{StaticResource RubikSemibold}"
                              Foreground="{StaticResource TextPrimaryBrush}"
@@ -72,11 +90,10 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
                         <!-- Customer Name -->
-                        <TextBlock Text="Customer:"
+                        <TextBlock Text="Name:"
                                  Grid.Row="0" Grid.Column="0"
                                  FontFamily="{StaticResource RubikSemibold}"
                                  Foreground="{StaticResource TextSecondaryBrush}"
@@ -87,35 +104,23 @@
                                  Foreground="{StaticResource TextPrimaryBrush}"
                                  Margin="0,0,0,5"/>
 
-                        <!-- Bike Model -->
-                        <TextBlock Text="Bike:"
+                        <!-- Phone Number -->
+                        <TextBlock Text="Phone:"
                                  Grid.Row="1" Grid.Column="0"
                                  FontFamily="{StaticResource RubikSemibold}"
                                  Foreground="{StaticResource TextSecondaryBrush}"
                                  Margin="0,0,10,5"/>
-                        <TextBlock Text="{Binding BikeModel}"
+                        <TextBlock Text="{Binding CustomerPhone}"
                                  Grid.Row="1" Grid.Column="1"
-                                 FontFamily="{StaticResource RubikSemibold}"
-                                 Foreground="{StaticResource TextPrimaryBrush}"
-                                 Margin="0,0,0,5"/>
-
-                        <!-- Rental Dates -->
-                        <TextBlock Text="Dates:"
-                                 Grid.Row="2" Grid.Column="0"
-                                 FontFamily="{StaticResource RubikSemibold}"
-                                 Foreground="{StaticResource TextSecondaryBrush}"
-                                 Margin="0,0,10,5"/>
-                        <TextBlock Text="{Binding RentalDates}"
-                                 Grid.Row="2" Grid.Column="1"
                                  FontFamily="{StaticResource RubikSemibold}"
                                  Foreground="{StaticResource TextPrimaryBrush}"
                                  Margin="0,0,0,5"/>
                     </Grid>
                 </DockPanel>
 
-                <!-- Payment Details -->
+                <!-- Bike Details -->
                 <DockPanel LastChildFill="True" Margin="0,0,0,15">
-                    <TextBlock Text="Payment Details"
+                    <TextBlock Text="Bike Details"
                              DockPanel.Dock="Top"
                              FontFamily="{StaticResource RubikSemibold}"
                              Foreground="{StaticResource TextPrimaryBrush}"
@@ -128,69 +133,60 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-                        <!-- Total Days -->
-                        <TextBlock Text="Total Days:"
+                        <!-- Bike Model -->
+                        <TextBlock Text="Model:"
                                  Grid.Row="0" Grid.Column="0"
                                  FontFamily="{StaticResource RubikSemibold}"
                                  Foreground="{StaticResource TextSecondaryBrush}"
                                  Margin="0,0,10,5"/>
-                        <TextBlock Text="{Binding TotalDays}"
+                        <TextBlock Text="{Binding BikeModel}"
                                  Grid.Row="0" Grid.Column="1"
                                  FontFamily="{StaticResource RubikSemibold}"
                                  Foreground="{StaticResource TextPrimaryBrush}"
                                  Margin="0,0,0,5"/>
 
-                        <!-- Daily Rate -->
-                        <TextBlock Text="Daily Rate:"
+                        <!-- Bike ID -->
+                        <TextBlock Text="ID:"
                                  Grid.Row="1" Grid.Column="0"
                                  FontFamily="{StaticResource RubikSemibold}"
                                  Foreground="{StaticResource TextSecondaryBrush}"
                                  Margin="0,0,10,5"/>
-                        <TextBlock Text="{Binding DailyRate, StringFormat='{}{0:C}'}"
+                        <TextBlock Text="{Binding BikeId}"
                                  Grid.Row="1" Grid.Column="1"
                                  FontFamily="{StaticResource RubikSemibold}"
                                  Foreground="{StaticResource TextPrimaryBrush}"
                                  Margin="0,0,0,5"/>
-
-                        <!-- Total Amount -->
-                        <TextBlock Text="Total Amount:"
-                                 Grid.Row="2" Grid.Column="0"
-                                 FontFamily="{StaticResource RubikSemibold}"
-                                 Foreground="{StaticResource TextSecondaryBrush}"
-                                 Margin="0,0,10,5"/>
-                        <TextBlock Text="{Binding TotalAmount, StringFormat='{}{0:C}'}"
-                                 Grid.Row="2" Grid.Column="1"
-                                 FontFamily="{StaticResource RubikSemibold}"
-                                 Foreground="{StaticResource TextPrimaryBrush}"
-                                 Margin="0,0,0,5"/>
-
-                        <!-- Amount Paid -->
-                        <TextBlock Text="Amount Paid:"
-                                 Grid.Row="3" Grid.Column="0"
-                                 FontFamily="{StaticResource RubikSemibold}"
-                                 Foreground="{StaticResource TextSecondaryBrush}"
-                                 Margin="0,0,10,5"/>
-                        <TextBox Text="{Binding AmountPaid, UpdateSourceTrigger=PropertyChanged}"
-                                Grid.Row="3" Grid.Column="1"
-                                Style="{StaticResource BaseTextBoxStyle}"
-                                Margin="0,0,0,5"/>
                     </Grid>
                 </DockPanel>
 
                 <!-- Payment Date -->
                 <DockPanel LastChildFill="True" Margin="0,0,0,15">
-                    <TextBlock Text="Payment Date *"
-                             DockPanel.Dock="Top"
-                             FontFamily="{StaticResource RubikSemibold}"
-                             Foreground="{StaticResource TextPrimaryBrush}"
-                             Margin="0,0,0,5"/>
+                    <TextBlock DockPanel.Dock="Top" Margin="0,0,0,5">
+                        <Run Text="Payment Date" 
+                             FontFamily="{StaticResource RubikSemibold}" 
+                             Foreground="{StaticResource TextPrimaryBrush}"/>
+                        <Run Text="*" 
+                             Foreground="{StaticResource RedBrush}"/>
+                    </TextBlock>
                     <DatePicker SelectedDate="{Binding PaymentDate}"
-                              Style="{StaticResource DatePickerStyle}"
-                              Height="34"/>
+                              Style="{StaticResource FormDatePickerStyle}"
+                              Height="35"/>
+                </DockPanel>
+
+                <!-- Payment Amount -->
+                <DockPanel LastChildFill="True" Margin="0,0,0,15">
+                    <TextBlock DockPanel.Dock="Top" Margin="0,0,0,5">
+                        <Run Text="Payment Amount" 
+                             FontFamily="{StaticResource RubikSemibold}" 
+                             Foreground="{StaticResource TextPrimaryBrush}"/>
+                        <Run Text="*" 
+                             Foreground="{StaticResource RedBrush}"/>
+                    </TextBlock>
+                    <TextBox Text="{Binding AmountPaid, StringFormat=N0}"
+                            Style="{StaticResource FormTextBoxStyle}"
+                            Height="34"/>
                 </DockPanel>
 
                 <!-- Error Message -->
@@ -201,7 +197,7 @@
                          Margin="0,0,0,15"/>
             </StackPanel>
 
-            <!-- Bottom Section -->
+            <!-- Bottom Buttons -->
             <Grid Grid.Row="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>

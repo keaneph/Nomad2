@@ -406,5 +406,46 @@ namespace Nomad2.Services
                 }
             }
         }
+
+        // searches bikes by search term
+        public async Task<List<Bike>> SearchBikesAsync(string searchTerm)
+        {
+            using (var connection = _db.GetConnection())
+            {
+                await connection.OpenAsync();
+                var bikes = new List<Bike>();
+
+                string query = @"
+                    SELECT * FROM bike
+                    WHERE 
+                        LOWER(bike_id) LIKE LOWER(@SearchTerm) OR
+                        LOWER(bike_model) LIKE LOWER(@SearchTerm) OR
+                        LOWER(bike_type) LIKE LOWER(@SearchTerm) OR
+                        CAST(daily_rate AS CHAR) LIKE @SearchTerm OR
+                        LOWER(bike_status) LIKE LOWER(@SearchTerm)";
+
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@SearchTerm", $"%{searchTerm}%");
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            bikes.Add(new Bike
+                            {
+                                BikeId = reader.GetString("bike_id"),
+                                BikeModel = reader.GetString("bike_model"),
+                                BikeType = reader.GetString("bike_type"),
+                                DailyRate = reader.GetInt32("daily_rate"),
+                                BikePicture = reader.GetString("bike_picture"),
+                                BikeStatus = reader.GetString("bike_status")
+                            });
+                        }
+                    }
+                }
+                return bikes;
+            }
+        }
     }
 }

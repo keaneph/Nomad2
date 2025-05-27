@@ -211,6 +211,10 @@
                                                         <Trigger Property="IsMouseOver" Value="True">
                                                             <Setter Property="Foreground" Value="{StaticResource PurpleBrush}"/>
                                                         </Trigger>
+                                                        <DataTrigger Binding="{Binding Payment.PaymentStatus}" Value="Paid">
+                                                            <Setter Property="IsEnabled" Value="False"/>
+                                                            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+                                                        </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
                                             </Hyperlink.Style>

@@ -276,6 +276,22 @@ public class RentalService : IRentalService
                         }
                     }
 
+                    // check if rental has any payment records
+                    string checkPaymentQuery = @"
+                        SELECT COUNT(*) 
+                        FROM `payments` 
+                        WHERE rental_id = @RentalId";
+
+                    using (var checkCommand = new MySqlCommand(checkPaymentQuery, connection, transaction))
+                    {
+                        checkCommand.Parameters.AddWithValue("@RentalId", rental.RentalId);
+                        int hasPayment = Convert.ToInt32(await checkCommand.ExecuteScalarAsync());
+                        if (hasPayment > 0)
+                        {
+                            throw new InvalidOperationException("Cannot update rental because it has payment records");
+                        }
+                    }
+
                     // update the rental
                     string query = @"
                         UPDATE rentals 

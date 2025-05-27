@@ -9,19 +9,71 @@ namespace Nomad2.ViewModels
 {
     public class EditPaymentDialogViewModel : BaseViewModel
     {
-        private readonly IPaymentService _paymentService;
         private readonly Payment _payment;
+        private readonly Window _dialog;
+        private readonly IPaymentService _paymentService;
+        private readonly ICustomerService _customerService;
+        private readonly IBikeService _bikeService;
+        private readonly IRentalService _rentalService;
         private string _errorMessage;
+        private DateTime? _paymentDate;
+        private string _customerName;
+        private string _customerPhone;
+        private string _bikeModel;
         private int _amountPaid;
-        private DateTime _paymentDate;
+
+        public EditPaymentDialogViewModel(Payment payment, Window dialog)
+        {
+            _payment = payment ?? throw new ArgumentNullException(nameof(payment));
+            _dialog = dialog ?? throw new ArgumentNullException(nameof(dialog));
+            _paymentService = new PaymentService();
+            _customerService = new CustomerService();
+            _bikeService = new BikeService();
+            _rentalService = new RentalService();
+
+            // initialize commands
+            SaveCommand = new RelayCommand(ExecuteSave, CanExecuteSave);
+            CancelCommand = new RelayCommand(ExecuteCancel);
+
+            // load initial data
+            _ = LoadInitialData();
+        }
 
         public string DialogTitle => "Edit Payment";
+
         public string PaymentId => _payment.PaymentId;
-        public string CustomerName => _payment.Customer?.Name;
-        public string BikeModel => _payment.Bike?.BikeModel;
-        public string RentalDates => $"{_payment.PaymentDate:d}";
-        public int DailyRate => _payment.Bike?.DailyRate ?? 0;
-        public int? TotalAmount => _payment.AmountToPay;
+        public string RentalId => _payment.RentalId;
+        public string CustomerId => _payment.CustomerId;
+        public string BikeId => _payment.BikeId;
+
+        public string CustomerName
+        {
+            get => _customerName;
+            set { _customerName = value; OnPropertyChanged(); }
+        }
+
+        public string CustomerPhone
+        {
+            get => _customerPhone;
+            set { _customerPhone = value; OnPropertyChanged(); }
+        }
+
+        public string BikeModel
+        {
+            get => _bikeModel;
+            set { _bikeModel = value; OnPropertyChanged(); }
+        }
+
+        public DateTime? PaymentDate
+        {
+            get => _paymentDate;
+            set
+            {
+                _paymentDate = value;
+                OnPropertyChanged();
+                (SaveCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            }
+        }
 
         public int AmountPaid
         {
@@ -29,19 +81,8 @@ namespace Nomad2.ViewModels
             set
             {
                 _amountPaid = value;
-                OnPropertyChanged(nameof(AmountPaid));
-                ValidateAmountPaid();
-            }
-        }
-
-        public DateTime PaymentDate
-        {
-            get => _paymentDate;
-            set
-            {
-                _paymentDate = value;
-                OnPropertyChanged(nameof(PaymentDate));
-                ValidatePaymentDate();
+                OnPropertyChanged();
+                (SaveCommand as RelayCommand)?.RaiseCanExecuteChanged();
             }
         }
 
@@ -51,81 +92,115 @@ namespace Nomad2.ViewModels
             set
             {
                 _errorMessage = value;
-                OnPropertyChanged(nameof(ErrorMessage));
+                OnPropertyChanged();
             }
         }
 
         public ICommand SaveCommand { get; }
         public ICommand CancelCommand { get; }
 
-        public EditPaymentDialogViewModel(Payment payment)
-        {
-            _paymentService = new PaymentService();
-            _payment = payment;
-            _amountPaid = payment.AmountPaid;
-            _paymentDate = payment.PaymentDate;
-
-            SaveCommand = new RelayCommand(async () => await SavePayment(), () => IsValid());
-            CancelCommand = new RelayCommand(() => CloseDialog());
-        }
-
-        private bool IsValid()
-        {
-            return string.IsNullOrEmpty(ErrorMessage) &&
-                   AmountPaid >= 0 &&
-                   PaymentDate != default;
-        }
-
-        private void ValidateAmountPaid()
-        {
-            if (AmountPaid < 0)
-            {
-                ErrorMessage = "Amount paid cannot be negative";
-            }
-            else if (TotalAmount.HasValue && AmountPaid > TotalAmount.Value)
-            {
-                ErrorMessage = "Amount paid cannot exceed total amount";
-            }
-            else
-            {
-                ErrorMessage = string.Empty;
-            }
-        }
-
-        private void ValidatePaymentDate()
-        {
-            if (PaymentDate == default)
-            {
-                ErrorMessage = "Please select a payment date";
-            }
-            else
-            {
-                ErrorMessage = string.Empty;
-            }
-        }
-
-        private async Task SavePayment()
+        private async Task LoadInitialData()
         {
             try
             {
-                _payment.AmountPaid = AmountPaid;
-                _payment.PaymentDate = PaymentDate;
+                // load customer info
+                var customer = await _customerService.GetCustomerByIdAsync(_payment.CustomerId);
+                if (customer != null)
+                {
+                    await Application.Current.Dispatcher.InvokeAsync(() =>
+                    {
+                        CustomerName = customer.Name;
+                        CustomerPhone = customer.PhoneNumber;
+                    });
+                }
 
-                await _paymentService.UpdatePaymentAsync(_payment);
-                CloseDialog();
+                // load bike info
+                var bike = await _bikeService.GetBikeByIdAsync(_payment.BikeId);
+                if (bike != null)
+                {
+                    await Application.Current.Dispatcher.InvokeAsync(() =>
+                    {
+                        BikeModel = bike.BikeModel;
+                    });
+                }
+
+                // set payment date and amount
+                await Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    PaymentDate = _payment.PaymentDate;
+                    AmountPaid = _payment.AmountPaid;
+                });
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error saving payment: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                await Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    ErrorMessage = $"Error loading data: {ex.Message}";
+                });
             }
         }
 
-        private void CloseDialog()
+        private bool CanExecuteSave()
         {
-            if (Application.Current.Windows.Count > 0)
+            if (!PaymentDate.HasValue)
             {
-                Application.Current.Windows[Application.Current.Windows.Count - 1].Close();
+                ErrorMessage = "Please select a payment date";
+                return false;
             }
+
+            if (AmountPaid <= 0)
+            {
+                ErrorMessage = "Payment amount must be greater than 0";
+                return false;
+            }
+
+            ErrorMessage = string.Empty;
+            return true;
+        }
+
+        private async Task<bool> ValidateSaveAsync()
+        {
+            if (!CanExecuteSave())
+            {
+                return false;
+            }
+
+            // Get the rental date
+            var rental = await _rentalService.GetRentalByIdAsync(_payment.RentalId);
+            if (rental != null && PaymentDate.Value < rental.RentalDate)
+            {
+                ErrorMessage = "Payment date cannot be before rental date";
+                return false;
+            }
+
+            return true;
+        }
+
+        private async void ExecuteSave()
+        {
+            if (await ValidateSaveAsync())
+            {
+                try
+                {
+                    // update payment record
+                    _payment.PaymentDate = PaymentDate.Value;
+                    _payment.AmountPaid = AmountPaid;
+                    await _paymentService.UpdatePaymentAsync(_payment);
+
+                    _dialog.DialogResult = true;
+                    _dialog.Close();
+                }
+                catch (Exception ex)
+                {
+                    ErrorMessage = $"Error saving payment: {ex.Message}";
+                }
+            }
+        }
+
+        private void ExecuteCancel()
+        {
+            _dialog.DialogResult = false;
+            _dialog.Close();
         }
     }
 } 
