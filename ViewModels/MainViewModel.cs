@@ -132,7 +132,11 @@ namespace Nomad2.ViewModels
 
             CurrentView = viewName switch
             {
-                "Dashboard" => new DashboardViewModel(),
+                "Dashboard" => new DashboardViewModel(
+                    new CustomerService(),
+                    new BikeService(),
+                    new RentalService(),
+                    new PaymentService()),
                 "Customers" => new CustomersViewModel(),
                 "Bikes" => new BikesViewModel(),
                 "Rentals" => new RentalsViewModel(rentalService, customerService, bikeService),

@@ -50,6 +50,20 @@
         <GradientStop Color="#682EC7" Offset="0.5"/>
         <GradientStop Color="#2B2942" Offset="1"/>
     </RadialGradientBrush>
+
+    
+    <!-- For the Linechart -->
+    <LinearGradientBrush x:Key="PurpleGradientBackgroundTransparent" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#88682EC7" Offset="0.0"/>
+        <GradientStop Color="#00190F33" Offset="1.0"/>
+    </LinearGradientBrush>
+
+    <!-- For the Barchart -->
+    <LinearGradientBrush x:Key="PurpleGradientBackgroundTransparent2" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#CC682EC7" Offset="0.0"/>
+        <GradientStop Color="#33682EC7" Offset="1.0"/>
+    </LinearGradientBrush>
+
     <RadialGradientBrush x:Key="RedGradientBackground" GradientOrigin="0.5,1" Center="0.5,1" RadiusX="0.5" RadiusY="1.2">
         <GradientStop Color="#843153" Offset="0.1"/>
         <GradientStop Color="#2C1A1E" Offset="1"/>
