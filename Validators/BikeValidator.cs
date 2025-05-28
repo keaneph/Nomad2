@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using Nomad2.Models;
+using Nomad2.Services;
 
 namespace Nomad2.Validators
 {
     public class BikeValidator
     {
-        public static (bool isValid, string errorMessage) ValidateBike(Bike bike)
+        private static readonly IBikeService _bikeService = new BikeService();
+
+        public static async Task<(bool isValid, string errorMessage)> ValidateBikeAsync(Bike bike)
         {
             // check for null
             if (bike == null)
@@ -60,6 +63,14 @@ namespace Nomad2.Validators
                 return (false, "Invalid bike status");
 
             return (true, string.Empty);
+        }
+
+        // For backward compatibility
+        public static (bool isValid, string errorMessage) ValidateBike(Bike bike)
+        {
+            var task = ValidateBikeAsync(bike);
+            task.Wait();
+            return task.Result;
         }
     }
 }

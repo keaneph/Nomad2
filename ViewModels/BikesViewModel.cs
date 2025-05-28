@@ -245,7 +245,8 @@ namespace Nomad2.ViewModels
                 try
                 {
                     await _bikeService.AddBikeAsync(newBike);
-                    await LoadBikes();
+                    _currentPage = 1; // Reset to first page
+                    await LoadBikes(); // Refresh the bike list
                 }
                 catch (Exception ex)
                 {
@@ -265,7 +266,7 @@ namespace Nomad2.ViewModels
                     try
                     {
                         await _bikeService.UpdateBikeAsync(bike);
-                        await LoadBikes();
+                        await LoadBikes(); // Refresh the bike list
                     }
                     catch (Exception ex)
                     {

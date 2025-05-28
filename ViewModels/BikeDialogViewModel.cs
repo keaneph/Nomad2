@@ -6,6 +6,7 @@ using Nomad2.ViewModels;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using System.Windows;
+using System.Threading.Tasks;
 
 public class BikeDialogViewModel : BaseViewModel
 {
@@ -122,9 +123,9 @@ public class BikeDialogViewModel : BaseViewModel
     }
 
     // validates bike data before saving
-    private bool CanExecuteSave()
+    private async Task<bool> CanExecuteSaveAsync()
     {
-        var (isValid, errorMessage) = BikeValidator.ValidateBike(_bike);
+        var (isValid, errorMessage) = await BikeValidator.ValidateBikeAsync(_bike);
         if (!isValid)
         {
             ErrorMessage = errorMessage;
@@ -133,6 +134,13 @@ public class BikeDialogViewModel : BaseViewModel
 
         ErrorMessage = string.Empty;
         return true;
+    }
+
+    private bool CanExecuteSave()
+    {
+        var task = CanExecuteSaveAsync();
+        task.Wait();
+        return task.Result;
     }
 
     private void UpdateBikeStatus()

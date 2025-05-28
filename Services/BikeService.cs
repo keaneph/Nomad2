@@ -162,6 +162,36 @@ namespace Nomad2.Services
             }
         }
 
+        // checks if a bike model already exists
+        private async Task<bool> IsBikeModelExistsAsync(string bikeModel, string excludeBikeId = null)
+        {
+            using (var connection = _db.GetConnection())
+            {
+                await connection.OpenAsync();
+                string query = @"
+                    SELECT COUNT(*) 
+                    FROM bike 
+                    WHERE LOWER(bike_model) = LOWER(@BikeModel)";
+
+                if (!string.IsNullOrEmpty(excludeBikeId))
+                {
+                    query += " AND bike_id != @ExcludeBikeId";
+                }
+
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@BikeModel", bikeModel);
+                    if (!string.IsNullOrEmpty(excludeBikeId))
+                    {
+                        command.Parameters.AddWithValue("@ExcludeBikeId", excludeBikeId);
+                    }
+
+                    int count = Convert.ToInt32(await command.ExecuteScalarAsync());
+                    return count > 0;
+                }
+            }
+        }
+
         // adds a new bike to the database
         public async Task<bool> AddBikeAsync(Bike bike)
         {
@@ -169,6 +199,12 @@ namespace Nomad2.Services
             if (!isValid)
             {
                 throw new ArgumentException(errorMessage);
+            }
+
+            // check for duplicate bike model
+            if (await IsBikeModelExistsAsync(bike.BikeModel))
+            {
+                throw new InvalidOperationException("A bike with this model already exists");
             }
 
             using (var connection = _db.GetConnection())
@@ -228,6 +264,12 @@ namespace Nomad2.Services
             if (!isValid)
             {
                 throw new ArgumentException(errorMessage);
+            }
+
+            // check for duplicate bike model, excluding the current bike
+            if (await IsBikeModelExistsAsync(bike.BikeModel, bike.BikeId))
+            {
+                throw new InvalidOperationException("A bike with this model already exists");
             }
 
             using (var connection = _db.GetConnection())
